@@ -7,177 +7,69 @@
     box-sizing: border-box;
 }
 
+.overflow-hidden {
+    overflow: hidden; 
+}
 
-
-  /* Navbar */
-.seal {
-    width: 134px;
-    height: 134px;
-    flex-shrink: 0;
-  }
-
-.seal-div {
+.expanded-accordion {
     display: flex;
-    padding-right: 46vw;
-    justify-content: end;
-    align-items: center;
-    padding-bottom: 2vh;
-  }
-
-.nav-flexbox {
-    display: flex;
-    justify-content: end;
-    align-items: center;
-    gap: 4px;
-}
-
-
-.nav-links {
-    color: #676767;
-    text-align: center;
-    font-family: "Frank Ruhl Libre";
-    font-size: 12px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: normal;
-    letter-spacing: 0.48px;
-  }
-
-  .nav-links a {
-    margin: 0 8px; /* Space between links */
-    text-decoration: none; /* Remove underline */
-}
-
-/* Accordion */
-
-.banner-parent {
-    position: relative;
-}
-
-.accordion {
-    gap: 10px;
-}
-  
-.green-banner{
-    width: 1728px;
-    height: 281px;
-    flex-shrink: 0;
-    fill: linear-gradient(90deg, #7AB252 0%, #60A450 28.01%, #50984F 54.8%, #AECF87 100%);
-    opacity: var(--sds-size-stroke-border);
-}
-
-.text-on-banner {
-    position: absolute;
-    right: 50%;
-    left: 5%;
-    bottom: 40%;
- }
-
-.progress-ring {
-    width: 200px;
-    height: 200px;
-    flex-shrink: 0;
-}
-
-.cert-flex {
-    display: flex;
-    padding-left: 5vw;
-    padding-top: 1vh;
-    padding-right: 48vw;
-}
-
-.cert-text {
-    color: #000;
-    font-family: "Fira Sans";
-    font-size: 20px;
-    font-style: normal;
-    font-weight: 300;
-    line-height: normal;
-}
-
-.text-accordion-flex {
-    display: flex;
-    flex-direction: column;
-    padding-top: 7vh;
-    padding-left: 5vw;
-    margin-bottom: 10vh;
-}
-
-
-
-.accordion-header {
-    font-family: "Fenix", serif;
-    font-size: 48px;
-    color: #FFFFFF;
-    padding-left: 200px;
-    padding-top: 40px;
-}
-
-.accordion__button:before {
-    display: none;
-}
-
-.accordion {
-    width: 832px;
-}
-
-
-.accordion-title {
-    font-family: "Fira Sans", san serif;
-    font-size: 20px;
-    color: black;
-    font-weight: 700;
-}
-
-.accordion-div {
-    display: flex;
-    flex-direction: column;
-    justify-content: center; 
-    gap: 16px;
-    margin-bottom: 16px;
-    border: 2px solid black;
-    border-radius: 8px;
-}
-
-.accordion-flexbox {
-    display: flex;
-    width: 832px;
-    height: 80px;
-    padding: 24px 16px 24px 79px;
-    justify-content: start;
-    align-items: center;
-    gap: 267px;
-    flex-shrink: 0;
-    border-radius: 8px;
+    height: 81px;
+    width: 826px;
+    border-radius: 10px 10px 0 0;
     border: 1px solid black;
-    opacity: var(--sds-size-stroke-border);
-    background: #ECECEC;
+    background-color: #ECECEC;
+    flex-shrink: 0;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 5.25 em;
+    padding-top: 1.5 rem;
+    padding-right: 2.25 rem;
+    padding-bottom: 1.5 rem;
+    margin-top: 1 rem;
+   
+    border-bottom: none;
     
 }
 
-.form-flex {
+.collapsed-accordion {
     display: flex;
-    justify-content: center;
-    
+    height: 80px;
+    border-radius: 10px;
+    border: 1px solid black;
+    background-color: #ECECEC;
+    flex-shrink: 0;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 2.25 rem;
+    padding-top: 1.5 rem;
+    padding-right: 1 rem;
+    padding-bottom: 1.5 rem;
+    margin-top: 1 rem;
+    margin-bottom: 15px;
+
 }
 
-.accordion-item-flex {
-    display: flex;
-    flex-direction: column;
-    margin: 16px;
+
+.mobile-menu {
+    transition: transform 0.3s ease-in-out;
+    transform: translateX(100%); 
+}
+
+.mobile-menu.open {
+    transform: translateX(0); 
+}
+
+.custom-checkbox {
+    transform: scale(2); 
+    margin: 10px; 
+   
+ 
 }
 
 
-    .accordion-item {
-        position: relative;
-    }
 
-    .accordion-item-panel {
-        border-top: 2px solid black;
-    }
 
-    .accordion-item-button {
-        border-bottom: 2px solid black;
-    }
+
+
 
 

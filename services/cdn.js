@@ -6,6 +6,7 @@
 const { v2: cloudinary } = require('cloudinary');
 
 
+
 /**
  * Initialize Cloudinary SDK
  */
@@ -21,7 +22,9 @@ const init = () => {
  * Upload single file from buffer
  * @param {String} filename 
  * @param {*} file 
+ * 
  */
+
 const upload = async (filename, file) => {
     return await new Promise((res, rej) => {
         const cb = (err, result) => {
@@ -31,7 +34,7 @@ const upload = async (filename, file) => {
         cloudinary.uploader.upload_stream({
             resource_type: 'auto',
             folder: 'documents',
-            public_id: filename,
+            public_id: 'users/{user.sub}/{category}/{filename}',
             unique_filename: true,
             overwrite: false,
         }, cb)

@@ -1,7 +1,7 @@
-const { ExampleModel } = require('../models/example');
+// const { ExampleModel } = require('../models/example');
 
-const getAll = () => ExampleModel.find();
+// const getAll = () => ExampleModel.find();
 
-module.exports = {
-    getAll
-}
+// module.exports = {
+//     getAll
+// }

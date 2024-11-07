@@ -1,123 +1,115 @@
-import React from 'react';
+// /* eslint-disable react/prop-types */
+// import { useContext, useEffect } from 'react';
+
+// import { UserContext } from '../contexts';
+// import { CloudinaryContext } from '../contexts';
+// import ProfileList from './ProfileList'
+// import placeholderProfilePic from '../assets/icons/placeholderProfilePic.png';
+
+// export const PractitionerCard = () => {
+//     // const {
+//     //     firstName,
+//     //     lastName,
+//     //     title,
+//     //     location,
+//     //     imgURL,
+//     //     phone,
+//     //     email,
+//     //     website,
+//     // } = props;
+
+//     const {
+//         fetchProfileData,
+//         profileData,
+//         fetchAllProfiles,
+//         allProfiles,
+//         setAllProfiles,
+//     } = useContext(UserContext);
+//     const { imageUrl } = useContext(CloudinaryContext);
+//     console.log(profileData);
+
+//     console.log(allProfiles, 'all profiles');
+
+//     // const fetchProfiles = async () => {
+//     //     try {
+//     //         const profiles = await fetchAllProfiles();
+//     //         setAllProfiles(profiles);
+//     //     } catch (error) {
+//     //         console.error('Error fetching profiles:', error);
+//     //     }
+//     // };
+
+//     // fetchProfiles()
+
+//     // useEffect(() => {
+//     //     fetchAllProfiles();
+//     // }, []);
+
+//     return (
+//         <div className="flex flex-col gap-4">
+//             <h1>hello</h1>
+//             {/* {allProfiles.map((profile) => (
+//                 <ProfileList {...profile} key={profile._id} />
+//             ))} */}
+//         </div>
+//     );
+// };
+
+// export default PractitionerCard
+
+
+/* eslint-disable react/prop-types */
+
+
 
 export const PractitionerCard = (props) => {
-    const { firstName, lastName, title, location, imgURL, phone } = props;
+    const {
+        firstName,
+        lastName,
+        title,
+        location,
+        imgURL,
+        phone,
+        email,
+        website,
+    } = props;
 
     return (
-        <div
-            style={{
-                display: 'inline-block',
-                width: '38.375rem',
-                height: '17.5rem',
-                margin: '0.5rem',
-                padding: '1.5rem',
-                flexDirection: 'column',
-                alignItems: 'flex-start',
-                gap: 'var(--sds-size-space-200)',
-                flexShrink: 0,
-                borderRadius: '0.25rem',
-                opacity: 'var(--sds-size-stroke-border)',
-                background: '#ECECEC',
-                boxShadow: '0px 4px 4px 0px rgba(0, 0, 0, 0.25)',
-            }}
-        >
-            <div
-                style={{
-                    display: 'flex',
-                    alignItems: 'flex-start',
-                    gap: '2.5rem',
-                }}
-            >
+        <div className="flex flex-col sm:flex-row w-full sm:w-[49%] h-auto items-start gap-2 p-6 bg-[#ececec] rounded shadow-[0px_4px_4px_#00000040]">
+            <div className="flex flex-col sm:flex-row gap-4 items-center w-full">
                 <img
-                    style={{
-                        width: '11.75rem',
-                        height: '11.75rem',
-                        borderRadius: '0.25rem',
-                        opacity: 'var(--sds-size-stroke-border)',
-                        objectFit: 'cover',
-                    }}
+                    className="w-[150px] h-[150px] sm:w-[200px] sm:h-[200px] rounded-full object-cover"
+                    alt={`${firstName} ${lastName}`}
                     src={imgURL}
                 />
-                <div>
-                    <div
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'flex-start',
-                            gap: '4.625rem',
-                        }}
-                    >
-                        <div
-                            style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'flex-start',
-                                gap: '1rem',
-                                alignSelf: 'stretch',
-                            }}
-                        >
-                            <h2
-                                style={{
-                                    color: '#000',
-                                    textAlign: 'center',
-                                    fontFamily: '"Fira Sans", sans-serif',
-                                    fontSize: '1.5rem',
-                                    fontStyle: 'normal',
-                                    fontWeight: 700,
-                                    margin: '0px',
-                                    lineHeight: 'normal',
-                                    letterSpacing: '-0.03rem',
-                                    opacity: 'var(--sds-size-stroke-border)',
-                                }}
-                            >
-                                {firstName} {lastName}
-                            </h2>
-                            <h4
-                                style={{
-                                    alignSelf: 'stretch',
-                                    margin: '0px',
-                                    color: '#000',
-                                    fontFamily: '"Fira Sans", sans-serif',
-                                    fontSize: '1rem',
-                                    fontStyle: 'normal',
-                                    fontWeight: 400,
-                                    lineHeight: 'normal',
-                                    letterSpacing: '-0.02rem',
-                                }}
-                            >
-                                {title}
-                            </h4>
-                            <h4
-                                style={{
-                                    alignSelf: 'stretch',
-                                    color: '#000',
-                                    fontFamily: '"Fira Sans", sans-serif',
-                                    margin: '0px',
-                                    fontSize: '1rem',
-                                    fontStyle: 'normal',
-                                    fontWeight: 400,
-                                    lineHeight: 'normal',
-                                    letterSpacing: '-0.02rem',
-                                }}
-                            >
-                                {location}
-                            </h4>
-                        </div>
-                        <h4
-                            style={{
-                                alignSelf: 'stretch',
-                                color: '#4F72AF',
-                                fontFamily: '"Fira Sans", sans-serif',
-                                fontSize: '1rem',
-                                fontStyle: 'normal',
-                                fontWeight: 500,
-                                lineHeight: 'normal',
-                                letterSpacing: '-0.02rem',
-                                margin: '0px',
-                            }}
-                        >
+                <div className="flex flex-col w-full sm:w-auto gap-2">
+                    <div className="text-black text-2xl font-bold tracking-[-0.48px] leading-normal">
+                        {firstName} {lastName}
+                    </div>
+                    <div className="text-black text-base font-normal tracking-[-0.32px] leading-normal">
+                        {title}
+                    </div>
+                    <div className="text-black text-base font-normal tracking-[-0.32px] leading-normal">
+                        {location}
+                    </div>
+                    <div className="flex flex-col gap-1">
+                        <div className="text-[#4f72af] text-base font-medium tracking-[-0.32px] leading-normal">
                             {phone}
-                        </h4>
+                        </div>
+                        <div className="text-[#4f72af] text-base font-medium tracking-[-0.32px] leading-normal">
+                            {email}
+                        </div>
+                        {website && (
+                            <div className="text-[#4f72af] text-base font-medium tracking-[-0.32px] leading-normal">
+                                <a
+                                    href={website}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    Website
+                                </a>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

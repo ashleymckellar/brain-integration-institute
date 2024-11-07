@@ -1,28 +1,23 @@
-const mg = require('mongoose');
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-const FileSchema = new mg.Schema({
-    filename: {
-        type: String,
-        required: true,
-    },
-    url: {
-        type: String,
-        required: true,
-    },
-    public_id: {
-        type: String,
-        required: true,
-        unique: true
-    },
-    owner: {
-        type: String,
-        required: true,
-    },
+const fileSchema = new Schema({
+    publicId: { type: String, required: true },
+    url: { type: String, required: true },
+    uploadDate: { type: Date, required: true },
+    filename: { type: String, required: true },
+    isApproved: { type: Boolean, default: false },
+    user: { type: Schema.Types.String, ref: "User", required: true},
+    sectionName: { type: String, required: true }
 });
 
-const FileModel = mg.model('File', FileSchema);
+const File = mongoose.model('File', fileSchema);
 
-module.exports = {
-    FileModel
-}
+module.exports =  File ;
 
+// // filename,
+// owner: req.auth.payload.sub,
+// publicId,
+// url,
+// uploadDate,
+// isApproved: false,

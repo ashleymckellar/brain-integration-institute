@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { FileContext } from "../contexts";
 import { useFileAPI } from "../hooks";
 

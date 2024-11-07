@@ -11,9 +11,17 @@
   },
   "dependencies": {
     "@auth0/auth0-react": "^2.2.4",
+    "@cloudinary/react": "^1.13.0",
+    "@cloudinary/url-gen": "^1.20.0",
+    "@stripe/react-stripe-js": "^2.8.1",
+    "@stripe/stripe-js": "^4.8.0",
     "autoprefixer": "^10.4.20",
+    "axios": "^1.7.7",
+    "lucide-react": "^0.454.0",
+    "npm": "^10.8.2",
     "postcss": "^8.4.41",
     "react": "^18.2.0",
+    "react-accessible-accordion": "^5.0.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.22.3",
     "tailwindcss": "^3.4.7"
@@ -27,5 +35,10 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
     "vite": "^5.1.6"
-  }
+  },
+  "description": "## Overview The client app is a very lean VITE React SPA with minimal boilerplate: - `src/`     - `assets/`         - CSS, Images, Fonts, etc.     - `components/`         - React components (non-pages).     - `providers/`         - React provider components.     - `routes/`         - Page level components. These correspond to the routes defined in [`RouteProvider.jsx`](./src/providers/RouterProvider.jsx)     - `hooks.js`         - Reusable custom hooks.     - `contexts.js`         - React context object definitions - `.env`     - Environment Variable file for storing Auth0 and Cloudinary credentials as well as other environment-specific values. - `vite.config.js`",
+  "main": "postcss.config.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
