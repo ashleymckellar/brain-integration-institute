@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 import { useState, useContext, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { loadStripe } from '@stripe/stripe-js';
 import UploadBtn from '../assets/icons/UploadBtn.png';
 import GetStudyGuideBtn from '../assets/icons/GetStudyGuideBtn.png';
@@ -308,9 +309,12 @@ const AccordionCard = ({ certStatus }) => {
                     except for the assessment, which can only be accessed once
                     the preceding items are completed. If you have any questions
                     about the process, please{' '}
-                    <span className="font-fira text-lg md:text-xl font-bold text-blue">
+                    <Link
+                        className="font-fira text-lg md:text-xl font-bold text-blue"
+                        to="/contact-us"
+                    >
                         contact us
-                    </span>
+                    </Link>
                     , and a member of our board will be happy to assist you.
                 </p>
                 <div className="flex flex-col justify-center items-center pl-2 md:pl-20 gap-4 pb-5">

@@ -4,6 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import { AdminContext } from '../contexts';
 import ViewFileModal from './ViewFileModal';
+import { DeleteFileModal } from './DeleteFileModal';
 import Trashcan from '../assets/icons/Trashcan.png';
 import ProgressBar0 from '../assets/icons/ProgressBar0.png';
 import ProgressBar1 from '../assets/icons/ProgressBar1.png';
@@ -44,7 +45,8 @@ const UserSpecificAdminView = () => {
     // const [selectedDocUrl, setSelectDocUrl] = useState('')
     const [selectedDocumentType, setSelectedDocumentType] = useState('');
     const navigate = useNavigate();
-    const [filesToDelete, setFilesToDelete] = useState([])
+    const [filesToDelete, setFilesToDelete] = useState([]);
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
     const docTypeMapping = {
         'Brain Integration Training': 'brainIntegrationTraining',
@@ -185,9 +187,14 @@ const UserSpecificAdminView = () => {
     }
 
     const handleDeleteFiles = () => {
-        if (confirm('Delete Selected Files?')) {
-            console.log('foo')
+        if (!deleteModalOpen) {
+            setDeleteModalOpen(true)
         }
+    }
+
+    const handleConfirmDelete = () => {
+        // TODO: Handle file deletion
+        console.log(`Files to delete: ${filesToDelete}`)
     }
 
     return (
@@ -301,7 +308,8 @@ const UserSpecificAdminView = () => {
                                 type="checkbox"
                                 className="custom-checkbox"
                                 disabled={doc.status.toLowerCase() === "waiting for upload"}
-                                onClick={() => handleCheckboxClick(doc.name)}
+                                checked={filesToDelete.includes(docTypeMapping[doc.name])}
+                                onChange={() => handleCheckboxClick(doc.name)}
                             />
                             <li>
                                 {doc.name}:
@@ -353,6 +361,14 @@ const UserSpecificAdminView = () => {
                 >
 
                 </ViewFileModal>
+            )}
+
+            {deleteModalOpen && (
+                <DeleteFileModal
+                    open={deleteModalOpen}
+                    onClose={() => setDeleteModalOpen(false)}
+                    onConfirm={handleConfirmDelete}
+                />
             )}
         </div>
     );
