@@ -47,6 +47,7 @@ const UserSpecificAdminView = () => {
     const navigate = useNavigate();
     const [filesToDelete, setFilesToDelete] = useState([]);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [publicId, setPublicId] = useState('')
 
     const docTypeMapping = {
         'Brain Integration Training': 'brainIntegrationTraining',
@@ -54,7 +55,7 @@ const UserSpecificAdminView = () => {
         'CPR Certification': 'cprCert',
         'Clinical Hours': 'clinicalHours',
         'First Aid Training': 'firstAidTraining',
-        Insurance: 'insurance',
+        'Insurance': 'insurance'
     };
 
     const certProgressImages = [
@@ -96,9 +97,13 @@ const UserSpecificAdminView = () => {
             if (!response.ok) {
                 throw new Error('Failed to fetch images');
             }
-            const images = await response.json();
-            console.log('API Response:', images);
-            setImagesByDocType(images);
+            const image = await response.json();
+            console.log('API Response:', image);
+            setImagesByDocType(image);
+            console.log(image)
+            setPublicId(image[0].public_id)
+            console.log('Set publicId:', image[0].public_id);
+
         } catch (error) {
             console.error('Error fetching images:', error);
         }
@@ -114,7 +119,7 @@ const UserSpecificAdminView = () => {
         fetchProfileData(individualUser);
     }, [individualUser]);
 
-    console.log(imagesByDocType);
+    console.log(imagesByDocType.public_id);
 
     if (!individualUser) return <p>Loading...</p>;
 
@@ -336,12 +341,18 @@ const UserSpecificAdminView = () => {
                                     View File
                                 </button>)
                                 :
-                                (<button
+                                (
+                                <>
+                                <button
                                     className={"border border-black rounded px-4 py-1 ml-4 font-bold shadow-lg w-[116px]"}
                                     onClick={() => handleClick(doc.name)}
                                 >
                                     View File
-                                </button>)
+                                </button >
+                                {/* <button  className={"border border-black rounded px-4 py-1 ml-4 font-bold shadow-lg w-[116px]"}
+                                 onClick={() => handleClick(doc.name)}>Delete File</button> */}
+                                </>
+                                )
                             }
                         </div>
                     ))}

@@ -29,7 +29,9 @@ approvalMessagesRouter.post('/', async (req, res) => {
     try {
         const { message, userEmail, category } = req.body;
         console.log('JWT sub:', req.auth.payload);
-        if (!message || !userEmail || !category) {
+        console.log(req.body, 'req.body');
+        console.log('Category:', category);
+        if (!message || !userEmail) {
             return res
                 .status(400)
                 .json({
@@ -48,22 +50,20 @@ approvalMessagesRouter.post('/', async (req, res) => {
             admin: adminEmail,
             timestamp: Date.now(),
             userEmail,
-            category
+            category,
         });
 
         const user = await UserModel.findOne({ userEmail });
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
-        if (user.approvalMessages[category], 'category') {
-            console.log(user.approvalMessages[category])
-            user.approvalMessages[category].push(messageMetadata._id);
+        if (user.approvalMessages[category]) {
+            user.approvalMessages[category].push(messageMetadata.message);
         } else {
-            return res
-                .status(400)
-                .json({ error: 'Invalid category specified' });
+            return res.status(400).json({ error: 'Invalid category specified' });
         }
-
+        
+        await user.save();
         res.status(201).json({ success: true, messageMetadata });
     } catch (error) {
         console.error('Error processing request:', error);

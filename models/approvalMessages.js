@@ -24,8 +24,8 @@ const ApprovalMessageSchema = new mg.Schema({
         default: null 
     },
     category: {
-        type: String,
-        required: true
+        type: String
+       
     }
 });
 

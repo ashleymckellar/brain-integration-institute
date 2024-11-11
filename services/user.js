@@ -25,6 +25,7 @@ const editUserMetaData = async (email, updates) => {
     const updateFields = {};
 
     if (updates.certListUploadStatus) {
+        console.log('Cert List Upload Status:', updates.certListUploadStatus);
         for (const key in updates.certListUploadStatus) {
             if (updates.certListUploadStatus.hasOwnProperty(key)) {
                 updateFields[`certListUploadStatus.${key}`] =

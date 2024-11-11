@@ -233,11 +233,19 @@ userRouter.put('/:email/is-admin', async (req, res) => {
 userRouter.put('/:email/document-status', async (req, res) => {
     const email = req.params.email; // Get the email from the URL parameters
     const { certListUploadStatus } = req.body;
+    console.log(`Received request to update user: ${email}`);
+    console.log('Body:', req.body);
 
     try {
+
+        if (!certListUploadStatus) {
+            console.log('certListUploadStatus is missing');
+            return res.status(400).send({ message: 'certListUploadStatus is required' });
+        }
         const updatedUser = await editUserMetaData(email, {
             certListUploadStatus,
         });
+        console.log('Updated user:', updatedUser);
         if (!updatedUser) {
             return res.status(404).send({ message: 'User not found' });
         }
