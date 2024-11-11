@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Navbar } from '../components/header/Navbar';
 import { Home } from './Home';
+import { Footer } from '../components/Footer';
 
 export const Root = () => {
     const { user, isLoading } = useAuth0();
@@ -12,6 +13,7 @@ export const Root = () => {
             <div>
                 <Navbar />;
                 <Home />
+                <Footer />
             </div>
         );
     }
@@ -21,6 +23,7 @@ export const Root = () => {
             <section>
                 <Outlet />
             </section>
+            <Footer />
         </div>
     );
 };
