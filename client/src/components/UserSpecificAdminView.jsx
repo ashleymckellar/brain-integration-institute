@@ -137,6 +137,7 @@ const UserSpecificAdminView = () => {
         setSelectedDocumentName(documentName);
         setSelectedDocumentType(documentType);
         console.log(documentName);
+        console.log(documentType)
 
         try {
             setFileModalOpen(false);

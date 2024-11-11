@@ -40,14 +40,14 @@ export default function CheckoutForm() {
 
         const { error } = await stripe.confirmPayment({
             elements,
-            redirect: 'if_required'
+            redirect: 'if_required',
         });
         if (error) {
             setMessage(error.message);
             setIsProcessing(false);
             return;
         } else {
-            setShowModal(true)
+            setShowModal(true);
         }
     };
 
@@ -58,28 +58,32 @@ export default function CheckoutForm() {
         }
 
         try {
-            const accessToken = await getAccessTokenSilently();
-            const response = await fetch('/api/get-signed-url', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${accessToken}`,
-                },
-                body: JSON.stringify({
-                    userEmail: email,
-                    publicId: 'BII_study_guide_demo_2_zg7zlv',
-                    format: 'pdf',
-                }),
-            });
+            // const accessToken = await getAccessTokenSilently();
+            // const response = await fetch('/api/get-signed-url', {
+            //     method: 'POST',
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //         Authorization: `Bearer ${accessToken}`,
+            //     },
+            //     body: JSON.stringify({
+            //         userEmail: email,
+            //         publicId: 'BII_study_guide_demo_2_zg7zlv',
+            //         format: 'pdf',
+            //     }),
+            // });
 
-            if (!response.ok) {
-                throw new Error('Failed to get the signed URL');
-            }
+            // if (!response.ok) {
+            //     throw new Error('Failed to get the signed URL');
+            // }
 
-            const { signedUrl } = await response.json();
-            window.open(signedUrl, '_blank');
+            // const { signedUrl } = await response.json();
+            // window.open(signedUrl, '_blank');
+            window.open(
+                'https://docs.google.com/document/d/1HViDMRIWzM24VBCWd4FBqmMC1gjccx-LL4TbCW5_egY/edit?tab=t.0',
+                '_blank',
+            );
         } catch (err) {
-            console.error('Error fetching the signed URL:', err);
+            console.error('Error redirecting to study guide:', err);
         }
     };
 

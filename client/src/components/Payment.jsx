@@ -22,7 +22,7 @@ export const Payment = ({
 
     const createPaymentIntent = async () => {
         const accessToken = await getAccessTokenSilently();
-        console.log(accessToken);
+    
         fetch('/api/create-payment-intent', {
             method: 'POST',
             headers: {

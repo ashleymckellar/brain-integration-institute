@@ -61,6 +61,7 @@ const AccordionCard = ({ certStatus }) => {
         certListUploadStatus,
         setCertListUploadStatus,
         updateUserDocumentStatus,
+        onUploadSuccess
     } = useContext(CloudinaryContext);
 
     const { isAuthenticated, user, getAccessTokenSilently } = useAuth0();
@@ -210,7 +211,7 @@ const AccordionCard = ({ certStatus }) => {
 
     const handleUploadClick = async (section) => {
         setSectionName(section);
-        initializeCloudinaryWidget(section);
+        initializeCloudinaryWidget(section, onUploadSuccess);
         const updatedStatus = {
             ...certListUploadStatus,
             [sectionName]: 'pending approval',
@@ -220,6 +221,8 @@ const AccordionCard = ({ certStatus }) => {
         console.log(certListUploadStatus)
         console.log('Calling updateUserProgress with value:', 1);
     };
+
+  
 
     useEffect(() => {
         console.log('Fetching publishable key');

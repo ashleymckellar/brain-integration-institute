@@ -22,6 +22,10 @@ const ApprovalMessageSchema = new mg.Schema({
     readTimestamp: {
         type: Date,
         default: null 
+    },
+    category: {
+        type: String,
+        required: true
     }
 });
 

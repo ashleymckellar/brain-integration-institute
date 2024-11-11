@@ -17,7 +17,7 @@ export const AssessmentPayment = ({ stripePromise, showPayment }) => {
 
     const createAssessmentPaymentIntent = async () => {
         const accessToken = await getAccessTokenSilently();
-        console.log(accessToken);
+       
         fetch('/api/create-assessment-payment-intent', {
             method: 'POST',
             headers: {

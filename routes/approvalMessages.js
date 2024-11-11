@@ -13,8 +13,10 @@ const approvalMessagesRouter = ex.Router();
 
 approvalMessagesRouter.get('/:useremail', async (req, res) => {
     try {
-        const { userEmail } = req.params;
+        const userEmail = req.body.userEmail;
+        console.log(userEmail, 'user email');
         const messages = await getAllApprovalMessagesByUser(userEmail);
+        console.log(messages, 'message');
         res.json(messages);
     } catch (error) {
         console.error('Error fetching messages:', error);
@@ -25,12 +27,14 @@ approvalMessagesRouter.get('/:useremail', async (req, res) => {
 //post new message to user
 approvalMessagesRouter.post('/', async (req, res) => {
     try {
-        const { message, userEmail } = req.body;
+        const { message, userEmail, category } = req.body;
         console.log('JWT sub:', req.auth.payload);
-        if (!message || !userEmail) {
+        if (!message || !userEmail || !category) {
             return res
                 .status(400)
-                .json({ error: 'Message and userEmail are required fields' });
+                .json({
+                    error: 'Message, userEmail, and category are required fields',
+                });
         }
         const admin = await UserModel.findOne({ sub: req.auth.payload.sub });
         const adminEmail = admin ? admin.userEmail : 'Admin not found';
@@ -44,7 +48,22 @@ approvalMessagesRouter.post('/', async (req, res) => {
             admin: adminEmail,
             timestamp: Date.now(),
             userEmail,
+            category
         });
+
+        const user = await UserModel.findOne({ userEmail });
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        if (user.approvalMessages[category], 'category') {
+            console.log(user.approvalMessages[category])
+            user.approvalMessages[category].push(messageMetadata._id);
+        } else {
+            return res
+                .status(400)
+                .json({ error: 'Invalid category specified' });
+        }
+
         res.status(201).json({ success: true, messageMetadata });
     } catch (error) {
         console.error('Error processing request:', error);

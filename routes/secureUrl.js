@@ -14,7 +14,7 @@ const generateSignedUrl = (publicId) => {
 
         
         sign_options: {
-            expires_at: Math.floor(Date.now() / 1000) + 3600, // 1 hour expiration
+            expires_at: Math.floor(Date.now() / 1000) + 3600, 
         },
     });
 };

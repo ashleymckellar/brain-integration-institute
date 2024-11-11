@@ -197,8 +197,6 @@ export const CloudinaryProvider = ({ children }) => {
 
         try {
             const accessToken = await getAccessTokenSilently();
-            console.log('Access Token:', accessToken);
-            console.log('Updating study guide for:', email);
 
             const response = await fetch(
                 `http://localhost:8080/api/user/${email}/study-guide`,
@@ -293,8 +291,9 @@ export const CloudinaryProvider = ({ children }) => {
                         console.error('Upload error:', error);
                         return;
                     }
-                    if (result.event === 'success') {
+                    if (!error && result && result.event === 'success') {
                         console.log('Upload successful:', result.info);
+                        onUploadSuccess(section);
                         const newProgress = Math.max(progress + 1, 8);
 
                         setProgress(newProgress);
@@ -356,6 +355,23 @@ export const CloudinaryProvider = ({ children }) => {
 
             myWidget.open();
         }
+    };
+
+    const handleUploadClick = async (section) => {
+        setSectionName(section);
+        // Initialize Cloudinary widget with a callback for successful upload
+        initializeCloudinaryWidget(section, onUploadSuccess);
+    };
+
+    const onUploadSuccess = async (section) => {
+        const updatedStatus = {
+            ...certListUploadStatus,
+            [section]: 'pending approval',
+        };
+        await updateUserDocumentStatus(updatedStatus);
+        setCertListUploadStatus(updatedStatus);
+        console.log('Updated certListUploadStatus:', updatedStatus);
+        console.log('Calling updateUserProgress with value:', 1);
     };
 
     const uploadProfilePicture = (file) => {
@@ -420,7 +436,6 @@ export const CloudinaryProvider = ({ children }) => {
         }
     };
 
-   
     const deleteFile = async (publicId, sectionName) => {
         try {
             const accessToken = await getAccessTokenSilently();
@@ -621,6 +636,7 @@ export const CloudinaryProvider = ({ children }) => {
                 getCertificate,
                 certificateData,
                 setCertificateData,
+                onUploadSuccess,
             }}
         >
             {loaded && children}
