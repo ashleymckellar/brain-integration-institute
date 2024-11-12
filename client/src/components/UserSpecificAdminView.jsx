@@ -35,7 +35,8 @@ const UserSpecificAdminView = () => {
         setSelectedDocumentName,
         updateDocumentStatusbyAdmin,
         getUserById,
-        updateUserToAdmin
+        updateUserToAdmin,
+        getAllUsers
     } = useContext(AdminContext);
 
     const { userId } = useParams();
@@ -365,11 +366,13 @@ const UserSpecificAdminView = () => {
                     open={fileModalOpen}
                     onClose={() => setFileModalOpen(false)}
                     nickname={individualUser.userEmail.split('@')[0]}
-                    selectedDocumentName={selectedDocumentName}
+                    selectedDocumentType={selectedDocumentType}
                     imagesByDocType={imagesByDocType}
                     onSubmit={handleSubmit}
                     onChange={handleChange}
                     newDocStatus={newDocStatus}
+                    individualUser={individualUser}
+                    getAllUsers={getAllUsers}
                 >
 
                 </ViewFileModal>

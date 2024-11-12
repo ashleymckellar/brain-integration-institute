@@ -38,7 +38,7 @@ const enableCors = cors({
         ...process.env.CORS_WHITELIST.split(','),
         process.env.AUTH0_ISSUER_BASE_URL
     ],
-    methods: ['GET', 'POST', 'PUT', 'DELETE'], 
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], 
 });
 
 

@@ -1,15 +1,22 @@
+
+
 /* eslint-disable react/prop-types */
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { useAuth0 } from '@auth0/auth0-react';
 
 export default function ViewFileModal({
     open,
     onClose,
     selectedDocumentName,
     imagesByDocType,
-    onSubmit,
+    individualUser,
     onChange,
     newDocStatus,
+    selectedDocumentType,
+    getAllUsers
 }) {
+    const { getAccessTokenSilently } = useAuth0();
+    const [reasonForDenial, setReasonForDenial] = useState('');
     useEffect(() => {
         if (open) {
             document.body.classList.add('overflow-hidden');
@@ -21,6 +28,73 @@ export default function ViewFileModal({
             document.body.classList.remove('overflow-hidden');
         };
     }, [open]);
+
+    const handleStatusChange = (e) => {
+        onChange(e); 
+    };
+
+    const handleReasonChange = (e) => {
+        setReasonForDenial(e.target.value); 
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const accessToken = await getAccessTokenSilently();
+        try {
+            const userEmail = individualUser.userEmail;
+
+            const response = await fetch(
+                `http://localhost:8080/api/user/${userEmail}/document-status`,
+                {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                    body: JSON.stringify({
+                        documentType: selectedDocumentType,
+                        status: newDocStatus,
+                    }),
+                },
+            );
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error(
+                    'Error updating document status:',
+                    errorData.message,
+                );
+                alert(`Error: ${errorData.message}`);
+            } else {
+                const data = await response.json();
+                console.log('Successfully updated:', data);
+                getAllUsers()
+                alert('Document status updated successfully!');
+            }
+        } catch (error) {
+            console.error('Failed to submit the form:', error);
+            alert('Something went wrong. Please try again.');
+        }
+
+        if (newDocStatus === 'declined') {
+            await fetch(`http://localhost:8080/api/approvalmessages`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${accessToken}`,
+                },
+                body: JSON.stringify({
+                    message: reasonForDenial,
+                    category: selectedDocumentType,
+                    userEmail: 'ashley.l.mckellar@gmail.com',
+                    admin: 'ashley.l.mckellar@gmail.com',
+                }),
+            });
+        }
+
+        setReasonForDenial('');
+        onClose();
+    }; // <-- This closing bracket was missing
 
     return (
         <div
@@ -46,12 +120,16 @@ export default function ViewFileModal({
                         View file for: {selectedDocumentName}
                     </h3>
                     {imagesByDocType.length > 0 ? (
-                        <img src={imagesByDocType[0].url} alt="Document file" className='w-[700px] h-[600px]'/>
+                        <img
+                            src={imagesByDocType[0].url}
+                            alt="Document file"
+                            className="w-[700px] h-[600px]"
+                        />
                     ) : (
                         <p>No image available</p>
                     )}
 
-                    <form className="mt-4" onSubmit={onSubmit}>
+                    <form className="mt-4" onSubmit={handleSubmit}>
                         <div className="flex flex-col items-center gap-4">
                             <label className="flex items-center">
                                 <input
@@ -59,7 +137,7 @@ export default function ViewFileModal({
                                     name="approvalStatus"
                                     value="approved"
                                     className="mr-2"
-                                    onChange={onChange}
+                                    onChange={handleStatusChange}
                                     checked={newDocStatus === 'approved'}
                                 />
                                 Approve
@@ -70,13 +148,14 @@ export default function ViewFileModal({
                                     name="approvalStatus"
                                     value="declined"
                                     className="mr-2"
-                                    onChange={onChange}
+                                    onChange={handleStatusChange}
                                     checked={newDocStatus === 'declined'}
                                 />
                                 Decline
                             </label>
                             <textarea
-                                onChange={onChange}
+                                onChange={handleReasonChange}
+                                value={reasonForDenial}
                                 placeholder="Reason for denial (if applicable)"
                                 className="border border-black rounded-xl p-5 mt-10 w-[300px]"
                             ></textarea>

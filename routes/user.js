@@ -230,26 +230,59 @@ userRouter.put('/:email/is-admin', async (req, res) => {
 //create put route for each document upload.
 //once user uploads a doc, the status for that doc type will be toggled to pending approval
 
-userRouter.put('/:email/document-status', async (req, res) => {
-    const email = req.params.email; // Get the email from the URL parameters
-    const { certListUploadStatus } = req.body;
-    console.log(`Received request to update user: ${email}`);
-    console.log('Body:', req.body);
+userRouter.patch('/:email/document-status', async (req, res) => {
+    const email = req.params.email;
+    const { documentType, status } = req.body; // Get document type and status from the request body
+    console.log(`Received request to update document ${documentType} for user: ${email}`);
+
+    
+
+    // Ensure the documentType and status are valid
+    if (!documentType || !status) {
+        return res
+            .status(400)
+            .send({ message: 'documentType and status are required' });
+    }
+
+    const allowedStatuses = [
+        'waiting for upload',
+        'pending approval',
+        'approved',
+        'declined',
+    ];
+
+    if (!allowedStatuses.includes(status)) {
+        return res.status(400).send({ message: 'Invalid status value' });
+    }
+
+    const validDocumentTypes = [
+        'brainIntegrationTraining',
+        'clinicalHours',
+        'firstAidTraining',
+        'cprCert',
+        'videoPresentation',
+        'insurance',
+    ];
+
+    if (!validDocumentTypes.includes(documentType)) {
+        return res.status(400).send({ message: 'Invalid document type' });
+    }
 
     try {
-
-        if (!certListUploadStatus) {
-            console.log('certListUploadStatus is missing');
-            return res.status(400).send({ message: 'certListUploadStatus is required' });
-        }
-        const updatedUser = await editUserMetaData(email, {
-            certListUploadStatus,
-        });
-        console.log('Updated user:', updatedUser);
-        if (!updatedUser) {
+        const user = await UserModel.findOne({ userEmail: email });
+        if (!user) {
             return res.status(404).send({ message: 'User not found' });
         }
-        res.status(200).send(updatedUser); // Send back the updated user document
+
+        // Update the correct document status field
+        user.certListUploadStatus[documentType] = status;
+        
+        // Save the updated user document
+        const updatedUser = await user.save();
+
+        console.log('Updated user:', updatedUser);
+
+        res.status(200).send(updatedUser); 
     } catch (error) {
         console.error(error);
         res.status(500).send({

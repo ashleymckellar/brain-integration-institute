@@ -58,7 +58,7 @@ approvalMessagesRouter.post('/', async (req, res) => {
             return res.status(404).json({ error: 'User not found' });
         }
         if (user.approvalMessages[category]) {
-            user.approvalMessages[category].push(messageMetadata.message);
+            user.approvalMessages[category].push(messageMetadata._id);
         } else {
             return res.status(400).json({ error: 'Invalid category specified' });
         }
