@@ -19,7 +19,6 @@ import AdminUploadManagement from '../routes/AdminUploadManagement';
 import MessagingHub from '../routes/MessagingHub';
 import UserSpecificAdminView from '../components/UserSpecificAdminView';
 
-
 const router = createBrowserRouter([
     {
         path: '/',
@@ -80,7 +79,11 @@ const router = createBrowserRouter([
         element: <NotFound />,
     },
     { path: '/about', element: <AboutUs /> },
-    { path: '/', element: <Home />}
+    { path: '/', element: <Home /> },
+    {
+        path: '/contact-us',
+        element: <ContactUs />,
+    },
 ]);
 
 //changed back to Home component.  Auth0 should handle authentication, but we can add secondary way to authenticate/register using this Auth route.

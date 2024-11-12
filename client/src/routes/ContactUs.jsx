@@ -136,7 +136,7 @@ export const ContactUs = () => {
                 </div>
             </div>
 
-            <div id="contact-us" className="flex flex-col text-center gap-10">
+            <div id="contact-us" className="flex flex-col text-center gap-10 justify-center items-center">
                 <p className="text-lg">
                     Tell us a bit about yourself and we&apos;ll get in touch as
                     soon as we can.{' '}
@@ -145,16 +145,16 @@ export const ContactUs = () => {
                     * Required field
                 </p>
 
-                <div className="flex justify-center w-full px-4">
+                <div className="flex justify-center w-1/4 items-center px-4">
                     <form
-                        className="flex flex-col items-stretch justify-center w-full p-4 bg-white rounded shadow gap-10"
+                        className="flex flex-col items-stretch justify-center w-full p-4 bg-white rounded shadow gap-10 "
                         onSubmit={handleSubmit}
                     >
                         <div className="flex flex-wrap -mx-2">
                             <div className="mb-4 px-2 w-full sm:w-1/2">
                                 <input
                                     type="text"
-                                    className="border rounded px-3 py-2 w-full"
+                                    className="border rounded border-dark-gray px-3 py-2 w-full"
                                     value={formData.firstName}
                                     name="firstName"
                                     placeholder="First Name *"
@@ -165,7 +165,7 @@ export const ContactUs = () => {
                             <div className="mb-4 px-2 w-full sm:w-1/2">
                                 <input
                                     type="text"
-                                    className="border rounded px-3 py-2 w-full"
+                                    className="border rounded border-dark-gray px-3 py-2 w-full"
                                     value={formData.lastName}
                                     name="lastName"
                                     placeholder="Last Name *"
@@ -178,7 +178,7 @@ export const ContactUs = () => {
                             <div className="mb-4 px-2 w-full sm:w-1/2">
                                 <input
                                     type="email"
-                                    className="border rounded px-3 py-2 w-full"
+                                    className="border rounded border-dark-gray px-3 py-2 w-full"
                                     value={formData.email}
                                     name="email"
                                     placeholder="Email *"
@@ -189,7 +189,7 @@ export const ContactUs = () => {
                             <div className="mb-4 px-2 w-full sm:w-1/2">
                                 <input
                                     type="tel"
-                                    className="border rounded px-3 py-2 w-full"
+                                    className="border rounded border-dark-gray px-3 py-2 w-full"
                                     value={formData.phone}
                                     name="phone"
                                     placeholder="Phone Number"
@@ -200,7 +200,7 @@ export const ContactUs = () => {
                         </div>
                         <textarea
                             name="message"
-                            className="border rounded px-3 py-2 w-full"
+                            className="border rounded border-dark-gray  px-3 py-2 w-full"
                             rows="5"
                             value={formData.message}
                             placeholder="Message *"
@@ -220,7 +220,7 @@ export const ContactUs = () => {
                         <div className="flex justify-center mt-10">
                             <button
                                 disabled={isDisabled}
-                                className="bg-medium-pale-green hover:bg-green-600 rounded-full w-[204px] h-[43px] text-white font-medium px-6 py-2"
+                                className="bg-medium-pale-green border-b-2 border-transparent hover:bg-green-500 rounded-2xl hover:text-white text-xlrounded-full w-[204px] h-[43px] text-white font-medium px-6 py-2"
                             >
                                 Send Message
                             </button>

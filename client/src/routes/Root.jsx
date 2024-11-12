@@ -4,6 +4,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { Navbar } from '../components/header/Navbar';
 import { Home } from './Home';
 import { Footer } from '../components/Footer';
+import { ContactUs } from './ContactUs';
 
 export const Root = () => {
     const { user, isLoading } = useAuth0();

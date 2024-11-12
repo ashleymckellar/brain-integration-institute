@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import { useEffect, useContext, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -31,7 +32,6 @@ const UserSpecificAdminView = () => {
         profileData,
         fileModalOpen,
         setFileModalOpen,
-        selectedDocumentName,
         setSelectedDocumentName,
         updateDocumentStatusbyAdmin,
         getUserById,
@@ -205,7 +205,7 @@ const UserSpecificAdminView = () => {
     }
 
     return (
-        <div className="flex flex-col items-center w-full gap-6">
+        <div className="flex flex-col items-center w-full gap-6 pt-20">
             <div className="flex items-center gap-8">
                 <button className="back-button" onClick={handleBackButton}>&lt; Back</button>
                 <div className="flex bg-yet-another-light-grey w-[739px] h-[355px] pt-10 pl-10 pb-10">

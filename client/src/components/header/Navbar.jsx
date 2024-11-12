@@ -2,12 +2,12 @@
 import { useContext, useEffect, useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Link, useLocation } from 'react-router-dom';
-import BrainIntegrationSeal from '../../assets/icons/BrainIntegrationSeal.png';
 import bell from '../../assets/icons/bell.png';
 import placeholderProfilePic from '../../assets/icons/placeholderProfilePic.png';
 import { CloudinaryContext } from '../../contexts';
 import { Menu, X } from 'lucide-react';
 import axios from 'axios';
+import BrainIntegrationSeal from '../../assets/icons/BrainIntegrationSeal.png';
 
 export const Navbar = () => {
     const {
@@ -195,6 +195,12 @@ export const Navbar = () => {
                     >
                         About Us
                     </Link>
+                    <Link
+                        className="py-3 px-4 w-full block transition duration-200 border-b-2 border-transparent hover:bg-green-500 rounded-2xl hover:text-white text-xl whitespace-nowrap"
+                        to="/contact-us"
+                    >
+                        Contact Us
+                    </Link>
                     <button
                         className="py-3 px-4 w-full block transition duration-200 border-b-2 border-transparent hover:bg-green-500 rounded-2xl hover:text-white text-xl whitespace-nowrap"
                         onClick={handleLogin}
@@ -207,30 +213,33 @@ export const Navbar = () => {
     };
 
     return (
-        <header className="bg-white">
-            <nav className="flex flex-col md:flex-row lg:flex-row justify-between items-center text-dark-gray p-4 pr-10">
-                <div className="flex items-center justify-between w-full">
-                    {/* Hamburger button for mobile view */}
-                    {!isLargeScreen && (
-                        <button
-                            className="md:hidden flex items-center justify-center focus:outline-none"
-                            onClick={toggleMenu}
-                            aria-expanded={isOpen}
-                            aria-label="Toggle menu"
-                        >
-                            {isOpen ? <X size={24} /> : <Menu size={24} />}
-                        </button>
-                    )}
-                </div>
+        <header className="bg-white w-full">
+            <div className="flex items-center">
+                <img src={BrainIntegrationSeal} className="pl-10 pt-10" />
+                <nav className="flex items-center justify-between text-dark-gray p-4 w-full pt-20">
+                    <div className="flex items-center justify-between w-full">
+                        {/* Hamburger button for mobile view */}
+                        {!isLargeScreen && (
+                            <button
+                                className="md:hidden flex items-center justify-center focus:outline-none"
+                                onClick={toggleMenu}
+                                aria-expanded={isOpen}
+                                aria-label="Toggle menu"
+                            >
+                                {isOpen ? <X size={24} /> : <Menu size={24} />}
+                            </button>
+                        )}
+                    </div>
 
-                <div
-                    className={`${
-                        isOpen || isLargeScreen ? 'flex' : 'hidden'
-                    } flex-col md:flex md:flex-row items-center`}
-                >
-                    {renderLinks()}
-                </div>
-            </nav>
+                    <div
+                        className={`${
+                            isOpen || isLargeScreen ? 'flex' : 'hidden'
+                        } flex-col md:flex md:flex-row items-center w-full justify-between`}
+                    >
+                        {renderLinks()}
+                    </div>
+                </nav>
+            </div>
         </header>
     );
 };
