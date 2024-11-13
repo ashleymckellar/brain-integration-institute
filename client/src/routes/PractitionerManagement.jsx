@@ -12,8 +12,10 @@ const PractitionerManagement = () => {
         getAllUsers();
     }, []);
     return (
-        <div className="flex flex-col justify-center items-center gap-10 w-full">
-            {userId ? <Outlet /> : <UserList />}
+        <div className="flex flex-col justify-center items-center gap-10 w-full  min-h-screen">
+            <div className="flex-grow pb-8">
+                {userId ? <Outlet /> : <UserList />}
+            </div>
         </div>
     );
 };

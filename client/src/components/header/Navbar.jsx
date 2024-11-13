@@ -117,7 +117,7 @@ export const Navbar = () => {
     const renderLinks = () => {
         if (isAuthenticated) {
             return (
-                <div className="flex justify-between">
+                <div className="flex justify-between pr-10">
                     <Link
                         className="py-3 px-4 w-full block transition duration-200 border-b-2 border-transparent hover:bg-green-500 rounded-2xl hover:text-white text-xl whitespace-nowrap"
                         to="/"

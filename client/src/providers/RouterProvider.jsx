@@ -13,6 +13,7 @@ import { PaymentSuccessPage } from '../routes/PaymentSuccessPage';
 import { NotFound } from '../routes/NotFound';
 import { Admin } from '../routes/Admin';
 import { ContactUs } from '../routes/ContactUs';
+import { RonBio } from '../routes/RonBio';
 import AddAdmins from '../routes/AddAdmins';
 import PractitionerManagement from '../routes/PractitionerManagement';
 import AdminUploadManagement from '../routes/AdminUploadManagement';
@@ -83,6 +84,10 @@ const router = createBrowserRouter([
     {
         path: '/contact-us',
         element: <ContactUs />,
+    },
+    {
+        path: '/ron-bio',
+        element: <RonBio />,
     },
 ]);
 

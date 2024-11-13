@@ -18,7 +18,7 @@ export const Home = () => {
         });
     };
     return (
-        <div className="bg-[#e6d5c5]">
+        <div className="bg-background-tan">
             {/* Container for Nature image and overlay text */}
             <div className="relative w-full">
                 <img src={Nature} className="w-full" alt="Nature Background" />

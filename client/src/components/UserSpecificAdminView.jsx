@@ -36,7 +36,7 @@ const UserSpecificAdminView = () => {
         updateDocumentStatusbyAdmin,
         getUserById,
         updateUserToAdmin,
-        getAllUsers
+        getAllUsers,
     } = useContext(AdminContext);
 
     const { userId } = useParams();
@@ -48,7 +48,7 @@ const UserSpecificAdminView = () => {
     const navigate = useNavigate();
     const [filesToDelete, setFilesToDelete] = useState([]);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-    const [publicId, setPublicId] = useState('')
+    const [publicId, setPublicId] = useState('');
 
     const docTypeMapping = {
         'Brain Integration Training': 'brainIntegrationTraining',
@@ -56,7 +56,7 @@ const UserSpecificAdminView = () => {
         'CPR Certification': 'cprCert',
         'Clinical Hours': 'clinicalHours',
         'First Aid Training': 'firstAidTraining',
-        'Insurance': 'insurance'
+        Insurance: 'insurance',
     };
 
     const certProgressImages = [
@@ -101,20 +101,19 @@ const UserSpecificAdminView = () => {
             const image = await response.json();
             console.log('API Response:', image);
             setImagesByDocType(image);
-            console.log(image)
-            setPublicId(image[0].public_id)
+            console.log(image);
+            setPublicId(image[0].public_id);
             console.log('Set publicId:', image[0].public_id);
-
         } catch (error) {
             console.error('Error fetching images:', error);
         }
     };
 
     const promoteUsertoAdmin = async () => {
-        const email = individualUser.userEmail
-        await updateUserToAdmin(email)
-        console.log("updated user to admin")
-    }
+        const email = individualUser.userEmail;
+        await updateUserToAdmin(email);
+        console.log('updated user to admin');
+    };
 
     useEffect(() => {
         fetchProfileData(individualUser);
@@ -143,7 +142,7 @@ const UserSpecificAdminView = () => {
         setSelectedDocumentName(documentName);
         setSelectedDocumentType(documentType);
         console.log(documentName);
-        console.log(documentType)
+        console.log(documentType);
 
         try {
             setFileModalOpen(false);
@@ -173,7 +172,7 @@ const UserSpecificAdminView = () => {
                 selectedDocumentType,
             );
             console.log('Document status updated successfully');
-            getUserById(individualUser.userEmail)
+            getUserById(individualUser.userEmail);
             setFileModalOpen(false);
         } catch (error) {
             console.log('Error updating document status:', error);
@@ -181,33 +180,38 @@ const UserSpecificAdminView = () => {
     };
 
     const handleBackButton = () => {
-        navigate('/admin/practitioner-management')
-    }
+        navigate('/admin/practitioner-management');
+    };
 
     const handleCheckboxClick = (documentName) => {
         const documentType = docTypeMapping[documentName];
         if (filesToDelete.includes(documentType)) {
-            setFilesToDelete(filesToDelete.filter(file => file !== documentType))
+            setFilesToDelete(
+                filesToDelete.filter((file) => file !== documentType),
+            );
         } else {
-            setFilesToDelete([...filesToDelete, documentType])
+            setFilesToDelete([...filesToDelete, documentType]);
         }
-    }
+    };
 
     const handleDeleteFiles = () => {
         if (!deleteModalOpen) {
-            setDeleteModalOpen(true)
+            setDeleteModalOpen(true);
         }
-    }
+    };
 
     const handleConfirmDelete = () => {
         // TODO: Handle file deletion
-        console.log(`Files to delete: ${filesToDelete}`)
-    }
+        console.log(`Files to delete: ${filesToDelete}`);
+    };
 
     return (
-        <div className="flex flex-col items-center w-full gap-6 pt-20">
-            <div className="flex items-center gap-8">
-                <button className="back-button" onClick={handleBackButton}>&lt; Back</button>
+        <div className="flex flex-col items-center w-full gap-6 pt-20 pb-20 ;
+   ">
+            <div className="flex items-center gap-20 flex-grow: 1">
+                <button className="font-fira" onClick={handleBackButton}>
+                    &lt; Back
+                </button>
                 <div className="flex bg-yet-another-light-grey w-[739px] h-[355px] pt-10 pl-10 pb-10">
                     {profileData && Object.keys(profileData).length > 0 ? (
                         <>
@@ -241,9 +245,8 @@ const UserSpecificAdminView = () => {
                             </p>
                         </div>
                     )}
-         
                 </div>
-                <button className='border border-black rounded-md p-10' onClick={promoteUsertoAdmin}>Promote User to Admin</button>
+
                 <div>
                     <img
                         src={
@@ -314,8 +317,13 @@ const UserSpecificAdminView = () => {
                             <input
                                 type="checkbox"
                                 className="custom-checkbox"
-                                disabled={doc.status.toLowerCase() === "waiting for upload"}
-                                checked={filesToDelete.includes(docTypeMapping[doc.name])}
+                                disabled={
+                                    doc.status.toLowerCase() ===
+                                    'waiting for upload'
+                                }
+                                checked={filesToDelete.includes(
+                                    docTypeMapping[doc.name],
+                                )}
                                 onChange={() => handleCheckboxClick(doc.name)}
                             />
                             <li>
@@ -333,28 +341,30 @@ const UserSpecificAdminView = () => {
                                 className="w-[40px]"
                                 alt={`${doc.name} icon`}
                             />
-                            {doc.status.toLowerCase() === "waiting for upload"
-                                ?
-                                (<button
-                                    className={"border border-gray text-gray rounded px-4 py-1 ml-4 font-bold shadow-lg w-[116px]"}
+                            {doc.status.toLowerCase() ===
+                            'waiting for upload' ? (
+                                <button
+                                    className={
+                                        'border border-gray text-gray rounded px-4 py-1 ml-4 font-bold shadow-lg w-[116px]'
+                                    }
                                     disabled={true}
                                 >
                                     View File
-                                </button>)
-                                :
-                                (
+                                </button>
+                            ) : (
                                 <>
-                                <button
-                                    className={"border border-black rounded px-4 py-1 ml-4 font-bold shadow-lg w-[116px]"}
-                                    onClick={() => handleClick(doc.name)}
-                                >
-                                    View File
-                                </button >
-                                {/* <button  className={"border border-black rounded px-4 py-1 ml-4 font-bold shadow-lg w-[116px]"}
+                                    <button
+                                        className={
+                                            'border border-black rounded px-4 py-1 ml-4 font-bold shadow-lg w-[116px]'
+                                        }
+                                        onClick={() => handleClick(doc.name)}
+                                    >
+                                        View File
+                                    </button>
+                                    {/* <button  className={"border border-black rounded px-4 py-1 ml-4 font-bold shadow-lg w-[116px]"}
                                  onClick={() => handleClick(doc.name)}>Delete File</button> */}
                                 </>
-                                )
-                            }
+                            )}
                         </div>
                     ))}
                 </ul>
@@ -373,9 +383,7 @@ const UserSpecificAdminView = () => {
                     newDocStatus={newDocStatus}
                     individualUser={individualUser}
                     getAllUsers={getAllUsers}
-                >
-
-                </ViewFileModal>
+                ></ViewFileModal>
             )}
 
             {deleteModalOpen && (

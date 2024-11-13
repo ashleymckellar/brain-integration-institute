@@ -18,22 +18,22 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-
-documentRouter.get('/:nickname', validateAuthToken, async (req, res) => {
-    const nickname = req.params.nickname;
-    const folder = `users/${nickname}/brainIntegrationTraining`;
-    console.log('Fetching images from folder:', folder);
-    try {
-        const images = await getImagesFromCloudinary(folder);
-        console.log('fetching images');
-        res.json(images);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({
-            error: 'Failed to fetch images from Cloudinary',
-        });
-    }
-});
+//this route no longer needed because cloudinary docs are all nested in a document type in the route below
+// documentRouter.get('/:nickname', validateAuthToken, async (req, res) => {
+//     const nickname = req.params.nickname;
+//     const folder = `users/${nickname}/`;
+//     console.log('Fetching images from folder:', folder);
+//     try {
+//         const images = await getImagesFromCloudinary(folder);
+//         console.log('fetching images');
+//         res.json(images);
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({
+//             error: 'Failed to fetch images from Cloudinary',
+//         });
+//     }
+// });
 
 //get docs by doc type/folder
 documentRouter.get('/:userEmail/:documentType', validateAuthToken, async (req, res) => {
@@ -60,7 +60,7 @@ documentRouter.get('/:userEmail/:documentType', validateAuthToken, async (req, r
 documentRouter.get('/certificate', validateAuthToken, async (req, res) => {
     try {
         const certificates = await getCertificateFromCloudinary('certificate');
-        console.log('Fetched certificates from certificate folder');
+        console.log('Fetched certificates from certificate folder', certificates);
         res.json(certificates);
     } catch (error) {
         console.error(error);

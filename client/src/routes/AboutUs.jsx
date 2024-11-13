@@ -1,40 +1,49 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/no-unescaped-entities */
 import paleBanner from '../assets/icons/PaleGreenPractitionerBackground.png';
 import banner from '../assets/icons/PractitionerBackground.png';
 import { Navbar } from '../components/header/Navbar';
 import { Footer } from '../components/Footer';
 import nature2 from '../assets/images/nature2.jpg';
+import wheat from '../assets/images/wheat-fields-4439896_1920.jpg'
 import fists from '../assets/images/fists.png';
 import ron from '../assets/images/ron.png';
 import julissa from '../assets/images/julissa.png';
 import tami from '../assets/images/tami.png';
 import steve from '../assets/images/steve.png';
 import terri from '../assets/images/terri.png';
+import { useNavigate } from 'react-router-dom';
 
 export const AboutUs = () => {
+    const navigate = useNavigate();
     return (
         <>
             <Navbar />
-            <div>{/* <img src={nature2} /> */}</div>
-            <div
-                className="w-full h-64 sm:h-80 md:h-96 relative bg-white"
-                style={{
-                    backgroundImage: `url(${banner}), url(${paleBanner})`,
-                    backgroundSize: 'cover, cover',
-                    backgroundPosition: 'center, center',
-                    backgroundRepeat: 'no-repeat, no-repeat',
-                }}
-            >
-                <div className="absolute inset-0 flex items-center justify-center">
-                    <h1 className="text-white text-3xl sm:text-3xl md:text-4xl lg:text-5xl font-fenix font-normal">
-                        About Us
-                    </h1>
-                </div>
-            </div>
-            <div className="flex flex-col gap-10 text-center justify-center px-40">
-                <h2 className="font-fira text-4xl">
-                    We are the Brain Integration Institute
-                </h2>
+            <div className="relative w-full mt-10 mb-10">
+    <img
+        src={wheat}
+        className="w-[2500px] h-[700px]"
+        alt="Nature Background"
+    />
+    <div
+        className="absolute inset-0 flex flex-col justify-center items-center text-center gap-4 p-4 sm:p-6 md:p-8 lg:p-10 
+        bg-white bg-opacity-10 backdrop-blur-lg rounded-2xl 
+        max-w-[90%] sm:max-w-[70%] md:max-w-[60%] lg:max-w-[35%] 
+        h-auto lg:h-[400px] mt-10 sm:mt-20 md:mt-28 lg:mt-40 mx-auto"
+    >
+        <h2 className="font-fira text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-white leading-tight sm:leading-snug">
+            We are the Brain Integration Institute
+        </h2>
+        <p className="text-white text-sm sm:text-base md:text-lg lg:text-xl p-4 sm:p-6 md:p-8 font-fira leading-relaxed sm:leading-normal">
+            We are dedicated to the excellence of brain integration
+            and services to the public by setting the national
+            standard in certification, providing leadership,
+            education, and advocacy.
+        </p>
+    </div>
+</div>
+
+            <div className="flex flex-col gap-10 text-center justify-center px-40 bg-background-tan pt-10">
                 <div className="flex justify-center">
                     <img
                         src={fists}
@@ -101,18 +110,20 @@ export const AboutUs = () => {
                         quality care.
                     </p>
                 </div>
-                <div className="flex flex-col border border-[#D9D9D9] rounded-xl p-5 gap-y-10 w-full max-w-[90%] md:max-w-2xl mx-auto mt-20">
+                <div className="flex flex-col border bg-white border-[#D9D9D9] rounded-xl p-5 gap-y-10 w-full max-w-[90%] md:max-w-2xl mx-auto mt-20 mb-20">
                     <h1 className="font-fira text-4xl text-center">
                         Board Members
                     </h1>
                     <div className="flex flex-col gap-5 lg:gap-10">
                         {/* Top Row - Three Images */}
                         <div className="flex justify-center gap-5">
-                            <img
-                                src={ron}
-                                className="w-40 object-cover"
-                                alt="Ron"
-                            />
+                        <button onClick={() => navigate('/ron-bio')}>
+                                <img
+                                    src={ron}
+                                    className="w-40 object-cover"
+                                    alt="Ron"
+                                />
+                            </button>
                             <img
                                 src={julissa}
                                 className="w-40 object-cover"

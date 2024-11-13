@@ -32,7 +32,7 @@ export const CloudinaryProvider = ({ children }) => {
     const [imageUrl, setImageUrl] = useState(user?.userProfilePicture || '');
     const [profilePhotoUploaded, setProfilePhotoUploaded] = useState(false);
     const [certListUploadStatus, setCertListUploadStatus] = useState({});
-    const [certificateData, setCertificateData] = useState({});
+    const [certificates, setCertificates] = useState([]);
 
     const uwConfig = {
         cloudName: import.meta.env.VITE_CLOUDINARY_CLOUDNAME,
@@ -523,7 +523,7 @@ export const CloudinaryProvider = ({ children }) => {
                                 console.log(
                                     'Certificate data successfully sent to the server.',
                                 );
-                                setCertificateData(certificateData);
+                                setCertificates(certificateData);
                             } else {
                                 console.error(
                                     'Failed to send certificate data to the server.',
@@ -556,7 +556,7 @@ export const CloudinaryProvider = ({ children }) => {
                     },
                 },
             );
-            return response.data.certificate;
+            return response.data;
         } catch (error) {
             console.error('Error fetching files:', error);
         }
@@ -577,7 +577,7 @@ export const CloudinaryProvider = ({ children }) => {
             if (response.ok) {
                 console.log('File and metadata deleted successfully.');
 
-                setCertificateData((prevCertificateData) =>
+                setCertificates((prevCertificateData) =>
                     prevCertificateData.filter(
                         (cert) => cert.publicId !== publicId,
                     ),
@@ -634,8 +634,8 @@ export const CloudinaryProvider = ({ children }) => {
                 uploadCompletionCertificate,
                 deleteCertificate,
                 getCertificate,
-                certificateData,
-                setCertificateData,
+                certificates,
+                setCertificates,
                 onUploadSuccess,
             }}
         >

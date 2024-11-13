@@ -7,7 +7,7 @@ import mail from '../assets/icons/mail.png';
 export const Footer = () => {
     return (
         <>
-            <div className="flex justify-between p-20">
+            <div className="flex justify-between p-20 mt-[1000px] bg-background-tan ">
                 <img
                     className="logo"
                     width="134"

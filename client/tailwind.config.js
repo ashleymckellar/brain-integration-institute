@@ -30,7 +30,8 @@ export default {
                 'yet-another-light-grey': "#f7f7f7f7",
                 'charcoal': '#7b7b7b7b',
                 'school-bus-yellow': "#f0d171",
-                'green-is-good': "#38761d"
+                'green-is-good': "#38761d",
+                'background-tan': "#F5F5F0"
             },
             dropShadow: {
                 md: '0 4px 4px rgba(0, 0, 0, 0.25)',

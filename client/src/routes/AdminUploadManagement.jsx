@@ -9,17 +9,19 @@ const AdminUploadManagement = () => {
         uploadCompletionCertificate,
         getCertificate,
         deleteCertificate,
-        certificateData,
-        setCertificateData,
+        certificates,
+        setCertificates,
     } = useContext(CloudinaryContext);
     const { isAuthenticated, user, getAccessTokenSilently } = useAuth0();
+       // const [certificateData, setCertificateData] = useState({});
     useEffect(() => {
         const fetchData = async () => {
             if (user) {
-                const token = localStorage.getItem('token');
+                
                 try {
-                    const certificate = await getCertificate(token);
-                    setCertificateData(certificate);
+                    const certificate = await getCertificate();
+                    console.log('Certificate Response:', certificate); 
+                    setCertificates(certificate);
                 } catch (error) {
                     console.error(
                         'Error fetching files:',
@@ -32,6 +34,13 @@ const AdminUploadManagement = () => {
         fetchData();
     }, [user]);
 
+    useEffect(() => {
+        if (certificates) {
+            console.log('Certificate Data:', certificates); 
+            // console.log('Certificate URL:', certificateData.url);
+        }
+    }, [certificates]);
+
     return (
         <div>
             <button
@@ -41,6 +50,17 @@ const AdminUploadManagement = () => {
             >
                 Upload completion certificate
             </button>
+            {certificates && certificates.length > 0 && certificates[0].secure_url ? (
+                <div>
+                    <button className='border border-black mt-10 ml-10 rounded-xl bg-green-is-good text-white p-5'>
+                    <a href={certificates[0].secure_url} target="_blank" rel="noopener noreferrer">
+            View Certificate
+        </a>
+        </button>
+                </div>
+            ) : (
+                <div>No certificates found</div>
+            )}
         </div>
     );
 };
