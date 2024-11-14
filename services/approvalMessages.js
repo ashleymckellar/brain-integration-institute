@@ -5,6 +5,11 @@ const { UserModel } = require('../models/User.js');
 
 const getAllApprovalMessagesByUser = async (userEmail) => {
     try {
+        if (typeof userEmail !== 'string') {
+            throw new Error('userEmail should be a string.');
+        }
+        
+        console.log(userEmail, 'userEmail input');
         // Find the user by their email
         const user = await UserModel.findOne({ userEmail }).populate([
             { path: 'approvalMessages.brainIntegrationTraining', model: 'Approval' },
@@ -20,7 +25,7 @@ const getAllApprovalMessagesByUser = async (userEmail) => {
         if (user) {
             return user.approvalMessages;
         } else {
-            throw new Error(`User with email ${userEmail} not found.`);
+            throw new Error(`User with email ${useremail} not found.`);
         }
     } catch (error) {
         console.error('Error fetching approval messages:', error);

@@ -35,8 +35,7 @@ export const CloudinaryProvider = ({ children }) => {
     const [certificates, setCertificates] = useState([]);
     const [imagesByDocType, setImagesByDocType] = useState([]);
     const [expandedSection, setExpandedSection] = useState(null);
-const [sectionFiles, setSectionFiles] = useState({});
-   
+    const [sectionFiles, setSectionFiles] = useState({});
 
     const uwConfig = {
         cloudName: import.meta.env.VITE_CLOUDINARY_CLOUDNAME,
@@ -53,7 +52,7 @@ const [sectionFiles, setSectionFiles] = useState({});
     const getFiles = async () => {
         try {
             const accessToken = await getAccessTokenSilently();
-            const email = user.email
+            const email = user.email;
 
             const response = await axios.get(
                 `http://localhost:8080/api/files/${email}`,
@@ -71,13 +70,13 @@ const [sectionFiles, setSectionFiles] = useState({});
     };
 
     //gets files from Cloudinary via callback/cors proxy
-    const getFilesInFolder = async (documentType) => {
+    const getFilesInFolder = async () => {
         try {
             const accessToken = await getAccessTokenSilently();
             const nickname = user.userEmail.split('@')[0];
 
             const response = await axios.get(
-                `http://localhost:8080/api/images/${nickname}/${documentType}`,
+                `http://localhost:8080/api/images/${nickname}`,
                 {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
@@ -87,11 +86,7 @@ const [sectionFiles, setSectionFiles] = useState({});
             if (!response.ok) {
                 throw new Error('Failed to fetch images');
             }
-            const images = await response.json();
-            setSectionFiles((prevFiles) => ({
-                ...prevFiles,
-                [documentType]: images,
-            }));
+            return response.data;
         } catch (error) {
             console.error('Error fetching files:', error);
         }
@@ -266,8 +261,7 @@ const [sectionFiles, setSectionFiles] = useState({});
                         },
                         body: JSON.stringify({
                             documentType,
-                            status
-
+                            status,
                         }),
                     },
                 );
@@ -384,7 +378,7 @@ const [sectionFiles, setSectionFiles] = useState({});
             ...certListUploadStatus,
             [section]: newStatus,
         };
-       
+
         setCertListUploadStatus(updatedStatus);
         await updateUserDocumentStatus(section, newStatus);
         console.log('Updated certListUploadStatus:', updatedStatus);
@@ -608,9 +602,7 @@ const [sectionFiles, setSectionFiles] = useState({});
         }
     };
 
-    const isApprovedForAssessment = () => {
-
-    }
+    const isApprovedForAssessment = () => {};
 
     return (
         <CloudinaryContext.Provider
@@ -662,7 +654,7 @@ const [sectionFiles, setSectionFiles] = useState({});
                 publicId,
                 setPublicId,
                 imagesByDocType,
-                setImagesByDocType
+                setImagesByDocType,
             }}
         >
             {loaded && children}

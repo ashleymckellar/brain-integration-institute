@@ -11,11 +11,11 @@ const approvalMessagesRouter = ex.Router();
 
 //these routes are for messages sent by admin as to whether a docment is approved or denied
 
+//this works, leave it alone - 11/14/24
 approvalMessagesRouter.get('/:useremail', async (req, res) => {
     try {
-        const userEmail = req.body.userEmail;
-        console.log(userEmail, 'user email');
-        const messages = await getAllApprovalMessagesByUser(userEmail);
+        const { useremail } = req.params;
+        const messages = await getAllApprovalMessagesByUser(useremail);
         console.log(messages, 'message');
         res.json(messages);
     } catch (error) {
@@ -32,11 +32,9 @@ approvalMessagesRouter.post('/', async (req, res) => {
         console.log(req.body, 'req.body');
         console.log('Category:', category);
         if (!message || !userEmail) {
-            return res
-                .status(400)
-                .json({
-                    error: 'Message, userEmail, and category are required fields',
-                });
+            return res.status(400).json({
+                error: 'Message, userEmail, and category are required fields',
+            });
         }
         const admin = await UserModel.findOne({ sub: req.auth.payload.sub });
         const adminEmail = admin ? admin.userEmail : 'Admin not found';
@@ -60,9 +58,11 @@ approvalMessagesRouter.post('/', async (req, res) => {
         if (user.approvalMessages[category]) {
             user.approvalMessages[category].push(messageMetadata._id);
         } else {
-            return res.status(400).json({ error: 'Invalid category specified' });
+            return res
+                .status(400)
+                .json({ error: 'Invalid category specified' });
         }
-        
+
         await user.save();
         res.status(201).json({ success: true, messageMetadata });
     } catch (error) {

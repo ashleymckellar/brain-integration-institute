@@ -240,54 +240,30 @@ const [sectionFiles, setSectionFiles] = useState({});
 
     useEffect(() => {
         const fetchData = async () => {
-            if (!user) return;
-    
-            const token = localStorage.getItem('token');
-            if (!token) {
-                console.error('No token found');
-                return;
-            }
-    
-            try {
-                const folderFiles = await getFilesInFolder(token);
-                const metadataFiles = await getFiles(token);
-                const userMetaData = await getUserMetaData(token);
-    
-                // Handle empty file or metadata responses
-                if (!folderFiles || folderFiles.length === 0) {
-                    console.warn('No files found in folder');
+            if (user) {
+                const token = localStorage.getItem('token');
+                try {
+                    const folderFiles = await getFilesInFolder(token); //docs themselves - user specific
+                    const metadataFiles = await getFiles(token);
+                    console.log(metadataFiles); //metadata
+                    const userMetaData = await getUserMetaData(token);
+                    setFileMetaData(metadataFiles);
+                    setUserMetaData(userMetaData);
+                    setProgress(userMetaData.userUploadProgress);
+                    setCertListUploadStatus(userMetaData.certListUploadStatus);
+                    setCloudinaryFiles(folderFiles); //user specific files (objects) from Cloudinary
+                    console.log(folderFiles);
+                    console.log(userMetaData);
+                    console.log(fileMetaData)
+                } catch (error) {
+                    console.error(
+                        'Error fetching files:',
+                        error.response?.data || error.message,
+                    );
                 }
-    
-                if (!metadataFiles || metadataFiles.length === 0) {
-                    console.warn('No file metadata found');
-                }
-    
-                if (!userMetaData) {
-                    console.warn('User metadata not found');
-                }
-    
-                // Update state with the fetched data
-                setFileMetaData(metadataFiles);
-                setUserMetaData(userMetaData);
-                setProgress(userMetaData?.userUploadProgress || 0); // Default to 0 if no progress
-                setCertListUploadStatus(userMetaData?.certListUploadStatus || 'No Status'); // Default if no status
-                setCloudinaryFiles(folderFiles);
-    
-                // Log the data for debugging
-                console.log('Folder Files:', folderFiles);
-                console.log('Metadata Files:', metadataFiles);
-                console.log('User Metadata:', userMetaData);
-    
-                return userMetaData;
-            } catch (error) {
-                // Handle error in fetching the data
-                console.error(
-                    'Error fetching files or metadata:',
-                    error.response?.data || error.message
-                );
             }
         };
-    
+
         fetchData();
     }, [user]); // Make sure this effect runs when 'user' changes
     

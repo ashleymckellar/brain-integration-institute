@@ -36,17 +36,18 @@ documentRouter.get('/:nickname', validateAuthToken, async (req, res) => {
 });
 
 //get docs by doc type/folder
+//this works now with getImagesFromCloudinary function - don't mess with it
 documentRouter.get('/:userEmail/:documentType', validateAuthToken, async (req, res) => {
     const { userEmail, documentType } = req.params;
 
-    // Remove the domain from userEmail
+ 
     const nickname = userEmail.split('@')[0];
     
     const folder = `users/${nickname}/${documentType}`;
     console.log('Fetching images from folder:', folder);
     
     try {
-        const images = await getThumbnailImages(folder);
+        const images = await getImagesFromCloudinary(folder);
         console.log('Fetching images');
         res.json(images);
     } catch (error) {

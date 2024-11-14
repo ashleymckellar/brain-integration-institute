@@ -1,17 +1,34 @@
-const  File  = require("../models/file");
+const File = require('../models/file');
 const { UserModel } = require('../models/User.js');
 // const { upload } = require("./cdn");
 
 // Update the getAllFilesByOwner function
 const getAllFilesByOwner = async (userSub) => {
     try {
-        const files = await File.find({ user: userSub });
-        return files;
+        // Get the authenticated user's 'sub' from Auth0
+
+        // Find the user by the 'sub' value
+        const user = await UserModel.findOne({ sub: userSub }); // Use the 'sub' field for finding the user
+        console.log(userSub); // This will be the Auth0 sub
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        // Find files associated with the user’s ID
+        const files = await File.find({ user: user._id });
+        console.log(files, 'Files found for user');
+
+        return files; 
     } catch (error) {
-        throw new Error('Error fetching files');
+        console.error('Error fetching files:', error);
+        throw new Error('Failed to fetch files');
     }
 };
 
+// const getAllFilesByOwner = async (user) => await File.find({
+//     user
+// });
 
 /**
  * Create a new file entry in the database
@@ -20,8 +37,8 @@ const getAllFilesByOwner = async (userSub) => {
 const createFile = async (req, res) => {
     try {
         // Assuming `sub` is passed as part of the authenticated user
-        const userSub = req.auth.payload.sub // Get the authenticated user's 'sub'
-        
+        const userSub = req.auth.payload.sub; // Get the authenticated user's 'sub'
+
         // Find the user by the 'sub' value (Auth0 identifier)
         const user = await UserModel.findOne({ sub: userSub });
 
@@ -34,7 +51,7 @@ const createFile = async (req, res) => {
             uploadDate: req.body.uploadDate,
             filename: req.body.filename,
             isApproved: req.body.isApproved,
-            user: user._id,  
+            user: user._id,
             sectionName: req.body.sectionName,
         });
 
@@ -49,5 +66,5 @@ const createFile = async (req, res) => {
 
 module.exports = {
     createFile,
-    getAllFilesByOwner
+    getAllFilesByOwner,
 };

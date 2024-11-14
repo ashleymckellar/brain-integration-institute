@@ -1,6 +1,7 @@
 const ex = require('express');
 const { getAllFilesByOwner, createFile } = require('../services/file');
 const File = require('../models/file');
+const { UserModel } = require('../models/User')
 const cloudinary = require('cloudinary').v2;
 
 const fileRouter = ex.Router();
@@ -12,10 +13,29 @@ cloudinary.config({
 });
 
 //gets user specific file metadata
+// fileRouter.get('/files/:user', async (req, res) => {
+//     try {
+//         const userSub = req.auth?.payload?.sub || req.query.sub || req.headers['x-user-sub'];
+//         if (!userSub) {
+//             return res.status(401).json({ error: 'Unauthorized: User identifier not provided' });
+//         }
+        
+//         const user = await UserModel.findOne({ sub: userSub });
+//         if (!user) {
+//             return res.status(404).json({ error: 'User not found' });
+//         }
+//         const files = await File.find({ user: user._id });
+//         console.log(files, 'Files found for user');
+//     } catch (error) {
+//         console.error('Error fetching files:', error);
+//         res.status(500).json({ error: 'Failed to fetch files' });
+//     }
+// });
+
 fileRouter.get('/files/:user', async (req, res) => {
     try {
-        const { user } = req.params;
-        const files = await getAllFilesByOwner(user);
+        const { user } = req.params; 
+        const files = await getAllFilesByOwner(user); 
         res.json(files);
     } catch (error) {
         console.error('Error fetching files:', error);
