@@ -7,7 +7,7 @@ const fileSchema = new Schema({
     uploadDate: { type: Date, required: true },
     filename: { type: String, required: true },
     isApproved: { type: Boolean, default: false },
-    user: { type: Schema.Types.String, ref: "User", required: true},
+    user: { type: Schema.Types.ObjectId, ref: "User", required: true },
     sectionName: { type: String, required: true }
 });
 

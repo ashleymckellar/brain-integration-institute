@@ -232,7 +232,7 @@ userRouter.put('/:email/is-admin', async (req, res) => {
 
 userRouter.patch('/:email/document-status', async (req, res) => {
     const email = req.params.email;
-    const { documentType, status } = req.body; // Get document type and status from the request body
+    const { documentType, status } = req.body; 
     console.log(`Received request to update document ${documentType} for user: ${email}`);
 
     

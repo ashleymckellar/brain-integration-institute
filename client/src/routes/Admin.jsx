@@ -36,7 +36,7 @@ export const Admin = () => {
                                 label: 'Practitioner Management',
                             },
                             { path: 'add-admins', label: 'Manage Admins' },
-                            { path: 'admin-uploads', label: 'Admin Uploads' },
+                            { path: 'admin-uploads', label: 'Document Uploads' },
                             { path: 'messaging-hub', label: 'Messaging Hub' },
                         ].map((item) => (
                             <li key={item.path}>

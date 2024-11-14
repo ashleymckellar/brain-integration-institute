@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
 
-
-import  { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useLocation } from 'react-router-dom';
 import { CloudinaryContext } from '../contexts';
 // import { useAuth0 } from '@auth0/auth0-react';
@@ -15,8 +14,6 @@ export const PaymentSuccessPage = ({ setStudyGuideAccess }) => {
     const assessmentUrl = queryParams.get('assessmentUrl');
     const { email } = useContext(CloudinaryContext);
     // const { getAccessTokenSilently } = useAuth0();
-
- 
 
     useEffect(() => {
         if (showModal) {
@@ -35,33 +32,16 @@ export const PaymentSuccessPage = ({ setStudyGuideAccess }) => {
             console.error('Email not found in CloudinaryContext');
             return;
         }
-    
+
         try {
-            // const accessToken = await getAccessTokenSilently();
-            // const response = await fetch('/api/get-signed-url', {
-            //     method: 'POST',
-            //     headers: {
-            //         'Content-Type': 'application/json',
-            //         Authorization: `Bearer ${accessToken}`,
-            //     },
-            //     body: JSON.stringify({
-            //         userEmail: email,
-            //         publicId: 'BII_study_guide_demo_2_zg7zlv',
-            //         format: 'pdf',
-            //     }),
-            // });
-    
-            // if (!response.ok) {
-            //     throw new Error('Failed to get the signed URL');
-            // }
-    
-            // const { signedUrl } = await response.json();
-            window.open('https://docs.google.com/document/d/1HViDMRIWzM24VBCWd4FBqmMC1gjccx-LL4TbCW5_egY/edit?tab=t.0', '_blank');
+            window.open(
+                'https://docs.google.com/document/d/1HViDMRIWzM24VBCWd4FBqmMC1gjccx-LL4TbCW5_egY/edit?tab=t.0',
+                '_blank',
+            );
         } catch (err) {
             console.error('Error fetching the signed URL:', err);
         }
     };
-    
 
     console.log(cloudinaryUrl);
 

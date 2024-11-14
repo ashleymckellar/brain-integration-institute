@@ -19,21 +19,21 @@ cloudinary.config({
 });
 
 //this route no longer needed because cloudinary docs are all nested in a document type in the route below
-// documentRouter.get('/:nickname', validateAuthToken, async (req, res) => {
-//     const nickname = req.params.nickname;
-//     const folder = `users/${nickname}/`;
-//     console.log('Fetching images from folder:', folder);
-//     try {
-//         const images = await getImagesFromCloudinary(folder);
-//         console.log('fetching images');
-//         res.json(images);
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).json({
-//             error: 'Failed to fetch images from Cloudinary',
-//         });
-//     }
-// });
+documentRouter.get('/:nickname', validateAuthToken, async (req, res) => {
+    const nickname = req.params.nickname;
+    const folder = `users/${nickname}/`;
+    console.log('Fetching images from folder:', folder);
+    try {
+        const images = await getImagesFromCloudinary(folder);
+        console.log('fetching images');
+        res.json(images);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            error: 'Failed to fetch images from Cloudinary',
+        });
+    }
+});
 
 //get docs by doc type/folder
 documentRouter.get('/:userEmail/:documentType', validateAuthToken, async (req, res) => {
@@ -46,7 +46,7 @@ documentRouter.get('/:userEmail/:documentType', validateAuthToken, async (req, r
     console.log('Fetching images from folder:', folder);
     
     try {
-        const images = await getImagesFromCloudinary(folder);
+        const images = await getThumbnailImages(folder);
         console.log('Fetching images');
         res.json(images);
     } catch (error) {

@@ -88,13 +88,15 @@ export default function ViewFileModal({
                     category: selectedDocumentType,
                     userEmail: 'ashley.l.mckellar@gmail.com',
                     admin: 'ashley.l.mckellar@gmail.com',
+
+                    //fix the above so userEmail and admin aren't hard coded
                 }),
             });
         }
 
         setReasonForDenial('');
         onClose();
-    }; // <-- This closing bracket was missing
+    }; 
 
     return (
         <div

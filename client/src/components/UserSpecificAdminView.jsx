@@ -206,8 +206,7 @@ const UserSpecificAdminView = () => {
     };
 
     return (
-        <div className="flex flex-col items-center w-full gap-6 pt-20 pb-20 ;
-   ">
+        <div className="flex flex-col items-center w-full gap-6 pt-20 pb-20">
             <div className="flex items-center gap-20 flex-grow: 1">
                 <button className="font-fira" onClick={handleBackButton}>
                     &lt; Back
@@ -312,7 +311,7 @@ const UserSpecificAdminView = () => {
                     ].map((doc, index) => (
                         <div
                             key={index}
-                            className="pb-5 flex border border-charcoal rounded-xl p-10 mb-10 items-center gap-20"
+                            className="flex border border-charcoal rounded-xl p-10 m-10 items-center  justify-around gap-10"
                         >
                             <input
                                 type="checkbox"
@@ -326,16 +325,16 @@ const UserSpecificAdminView = () => {
                                 )}
                                 onChange={() => handleCheckboxClick(doc.name)}
                             />
-                            <li>
+                            <div className='flex flex-col'>
                                 {doc.name}:
                                 <span
-                                    className={`px-2 py-1 rounded-full text-sm font-semibold ${getStatusBadgeClass(
+                                    className={`px-2 py-1 rounded-full text-sm font-semibold text-center w-30 ${getStatusBadgeClass(
                                         doc.status,
                                     )}`}
                                 >
                                     {doc.status}
                                 </span>
-                            </li>
+                            </div>
                             <img
                                 src={doc.icon}
                                 className="w-[40px]"
@@ -345,7 +344,7 @@ const UserSpecificAdminView = () => {
                             'waiting for upload' ? (
                                 <button
                                     className={
-                                        'border border-gray text-gray rounded px-4 py-1 ml-4 font-bold shadow-lg w-[116px]'
+                                        'opacity-50 cursor-not-allowed bg-green-is-good text-white rounded-md px-4 py-1 ml-4 font-bold shadow-lg w-[116px]'
                                     }
                                     disabled={true}
                                 >
@@ -355,7 +354,7 @@ const UserSpecificAdminView = () => {
                                 <>
                                     <button
                                         className={
-                                            'border border-black rounded px-4 py-1 ml-4 font-bold shadow-lg w-[116px]'
+                                            ' bg-green-is-good hover:bg-green-500  text-white px-4 py-2 rounded-md w-[116px]'
                                         }
                                         onClick={() => handleClick(doc.name)}
                                     >

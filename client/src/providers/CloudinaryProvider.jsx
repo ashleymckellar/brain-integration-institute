@@ -33,6 +33,10 @@ export const CloudinaryProvider = ({ children }) => {
     const [profilePhotoUploaded, setProfilePhotoUploaded] = useState(false);
     const [certListUploadStatus, setCertListUploadStatus] = useState({});
     const [certificates, setCertificates] = useState([]);
+    const [imagesByDocType, setImagesByDocType] = useState([]);
+    const [expandedSection, setExpandedSection] = useState(null);
+const [sectionFiles, setSectionFiles] = useState({});
+   
 
     const uwConfig = {
         cloudName: import.meta.env.VITE_CLOUDINARY_CLOUDNAME,
@@ -49,9 +53,10 @@ export const CloudinaryProvider = ({ children }) => {
     const getFiles = async () => {
         try {
             const accessToken = await getAccessTokenSilently();
+            const email = user.email
 
             const response = await axios.get(
-                `http://localhost:8080/api/files`,
+                `http://localhost:8080/api/files/${email}`,
                 {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
@@ -66,19 +71,27 @@ export const CloudinaryProvider = ({ children }) => {
     };
 
     //gets files from Cloudinary via callback/cors proxy
-    const getFilesInFolder = async () => {
+    const getFilesInFolder = async (documentType) => {
         try {
             const accessToken = await getAccessTokenSilently();
+            const nickname = user.userEmail.split('@')[0];
 
             const response = await axios.get(
-                `http://localhost:8080/api/images/${user.nickname}`,
+                `http://localhost:8080/api/images/${nickname}/${documentType}`,
                 {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
                     },
                 },
             );
-            return response.data;
+            if (!response.ok) {
+                throw new Error('Failed to fetch images');
+            }
+            const images = await response.json();
+            setSectionFiles((prevFiles) => ({
+                ...prevFiles,
+                [documentType]: images,
+            }));
         } catch (error) {
             console.error('Error fetching files:', error);
         }
@@ -239,20 +252,22 @@ export const CloudinaryProvider = ({ children }) => {
         }
     };
 
-    const updateUserDocumentStatus = async (newDocStatus) => {
+    const updateUserDocumentStatus = async (documentType, status) => {
         if (user) {
             try {
                 const accessToken = await getAccessTokenSilently();
                 const response = await fetch(
                     `http://localhost:8080/api/user/${user.email}/document-status`,
                     {
-                        method: 'PUT',
+                        method: 'PATCH',
                         headers: {
                             'Content-Type': 'application/json',
                             Authorization: `Bearer ${accessToken}`,
                         },
                         body: JSON.stringify({
-                            certListUploadStatus: newDocStatus,
+                            documentType,
+                            status
+
                         }),
                     },
                 );
@@ -364,12 +379,14 @@ export const CloudinaryProvider = ({ children }) => {
     };
 
     const onUploadSuccess = async (section) => {
+        const newStatus = 'pending approval';
         const updatedStatus = {
             ...certListUploadStatus,
-            [section]: 'pending approval',
+            [section]: newStatus,
         };
-        await updateUserDocumentStatus(updatedStatus);
+       
         setCertListUploadStatus(updatedStatus);
+        await updateUserDocumentStatus(section, newStatus);
         console.log('Updated certListUploadStatus:', updatedStatus);
         console.log('Calling updateUserProgress with value:', 1);
     };
@@ -451,15 +468,16 @@ export const CloudinaryProvider = ({ children }) => {
 
             if (response.ok) {
                 console.log('File and metadata deleted successfully.');
+                const newStatus = 'waiting for upload';
                 const updatedStatus = {
                     ...certListUploadStatus,
-                    [sectionName]: 'Waiting for Upload', // Update status based on section
+                    [sectionName]: newStatus,
                 };
                 console.log(
                     'Updated status before PUT request:',
                     updatedStatus,
                 );
-                await updateUserDocumentStatus(updatedStatus);
+                await updateUserDocumentStatus(sectionName, newStatus);
                 setFileMetaData((prevMetaData) =>
                     prevMetaData.filter((file) => file.publicId !== publicId),
                 );
@@ -590,6 +608,10 @@ export const CloudinaryProvider = ({ children }) => {
         }
     };
 
+    const isApprovedForAssessment = () => {
+
+    }
+
     return (
         <CloudinaryContext.Provider
             value={{
@@ -637,6 +659,10 @@ export const CloudinaryProvider = ({ children }) => {
                 certificates,
                 setCertificates,
                 onUploadSuccess,
+                publicId,
+                setPublicId,
+                imagesByDocType,
+                setImagesByDocType
             }}
         >
             {loaded && children}

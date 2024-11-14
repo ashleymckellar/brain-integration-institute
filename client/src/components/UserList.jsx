@@ -181,7 +181,7 @@ function UserList() {
                             </div>
                             <div className="flex justify-center items-center">
                                 <button
-                                    className="border border-black rounded px-4 py-1 ml-4 font-bold"
+                                    className=" bg-green-is-good hover:bg-green-500  text-white px-4 py-2 rounded-md"
                                     type="submit"
                                     onClick={() =>
                                         handleViewProfileClick(user._id)
