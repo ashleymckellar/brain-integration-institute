@@ -72,12 +72,18 @@ const UserSpecificAdminView = () => {
     ];
 
     useEffect(() => {
-        if (userId) {
+        if (userId && users.length > 0) {  // Ensure users array is populated
             const foundUser = users.find((user) => user._id === userId);
             setIndividualUser(foundUser);
-            console.log(individualUser, 'individual user');
         }
-    }, [userId, setIndividualUser, users]);
+    }, [userId, users]); // Remove setIndividualUser from dependency array
+    
+    // Log `individualUser` when it changes
+    useEffect(() => {
+        if (individualUser) {
+            console.log(individualUser, 'Updated individual user');
+        }
+    }, [individualUser]);
 
     useEffect(() => {
         console.log('Updated imagesByDocType:', imagesByDocType);

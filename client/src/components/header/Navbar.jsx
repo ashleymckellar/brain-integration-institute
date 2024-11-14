@@ -75,36 +75,36 @@ export const Navbar = () => {
         checkForAdmin();
     }, [userMetaData]);
 
-    const fetchUserRoles = async () => {
-        try {
-            const token = await getAuth0Token(
-                `https://${import.meta.env.VITE_AUTH0_DOMAIN}/api/v2/`,
-                'read:roles',
-            );
-            if (token) {
-                const userId = user.sub; // User ID from Auth0
-                const response = await axios.get(
-                    `https://${
-                        import.meta.env.VITE_AUTH0_DOMAIN
-                    }/api/v2/users/${userId}/roles`,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    },
-                );
-                console.log('User Roles from Management API:', response.data);
-            }
-        } catch (error) {
-            console.error('Error fetching user roles:', error);
-        }
-    };
+    // const fetchUserRoles = async () => {
+    //     try {
+    //         const token = await getAuth0Token(
+    //             `https://${import.meta.env.VITE_AUTH0_DOMAIN}/api/v2/`,
+    //             'read:roles',
+    //         );
+    //         if (token) {
+    //             const userId = user.sub; // User ID from Auth0
+    //             const response = await axios.get(
+    //                 `https://${
+    //                     import.meta.env.VITE_AUTH0_DOMAIN
+    //                 }/api/v2/users/${userId}/roles`,
+    //                 {
+    //                     headers: {
+    //                         Authorization: `Bearer ${token}`,
+    //                     },
+    //                 },
+    //             );
+    //             console.log('User Roles from Management API:', response.data);
+    //         }
+    //     } catch (error) {
+    //         console.error('Error fetching user roles:', error);
+    //     }
+    // };
 
-    useEffect(() => {
-        if (isAuthenticated && user) {
-            fetchUserRoles();
-        }
-    }, [isAuthenticated, user]);
+    // useEffect(() => {
+    //     if (isAuthenticated && user) {
+    //         fetchUserRoles();
+    //     }
+    // }, [isAuthenticated, user]);
 
     useEffect(() => {
         const handleResize = () => setIsLargeScreen(window.innerWidth >= 768);

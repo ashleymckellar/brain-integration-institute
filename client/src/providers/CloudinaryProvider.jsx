@@ -51,29 +51,53 @@ export const CloudinaryProvider = ({ children }) => {
     //gets file metadata
     const getFiles = async () => {
         try {
+            // Check if the user email is available
+            if (!user || !user.email) {
+                console.error('User email is missing');
+                return [];
+            }
+    
+            // Fetch the access token
             const accessToken = await getAccessTokenSilently();
+            if (!accessToken) {
+                console.error('Access token is missing');
+                return [];
+            }
+    
+            // Fetch files from the API
             const email = user.email;
-
             const response = await axios.get(
                 `http://localhost:8080/api/files/${email}`,
                 {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
                     },
-                },
+                }
             );
-
+    
+            // Handle case where response might be null or not OK
+            if (!response || !response.data || !response.data.files) {
+                // console.error('No files found or invalid response');
+                return []; 
+            }
+    
             return response.data.files;
         } catch (error) {
             console.error('Error fetching files:', error);
+            return [];
         }
     };
+    
 
     //gets files from Cloudinary via callback/cors proxy
     const getFilesInFolder = async () => {
         try {
+            if (!user || !user.email) {
+                throw new Error('User email is missing');
+            }
+            
+            const nickname = user.email.split('@')[0];
             const accessToken = await getAccessTokenSilently();
-            const nickname = user.userEmail.split('@')[0];
 
             const response = await axios.get(
                 `http://localhost:8080/api/images/${nickname}`,
@@ -83,14 +107,22 @@ export const CloudinaryProvider = ({ children }) => {
                     },
                 },
             );
-            if (!response.ok) {
-                throw new Error('Failed to fetch images');
+            if (!response || !response.data || !response.data.files) {
+                // console.error('No files found or invalid response');
+                return []; 
             }
+          
             return response.data;
         } catch (error) {
             console.error('Error fetching files:', error);
+            return [];
         }
     };
+
+    // if (!user || !user.email) {
+    //     console.error('User email is missing');
+    //     return [];
+    // }
 
     const getUserMetaData = async (email) => {
         try {
@@ -247,7 +279,7 @@ export const CloudinaryProvider = ({ children }) => {
         }
     };
 
-    const updateUserDocumentStatus = async (documentType, status) => {
+    const updateUserDocumentStatus = async (documentType, newStatus) => {
         if (user) {
             try {
                 const accessToken = await getAccessTokenSilently();
@@ -261,7 +293,7 @@ export const CloudinaryProvider = ({ children }) => {
                         },
                         body: JSON.stringify({
                             documentType,
-                            status,
+                            newStatus,
                         }),
                     },
                 );
@@ -372,15 +404,15 @@ export const CloudinaryProvider = ({ children }) => {
         initializeCloudinaryWidget(section, onUploadSuccess);
     };
 
-    const onUploadSuccess = async (section) => {
+    const onUploadSuccess = async (documentType) => {
         const newStatus = 'pending approval';
         const updatedStatus = {
             ...certListUploadStatus,
-            [section]: newStatus,
+            [documentType]: newStatus,
         };
 
         setCertListUploadStatus(updatedStatus);
-        await updateUserDocumentStatus(section, newStatus);
+        await updateUserDocumentStatus(documentType, newStatus);
         console.log('Updated certListUploadStatus:', updatedStatus);
         console.log('Calling updateUserProgress with value:', 1);
     };

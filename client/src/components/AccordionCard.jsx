@@ -217,11 +217,9 @@ const [sectionFiles, setSectionFiles] = useState({});
 
     const handleUploadClick = async (section) => {
         setSectionName(section);
+        const documentType = section
         initializeCloudinaryWidget(section, onUploadSuccess);
-        const updatedStatus = {
-            ...certListUploadStatus,
-            [sectionName]: 'pending approval',
-        };
+     
 
         console.log('Calling updateUserProgress with value:', 1);
     };
@@ -241,6 +239,8 @@ const [sectionFiles, setSectionFiles] = useState({});
     useEffect(() => {
         const fetchData = async () => {
             if (user) {
+                console.log('User:', user); // Check the full user object
+                console.log('User email:', user.email); 
                 const token = localStorage.getItem('token');
                 try {
                     const folderFiles = await getFilesInFolder(token); //docs themselves - user specific
@@ -294,6 +294,10 @@ const [sectionFiles, setSectionFiles] = useState({});
     console.log(userMetaData);
 
     const getSectionFileNames = (sectionName) => {
+        if (!fileMetaData || fileMetaData.length === 0) {
+            return []; // Return an empty array if fileMetaData is undefined or empty
+        }
+    
         const filteredFiles = fileMetaData.filter(
             (file) => file.sectionName === sectionName,
         );
@@ -310,27 +314,27 @@ const [sectionFiles, setSectionFiles] = useState({});
         return foundFile ? foundFile.publicId : null;
     };
 
-    const brainMetaData = fileMetaData.filter((metadata) => {
+    const brainMetaData =  fileMetaData && fileMetaData.filter((metadata) => {
         return metadata.sectionName === 'brainIntegrationTraining';
     });
 
-    const clinicalMetaData = fileMetaData.filter((metadata) => {
+    const clinicalMetaData = fileMetaData && fileMetaData.filter((metadata) => {
         return metadata.sectionName === 'clinicalHours';
     });
 
-    const firstAidMetaData = fileMetaData.filter((metadata) => {
+    const firstAidMetaData = fileMetaData && fileMetaData.filter((metadata) => {
         return metadata.sectionName === 'firstAidTraining';
     });
 
-    const cPRMetaData = fileMetaData.filter((metadata) => {
+    const cPRMetaData = fileMetaData && fileMetaData.filter((metadata) => {
         return metadata.sectionName === 'cprCert';
     });
 
-    const videoMetaData = fileMetaData.filter((metadata) => {
+    const videoMetaData = fileMetaData && fileMetaData.filter((metadata) => {
         return metadata.sectionName === 'videoPresentation';
     });
 
-    const insuranceMetaData = fileMetaData.filter((metadata) => {
+    const insuranceMetaData = fileMetaData && fileMetaData.filter((metadata) => {
         return metadata.sectionName === 'insurance';
     });
 
@@ -379,8 +383,8 @@ const [sectionFiles, setSectionFiles] = useState({});
                         title="Brain Integration Training"
                         sectionName="brainIntegrationTraining"
                         fileMetadata={fileMetaData}
-                        brainMetaData={brainMetaData}
-                        certStatus={brainMetaData.brainIntegrationTraining}
+                        brainMetaData={brainMetaData ?? []} 
+                        certStatus={ brainMetaData && brainMetaData.length > 0 ? brainMetaData[0]?.brainIntegrationTraining : 'defaultValue'}
                     >
                         <div className="flex flex-col p-4 md:pl-6 md:pr-6 border rounded-lg border-t-0 border-solid border-black rounded-tr-none rounded-tl-none mb-5">
                             <h1 className="font-fira text-dark-green font-bold text-lg md:text-xl pt-6 md:pt-10">
@@ -722,15 +726,15 @@ const [sectionFiles, setSectionFiles] = useState({});
                                         <DeleteTooltip
                                             text="Delete current file to upload new one"
                                             disabled={
-                                                clinicalMetaData.length > 0
+                                                clinicalMetaData && clinicalMetaData.length > 0
                                             }
                                         >
                                             <button
                                                 disabled={
-                                                    clinicalMetaData.length > 0
+                                                    clinicalMetaData && clinicalMetaData.length > 0
                                                 }
                                                 className={`${
-                                                    clinicalMetaData.length > 0
+                                                    clinicalMetaData &&  clinicalMetaData.length > 0
                                                         ? 'opacity-50 cursor-not-allowed'
                                                         : ''
                                                 }`}
@@ -872,14 +876,14 @@ const [sectionFiles, setSectionFiles] = useState({});
                                 <div className="flex flex-col items-center w-1/3 pt-20">
                                     <DeleteTooltip
                                         text="Delete current file to upload new one"
-                                        disabled={firstAidMetaData.length > 0}
+                                        disabled={firstAidMetaData && firstAidMetaData.length > 0}
                                     >
                                         <button
                                             disabled={
-                                                firstAidMetaData.length > 0
+                                                firstAidMetaData && firstAidMetaData.length > 0
                                             }
                                             className={`${
-                                                firstAidMetaData.length > 0
+                                                firstAidMetaData && firstAidMetaData.length > 0
                                                     ? 'opacity-50 cursor-not-allowed'
                                                     : ''
                                             }`}
@@ -1031,12 +1035,12 @@ const [sectionFiles, setSectionFiles] = useState({});
                                 <div className="flex flex-col items-center w-1/3 pt-20">
                                     <DeleteTooltip
                                         text="Delete current file to upload new one"
-                                        disabled={cPRMetaData.length > 0}
+                                        disabled={cPRMetaData && cPRMetaData.length > 0}
                                     >
                                         <button
-                                            disabled={cPRMetaData.length > 0}
+                                            disabled={cPRMetaData && cPRMetaData.length > 0}
                                             className={`${
-                                                cPRMetaData.length > 0
+                                                cPRMetaData && cPRMetaData.length > 0
                                                     ? 'opacity-50 cursor-not-allowed'
                                                     : ''
                                             }`}
@@ -1197,12 +1201,12 @@ const [sectionFiles, setSectionFiles] = useState({});
                                 <div className="flex flex-col items-center w-1/3 pt-20">
                                     <DeleteTooltip
                                         text="Delete current file to upload new one"
-                                        disabled={videoMetaData.length > 0}
+                                        disabled={videoMetaData && videoMetaData.length > 0}
                                     >
                                         <button
-                                            disabled={videoMetaData.length > 0}
+                                            disabled={videoMetaData && videoMetaData.length > 0}
                                             className={`${
-                                                videoMetaData.length > 0
+                                                videoMetaData && videoMetaData.length > 0
                                                     ? 'opacity-50 cursor-not-allowed'
                                                     : ''
                                             }`}
@@ -1358,14 +1362,14 @@ const [sectionFiles, setSectionFiles] = useState({});
                                 <div className="flex flex-col items-center w-1/3 pt10 pb-10">
                                     <DeleteTooltip
                                         text="Delete current file to upload new one"
-                                        disabled={insuranceMetaData.length > 0}
+                                        disabled={insuranceMetaData && insuranceMetaData.length > 0}
                                     >
                                         <button
                                             disabled={
-                                                insuranceMetaData.length > 0
+                                                insuranceMetaData && insuranceMetaData.length > 0
                                             }
                                             className={`${
-                                                insuranceMetaData.length > 0
+                                                insuranceMetaData && insuranceMetaData.length > 0
                                                     ? 'opacity-50 cursor-not-allowed'
                                                     : ''
                                             }`}

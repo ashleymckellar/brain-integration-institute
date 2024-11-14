@@ -232,13 +232,13 @@ userRouter.put('/:email/is-admin', async (req, res) => {
 
 userRouter.patch('/:email/document-status', async (req, res) => {
     const email = req.params.email;
-    const { documentType, status } = req.body; 
+    const { documentType, newStatus } = req.body; 
     console.log(`Received request to update document ${documentType} for user: ${email}`);
 
     
 
     // Ensure the documentType and status are valid
-    if (!documentType || !status) {
+    if (!documentType || !newStatus) {
         return res
             .status(400)
             .send({ message: 'documentType and status are required' });
@@ -251,7 +251,7 @@ userRouter.patch('/:email/document-status', async (req, res) => {
         'declined',
     ];
 
-    if (!allowedStatuses.includes(status)) {
+    if (!allowedStatuses.includes(newStatus)) {
         return res.status(400).send({ message: 'Invalid status value' });
     }
 
@@ -275,7 +275,7 @@ userRouter.patch('/:email/document-status', async (req, res) => {
         }
 
         // Update the correct document status field
-        user.certListUploadStatus[documentType] = status;
+        user.certListUploadStatus[documentType] = newStatus;
         
         // Save the updated user document
         const updatedUser = await user.save();

@@ -53,7 +53,7 @@ export default function ViewFileModal({
                     },
                     body: JSON.stringify({
                         documentType: selectedDocumentType,
-                        status: newDocStatus,
+                        newStatus: newDocStatus,
                     }),
                 },
             );

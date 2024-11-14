@@ -68,6 +68,7 @@ export const AdminProvider = ({ children }) => {
                 },
             });
             setIndividualUser(response.data);
+            console.log(individualUser)
         } catch (error) {
             console.error('Error fetching user:', error);
         }

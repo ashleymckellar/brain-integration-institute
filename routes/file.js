@@ -1,7 +1,7 @@
 const ex = require('express');
 const { getAllFilesByOwner, createFile } = require('../services/file');
 const File = require('../models/file');
-const { UserModel } = require('../models/User')
+const { UserModel } = require('../models/User');
 const cloudinary = require('cloudinary').v2;
 
 const fileRouter = ex.Router();
@@ -19,7 +19,7 @@ cloudinary.config({
 //         if (!userSub) {
 //             return res.status(401).json({ error: 'Unauthorized: User identifier not provided' });
 //         }
-        
+
 //         const user = await UserModel.findOne({ sub: userSub });
 //         if (!user) {
 //             return res.status(404).json({ error: 'User not found' });
@@ -34,12 +34,16 @@ cloudinary.config({
 
 fileRouter.get('/files/:user', async (req, res) => {
     try {
-        const { user } = req.params; 
-        const files = await getAllFilesByOwner(user); 
+        const { user } = req.params;
+        const files = await getAllFilesByOwner(user);
+        if (!files || files.length === 0) {
+            return res.json([]);
+        }
+
         res.json(files);
     } catch (error) {
         console.error('Error fetching files:', error);
-        res.status(500).json({ error: 'Failed to fetch files' });
+        res.status(500).json([]);
     }
 });
 
@@ -53,17 +57,16 @@ fileRouter.get('/', async (req, res) => {
         const files = await getAllFilesByOwner(userSub);
 
         if (!files || files.length === 0) {
-            return res.status(404).json({ error: 'No files found for the user' });
+            return res.json([]);
         }
 
         // Return the files if found
         res.status(200).json({ success: true, files });
     } catch (error) {
         console.error('Error fetching files:', error);
-        res.status(500).json({ error: 'Failed to fetch files' });
+        res.status(500).json([]);
     }
 });
-
 
 // //creates metadata upon successful cloudinary upload
 
