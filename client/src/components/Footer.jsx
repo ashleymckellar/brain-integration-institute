@@ -43,6 +43,12 @@ export const Footer = () => {
                     <Link className="link font-fira font-bold" to="/">
                         Resources
                     </Link>
+                    <Link
+                        className="link font-fira font-bold"
+                        to="/terms"
+                    >
+                        Terms of Use
+                    </Link>
                 </div>
 
                 <div className="contact-info flex flex-col gap-5">

@@ -14,6 +14,7 @@ import { NotFound } from '../routes/NotFound';
 import { Admin } from '../routes/Admin';
 import { ContactUs } from '../routes/ContactUs';
 import { RonBio } from '../routes/RonBio';
+import { Terms } from '../routes/Terms'
 import AddAdmins from '../routes/AddAdmins';
 import PractitionerManagement from '../routes/PractitionerManagement';
 import AdminUploadManagement from '../routes/AdminUploadManagement';
@@ -89,6 +90,10 @@ const router = createBrowserRouter([
         path: '/ron-bio',
         element: <RonBio />,
     },
+    {
+        path: '/terms',
+        element: <Terms />
+    }
 ]);
 
 //changed back to Home component.  Auth0 should handle authentication, but we can add secondary way to authenticate/register using this Auth route.
