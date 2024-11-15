@@ -3,13 +3,11 @@
 
 import { UserContext } from '../contexts';
 import { useState } from 'react';
-
 import { useAuth0 } from '@auth0/auth0-react';
 
 export const UserProvider = ({ children }) => {
     const initialValues = {
         firstName: '',
-        middleName: '',
         lastName: '',
         suffix: '',
         phoneNumber: '',
@@ -26,6 +24,7 @@ export const UserProvider = ({ children }) => {
     const [inputs, setInputs] = useState(initialValues);
     const { getAccessTokenSilently, user } = useAuth0();
     const [profileData, setProfileData] = useState(null);
+    const [allProfiles, setAllProfiles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const baseUrl = import.meta.env.VITE_API_BASE_URL;
@@ -88,10 +87,6 @@ export const UserProvider = ({ children }) => {
                 ([key, value]) => value !== '' && value !== null,
             ),
         );
-        // if (!email) {
-        //     console.error('Email is required to update user profile.');
-        //     return;
-        // }
         try {
             const accessToken = await getAccessTokenSilently();
             const response = await fetch(
@@ -123,6 +118,7 @@ export const UserProvider = ({ children }) => {
         }
     };
 
+    //fetch one profile by email
     const fetchProfileData = async () => {
         if (user && user.email) {
             try {
@@ -145,26 +141,35 @@ export const UserProvider = ({ children }) => {
             } catch (error) {
                 console.error('Error fetching profile data:', error);
                 setError(error.message);
-            } finally {
-                setLoading(false);
             }
-        } else {
-            console.warn('User object is invalid:', user);
-            setLoading(false);
         }
-    };
+    }
 
-    // Initialize the custom hook and get the values
+        const fetchAllProfiles = async () => {
+            try {
+                setLoading(true);
+                const response = await fetch(`/api/profile`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${await getAccessTokenSilently()}`,
+                    },
+                });
 
-    // const [inputs, setInputs] = useState(initialValues);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
 
-    // const handleInputChange = (e) => {
-    //     const { name, value } = e.target;
-    //     setInputs((prevInputs) => ({
-    //         ...prevInputs,
-    //         [name]: value,
-    //     }));
-    // };
+                const data = await response.json();
+                setAllProfiles(data)
+                console.log('profiles set!')
+            } catch (error) {
+                console.error('Error fetching profile data:', error);
+                setError(error.message);
+            }
+        };
+        
+    
 
     // Pass the values from the custom hook to the context provider
     return (
@@ -184,9 +189,16 @@ export const UserProvider = ({ children }) => {
                 setProfileData,
                 initialValues,
                 editProfileData,
+                fetchAllProfiles,
+                allProfiles,
+                setAllProfiles
             }}
         >
             {children}
         </UserContext.Provider>
     );
 };
+
+
+
+

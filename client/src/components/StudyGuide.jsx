@@ -14,9 +14,9 @@ import { useState } from 'react';
 function StudyGuide(props) {
     const [isExpanded, setIsExpanded] = useState(false);
 
-    function toggleExpand() {
+    const toggleExpand = () => {
         setIsExpanded(!isExpanded);
-    }
+    };
 
     return (
         <AccordionItem>

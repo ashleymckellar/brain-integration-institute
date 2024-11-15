@@ -36,7 +36,6 @@ function Assessment(props) {
         }
     }, [location]);
 
-   
     return (
         <AccordionItem>
             <AccordionItemHeading>

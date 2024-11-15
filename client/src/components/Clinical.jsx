@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 import {
-    
     AccordionItem,
     AccordionItemHeading,
     AccordionItemButton,
@@ -19,11 +18,8 @@ export default function Clinical(props) {
         setIsExpanded(!isExpanded);
     }
 
-  
-
     const { clinicalMetaData } = props;
 
-  
     return (
         <AccordionItem>
             <AccordionItemHeading>
@@ -37,14 +33,14 @@ export default function Clinical(props) {
                         }
                     >
                         <div className="flex items-center gap-2 pl-9">
-                            {!isExpanded && clinicalMetaData.length === 0 ? (
+                            {!isExpanded && clinicalMetaData && clinicalMetaData.length === 0 ? (
                                 <>
                                     <img src={AccordionRadioUnfilled} />
                                     <h1 className="font-fira text-xl text-black font-bold tracking-tight pl-12">
                                         {props.title}
                                     </h1>
                                 </>
-                            ) : !isExpanded && clinicalMetaData.length > 0 ? (
+                            ) : !isExpanded && clinicalMetaData && clinicalMetaData.length > 0 ? (
                                 <>
                                     <img
                                         className="h-[45px] w-[50px]"

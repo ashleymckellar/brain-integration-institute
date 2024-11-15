@@ -12,8 +12,8 @@ import { Practitioner } from '../routes/Practitioner';
 import { PaymentSuccessPage } from '../routes/PaymentSuccessPage';
 import { NotFound } from '../routes/NotFound';
 import { Admin } from '../routes/Admin';
-// import { ContactUs } from '../routes/ContactUs';
-// import { RonBio } from '../routes/RonBio';
+import { ContactUs } from '../routes/ContactUs';
+import { RonBio } from '../routes/RonBio';
 import { Terms } from '../routes/Terms'
 import AddAdmins from '../routes/AddAdmins';
 import PractitionerManagement from '../routes/PractitionerManagement';
@@ -48,10 +48,10 @@ const router = createBrowserRouter([
                 path: '/success',
                 element: <PaymentSuccessPage />,
             },
-            // {
-            //     path: '/contact-us',
-            //     element: <ContactUs />,
-            // },
+            {
+                path: '/contact-us',
+                element: <ContactUs />,
+            },
             {
                 path: '/admin',
                 element: <Admin />,
@@ -82,14 +82,14 @@ const router = createBrowserRouter([
     },
     { path: '/about', element: <AboutUs /> },
     { path: '/', element: <Home /> },
-    // {
-    //     path: '/contact-us',
-    //     element: <ContactUs />,
-    // },
-    // {
-    //     path: '/ron-bio',
-    //     element: <RonBio />,
-    // },
+    {
+        path: '/contact-us',
+        element: <ContactUs />,
+    },
+    {
+        path: '/ron-bio',
+        element: <RonBio />,
+    },
     {
         path: '/terms',
         element: <Terms />

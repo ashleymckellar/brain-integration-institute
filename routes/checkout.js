@@ -9,7 +9,6 @@ const cancelUrl = `${process.VITE_FRONTEND_URL}/profile`;
 
 const checkoutRouter = ex.Router();
 
-//route to get stripe publishable key
 checkoutRouter.get('/publishable-key', (req, res) => {
     try {
         res.json({ publishableKey: process.env.STRIPE_PUBLISHABLE_KEY });
@@ -72,17 +71,6 @@ checkoutRouter.post('/create-assessment-payment-intent', async (req, res) => {
     }
 });
 
-// checkoutRouter.post('/webhook', express.json(), async (req, res) => {
-//     const event = req.body;
-//     if (event.type === 'checkout.session.completed') {
-//         const session = event.data.object;
-//         const email = session.customer_email;
-
-//         res.status(200).send('Webhook received!');
-//     } else {
-//         res.status(400).end();
-//     }
-// });
 
 checkoutRouter.post('/create-assessment-checkout-session', async (req, res) => {
     const session = await stripe.checkout.sessions.create({

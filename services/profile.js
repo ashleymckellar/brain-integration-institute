@@ -6,7 +6,13 @@ const createProfileData = async (data) => {
     return profile;
 };
 
+const getAllProfileMetaData = async () => {
+    const allProfiles = await ProfileModel.find()
+    return allProfiles
+}
+
 
 module.exports = {
-    createProfileData
+    createProfileData,
+    getAllProfileMetaData
 };

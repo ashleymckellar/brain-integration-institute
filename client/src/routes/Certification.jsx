@@ -1,6 +1,5 @@
-// import { AccordionComponent } from '../components/AccordionComponent';
+
 import AccordionCard from '../components/AccordionCard';
-// import GreenBannerCertPage from '../assets/icons/GreenBannerCertPage.png';
 import banner from '../assets/icons/PractitionerBackground.png';
 import paleBanner from '../assets/icons/PaleGreenPractitionerBackground.png';
 
@@ -23,7 +22,6 @@ export const Certification = () => {
                 </div>
             </div>
             <div className="flex pl-5 pt-1 pr-30">
-                {/* <img className="h-48 w-48" src={ProgressRing} /> */}
                 <div className="flex flex-col pt-5 pl-5 mb-7">
                     <AccordionCard />
                 </div>

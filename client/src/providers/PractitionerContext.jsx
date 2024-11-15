@@ -1,12 +1,42 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 // import axios from "axios"
 import { PractitionerContext } from "../contexts";
+import { UserContext } from "../contexts";
+import { useAuth0 } from '@auth0/auth0-react';
 
 
 export const PractitionerProvider = ({children}) => {
 
 const [practitioners, setPractitioners] = useState([])
+// const { getAccessTokenSilently } = useAuth0();
+
+// const { setAllProfiles, setError } = useContext(UserContext)
+
+// const fetchAllProfiles = async () => {
+//   try {
+     
+//       const response = await fetch(`/api/profile`, {
+//           method: 'GET',
+//           headers: {
+//               'Content-Type': 'application/json',
+//               Authorization: `Bearer ${await getAccessTokenSilently()}`,
+//           },
+//       });
+
+//       if (!response.ok) {
+//           throw new Error('Network response was not ok');
+//       }
+
+//       const data = await response.json();
+//       setAllProfiles(data)
+//       console.log('profiles set!')
+//   } catch (error) {
+//       console.error('Error fetching profile data:', error);
+//       setError(error.message);
+//   }
+// };
 
 
 useEffect(() => {

@@ -22,9 +22,9 @@ export default function Brain(props) {
         setIsExpanded(!isExpanded);
     }
 
-    function submitDocument() {
-        setIsSubmitted(true);
-    }
+    // function submitDocument() {
+    //     setIsSubmitted(true);
+    // }
 
     return (
         <AccordionItem>

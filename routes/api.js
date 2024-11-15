@@ -5,9 +5,9 @@ const { userRouter } = require('./user');
 const { checkoutRouter } = require('./checkout');
 const signedUrlRouter = require('./signedUrl');
 const { profileRouter } = require('./profile')
-// const { notifyRouter } = require('./notify')
-// const { exampleRouter } = require('./example');
-
+const { adminRouter } = require('./admin')
+const { notifyRouter } = require('./notify')
+const { approvalMessagesRouter } = require('./approvalMessages')
 
 const apiRouter = ex.Router();
 
@@ -18,10 +18,9 @@ apiRouter.use('/user', userRouter)
 apiRouter.use('/', checkoutRouter)
 apiRouter.use('/', signedUrlRouter)
 apiRouter.use('/profile', profileRouter)
-// apiRouter.use('/notify', notifyRouter)
-
-
-
+apiRouter.use('/admin', adminRouter)
+apiRouter.use('/notify', notifyRouter)
+apiRouter.use('/approvalmessages', approvalMessagesRouter)
 
 module.exports = {
     apiRouter

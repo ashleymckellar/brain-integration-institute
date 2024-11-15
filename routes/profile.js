@@ -1,33 +1,48 @@
 const ex = require('express');
 // const { processFile } = require('../middleware/cdn');
-const { createProfileData } = require('../services/profile');
+const { createProfileData, getAllProfileMetaData } = require('../services/profile');
 const { ProfileModel } = require('../models/profile');
 const { UserModel } = require('../models/User');
 
 const profileRouter = ex.Router();
 
-//api/profile
+//get all profiles (for admin dashboard)
+profileRouter.get('/', async (req, res) => {
+    try {
+        const allProfileMetaData = await getAllProfileMetaData()
+        if (!allProfileMetaData) {
+            return res.status(404).json({ message: 'no profile metadata found'})
+        }
+        return res.status(200).json(allProfileMetaData)
+    } catch (error) {
+        console.error('Error fetching all profile metadata', error);
+        res.status(500).json({ error: 'Failed to send all profile metadata' });
+    }
+})
 
-//create get request to get profile info by user (eg, email)
-//call get request in useEffect in the profile page
-//if !profileData - render text to create profile - post request is submitted on form submit
-//if profileData -  render text to edit profile - put request is submitted on form submit
-
-//create put request for profile data
-
+//get user specific profile
 profileRouter.get('/:email', async (req, res) => {
     const { email } = req.params;
    
     try {
         const user = await UserModel.findOne({ userEmail: email });
+        
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
-        const profileData = await ProfileModel.findOne({ userId: user._id });
-        if (!profileData) {
+        const profile = await ProfileModel.findOne({ userId: user._id }).populate({
+      
+            path: 'userId',
+            select: 'userProfilePicture',
+        });
+       
+        if (!profile) {
             return res.status(404).json({ message: 'Profile not found' });
         }
-
+        const profileData = {
+            ...profile.toObject(),
+            userProfilePicture: profile.userId.userProfilePicture,
+        };
         res.status(200).json(profileData);
     } catch (error) {
         console.error('Error fetching profile data:', error);
@@ -38,7 +53,6 @@ profileRouter.get('/:email', async (req, res) => {
 profileRouter.post('/create-profile', async (req, res) => {
     const {
         firstName,
-        middleName,
         lastName,
         suffix,
         phoneNumber,
@@ -50,12 +64,13 @@ profileRouter.post('/create-profile', async (req, res) => {
         zip,
         country,
         bio,
+        userProfilePicture
     } = req.body;
 
 
     try {
         // Find the user by their email to get the userId
-        const user = await UserModel.findOne({ userEmail: email }); // Assuming the userEmail is used to find the user
+        const user = await UserModel.findOne({ userEmail: email }); 
         if (!user) {
             return res
                 .status(404)
@@ -67,9 +82,8 @@ profileRouter.post('/create-profile', async (req, res) => {
         if (!profileData) {
             // Create the profile with the userId from the User model
             profileData = new ProfileModel({
-                userId: user._id, // Set the userId here
+                userId: user._id, 
                 firstName,
-                middleName,
                 lastName,
                 suffix,
                 phoneNumber,
@@ -81,6 +95,7 @@ profileRouter.post('/create-profile', async (req, res) => {
                 zip,
                 country,
                 bio,
+                userProfilePicture
             });
             await profileData.save();
             return res.status(201).json({
@@ -95,6 +110,8 @@ profileRouter.post('/create-profile', async (req, res) => {
         return res.status(500).json({ success: false, error: 'Server error' });
     }
 });
+
+//users can edit their profile pages with the edit form here
 
 profileRouter.put('/:email', async (req, res) => {
     const { email } = req.params;

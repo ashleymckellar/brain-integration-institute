@@ -31,14 +31,14 @@ export default function FirstAid(props) {
                         }
                     >
                         <div className="flex items-center gap-2 pl-9">
-                            {!isExpanded && firstAidMetaData.length === 0 ? (
+                            {!isExpanded && firstAidMetaData && firstAidMetaData.length === 0 ? (
                                 <>
                                     <img src={AccordionRadioUnfilled} />
                                     <h1 className="font-fira text-xl text-black font-bold tracking-tight pl-12">
                                         {props.title}
                                     </h1>
                                 </>
-                            ) : !isExpanded && firstAidMetaData.length > 0 ? (
+                            ) : !isExpanded && firstAidMetaData && firstAidMetaData.length > 0 ? (
                                 <>
                                     <img
                                         className="h-[45px] w-[50px]"

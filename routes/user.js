@@ -1,11 +1,13 @@
 const ex = require('express');
-// const { processFile } = require('../middleware/cdn');
+
 const {
     getUserMetaData,
-    createUserMetaData,
     editUserMetaData,
+    getAllUserMetaData,
+    deleteUserMetaData,
 } = require('../services/user');
 const { UserModel } = require('../models/User');
+const { ProfileModel } = require('../models/profile');
 
 const userRouter = ex.Router();
 
@@ -22,6 +24,8 @@ userRouter.post('/createuser', async (req, res) => {
                 userName,
                 userProfilePicture: userProfilePicture || '',
                 userUploadProgress: 0,
+                isAdmin: false,
+                sub: req.auth.payload.sub,
             });
 
             await userMetaData.save();
@@ -38,18 +42,62 @@ userRouter.post('/createuser', async (req, res) => {
     }
 });
 
+//get user specific user metadata
 userRouter.get('/:email', async (req, res) => {
     const { email } = req.params;
    
     try {
-        const userMetaData = await getUserMetaData(email);
-        if (!userMetaData) {
-            return res.status(404).json({ message: 'user not found' });
+        const profile = await ProfileModel.findOne({ email });
+
+        const user = await UserModel.findOne({ userEmail: email });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
         }
-        return res.status(200).json(userMetaData);
+        const userWithProfileData = {
+            ...user.toObject(),
+            firstName: profile ? profile.firstName : null,
+            lastName: profile ? profile.lastName : null,
+        };
+
+        const userMetaData = await getUserMetaData(email);
+
+        const response = { ...userWithProfileData, ...userMetaData };
+
+        return res.status(200).json(response);
     } catch (error) {
         console.error('Error fetching user metadata', error);
         res.status(500).json({ error: 'Failed to send user metadata' });
+    }
+});
+
+//need a get request to get all users
+userRouter.get('/', async (req, res) => {
+    try {
+        const allUserMetaData = await getAllUserMetaData();
+        if (!allUserMetaData) {
+            return res.status(404).json({ message: 'no user metadata found' });
+        }
+        const usersWithProfileData = await Promise.all(
+            allUserMetaData.map(async (user) => {
+                const profile = await ProfileModel.findOne({
+                    userId: user._id,
+                }).select('firstName lastName');
+
+                // Spread firstName and lastName into user if profile is found
+                return profile
+                    ? {
+                          ...user.toObject(),
+                          firstName: profile.firstName,
+                          lastName: profile.lastName,
+                      }
+                    : user;
+            }),
+        );
+
+        return res.status(200).json(usersWithProfileData);
+    } catch (error) {
+        console.error('Error fetching all users metadata', error);
+        res.status(500).json({ error: 'Failed to send all users metadata' });
     }
 });
 
@@ -70,8 +118,8 @@ userRouter.put('/:email/progress', async (req, res) => {
 
     try {
         const user = await UserModel.findOneAndUpdate(
-            { userEmail: email }, // Updated to match the correct field name
-            { userUploadProgress }, // Increment the userUploadProgress field
+            { userEmail: email },
+            { userUploadProgress },
             { new: true, runValidators: true },
         );
 
@@ -139,12 +187,133 @@ userRouter.put('/:email/study-guide', async (req, res) => {
     }
 });
 
+userRouter.put('/:email/is-admin', async (req, res) => {
+    const { isAdmin } = req.body;
+    const { email } = req.params;
+
+    if (typeof isAdmin !== 'boolean') {
+        return res.status(400).json({
+            error: 'isAdmin is required and must be a boolean',
+        });
+    }
+
+    try {
+        console.log(`Updating admin status for user ${email} to ${isAdmin}`);
+
+        const user = await UserModel.findOneAndUpdate(
+            { userEmail: email },
+            { isAdmin },
+            { new: true, runValidators: true },
+        );
+
+        if (!user) {
+            console.log(`User with email ${email} not found`);
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        console.log(`User ${email} admin status updated to:`, user.isAdmin);
+        res.json(user);
+    } catch (error) {
+        console.error('Error updating admin status:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
 //create put route for assessment access
 
 //assessmentAccess will toggle to true
 //once admin has approved all uploaded files.
 //right now the only thing preventing them from getting the assessment is payment
 //but this will be changed once the admin approval flow is built out
+
+//create put route for each document upload.
+//once user uploads a doc, the status for that doc type will be toggled to pending approval
+
+userRouter.patch('/:email/document-status', async (req, res) => {
+    const email = req.params.email;
+    const { documentType, newStatus } = req.body; 
+    console.log(`Received request to update document ${documentType} for user: ${email}`);
+
+    
+
+    // Ensure the documentType and status are valid
+    if (!documentType || !newStatus) {
+        return res
+            .status(400)
+            .send({ message: 'documentType and status are required' });
+    }
+
+    const allowedStatuses = [
+        'waiting for upload',
+        'pending approval',
+        'approved',
+        'declined',
+    ];
+
+    if (!allowedStatuses.includes(newStatus)) {
+        return res.status(400).send({ message: 'Invalid status value' });
+    }
+
+    const validDocumentTypes = [
+        'brainIntegrationTraining',
+        'clinicalHours',
+        'firstAidTraining',
+        'cprCert',
+        'videoPresentation',
+        'insurance',
+    ];
+
+    if (!validDocumentTypes.includes(documentType)) {
+        return res.status(400).send({ message: 'Invalid document type' });
+    }
+
+    try {
+        const user = await UserModel.findOne({ userEmail: email });
+        if (!user) {
+            return res.status(404).send({ message: 'User not found' });
+        }
+
+        // Update the correct document status field
+        user.certListUploadStatus[documentType] = newStatus;
+        
+        // Save the updated user document
+        const updatedUser = await user.save();
+
+        console.log('Updated user:', updatedUser);
+
+        res.status(200).send(updatedUser); 
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({
+            message: 'An error occurred while updating user metadata.',
+        });
+    }
+});
+
+//delete user route - can only be accessed by admins
+userRouter.delete('/:email', async (req, res) => {
+    const email = req.params.email;
+    console.log(email, 'email');
+    try {
+        const deletedUser = await UserModel.findOneAndDelete({
+            userEmail: email,
+        });
+
+        if (!deletedUser) {
+            console.log('[Delete Route] User not found');
+            return res.status(404).json({ message: 'User not found' });
+        }
+        console.log('[Delete Route] User deleted successfully');
+        return res
+            .status(200)
+            .json({ message: 'User and metadata deleted successfully' });
+    } catch (error) {
+        console.error('[Delete Route] Error:', error);
+        return res
+            .status(500)
+            .json({ message: 'An error occurred while deleting the user' });
+    }
+});
 
 module.exports = userRouter;
 
