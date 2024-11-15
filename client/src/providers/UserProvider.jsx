@@ -27,7 +27,7 @@ export const UserProvider = ({ children }) => {
     const [allProfiles, setAllProfiles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    import.meta.env.VITE_API_BASE_URL,
+    import.meta.env.VITE_API_BASE_URL
 
     const handleInputChange = (e) => {
         console.log('change handled');
