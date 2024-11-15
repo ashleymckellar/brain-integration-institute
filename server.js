@@ -14,6 +14,11 @@ server.use(enableCors)
 server.use(ex.json());
 server.use(ex.urlencoded({ extended: true }));
 
+server.get('/notify', (req, res) => {
+    res.json({ message: 'route enabled!' });
+});
+
+
 
 server.use('/api', validateAuthToken, apiRouter)
 server.use(ex.static(path.resolve(__dirname, 'client', 'dist')))
@@ -33,6 +38,25 @@ server.use((req, res, next) => {
 
 server.get('/api/files', (req, res) => {
     res.json({ message: 'CORS enabled!' });
+});
+
+
+
+server.post('/assessment', async (req, res) => {
+    try {
+        const { userId, status } = req.body;
+        if (!userId || !status) {
+            return res.status(400).json({ error: 'Missing required fields' });
+        }
+
+        const notificationData = await createNotification({
+        timestamp, isAshAwesome, testName
+        });
+        res.status(201).json({ success: true, notificationData });
+    } catch (error) {
+        console.error('Error processing request:', error);
+        res.status(500).json({ error: 'Server error' });
+    }
 });
 
 
