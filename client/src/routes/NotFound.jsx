@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import Brain404 from '../assets/images/brain404.png';
 
 export const NotFound = () => {
+  
     return (
         <div className="flex flex-col justify-center items-center gap-10 pt-20 min-h-screen w-full bg-mediumish-green">
             <h1 className="font-fira text-8xl pb-20">404</h1>

@@ -1,77 +1,158 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/no-unescaped-entities */
 import paleBanner from '../assets/icons/PaleGreenPractitionerBackground.png';
 import banner from '../assets/icons/PractitionerBackground.png';
+import { Navbar } from '../components/header/Navbar';
+import { Footer } from '../components/Footer';
+import nature2 from '../assets/images/nature2.jpg';
+import wheat from '../assets/images/wheat-fields-4439896_1920.jpg'
+import fists from '../assets/images/fists.png';
+import ron from '../assets/images/ron.png';
+import julissa from '../assets/images/julissa.png';
+import tami from '../assets/images/tami.png';
+import steve from '../assets/images/steve.png';
+import terri from '../assets/images/terri.png';
+import { useNavigate } from 'react-router-dom';
 
 export const AboutUs = () => {
+    const navigate = useNavigate();
     return (
         <>
-            <div
-                className="w-full h-64 sm:h-80 md:h-96 relative bg-white"
-                style={{
-                    backgroundImage: `url(${banner}), url(${paleBanner})`,
-                    backgroundSize: 'cover, cover',
-                    backgroundPosition: 'center, center',
-                    backgroundRepeat: 'no-repeat, no-repeat',
-                }}
-            >
-                <div className="absolute inset-0 flex items-center justify-center">
-                    <h1 className="text-white text-3xl sm:text-3xl md:text-4xl lg:text-5xl font-fenix font-normal">
-                        About Us
+            <Navbar />
+            <div className="relative w-full mt-10 mb-10">
+    <img
+        src={wheat}
+        className="w-[2500px] h-[700px]"
+        alt="Nature Background"
+    />
+    <div
+        className="absolute inset-0 flex flex-col justify-center items-center text-center gap-4 p-4 sm:p-6 md:p-8 lg:p-10 
+        bg-white bg-opacity-10 backdrop-blur-lg rounded-2xl 
+        max-w-[90%] sm:max-w-[70%] md:max-w-[60%] lg:max-w-[35%] 
+        h-auto lg:h-[400px] mt-10 sm:mt-20 md:mt-28 lg:mt-40 mx-auto"
+    >
+        <h2 className="font-fira text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-white leading-tight sm:leading-snug">
+            We are the Brain Integration Institute
+        </h2>
+        <p className="text-white text-sm sm:text-base md:text-lg lg:text-xl p-4 sm:p-6 md:p-8 font-fira leading-relaxed sm:leading-normal">
+            We are dedicated to the excellence of brain integration
+            and services to the public by setting the national
+            standard in certification, providing leadership,
+            education, and advocacy.
+        </p>
+    </div>
+</div>
+
+            <div className="flex flex-col gap-10 text-center justify-center px-40 bg-background-tan pt-10">
+                <div className="flex justify-center">
+                    <img
+                        src={fists}
+                        className="w-[800px]"
+                        alt="fists in circle"
+                    />
+                </div>
+                <h3 className="font-fira text-2xl">Our Mission</h3>
+                <p className="text-center font-fira">
+                    We are dedicated to the excellence of brain integration and
+                    services to the public by setting the national standard in
+                    certification, providing leadership, education, and
+                    advocacy.
+                </p>
+                <h3 className="font-fira text-2xl">Our Vision</h3>
+                <p className="text-center font-fira">
+                    The Brain Integration Institute’s vision is to unify the
+                    profession of Brain Integration, standardize the profession
+                    and for the Certified Brain Integration Practitioner to be
+                    recognized as the credential of excellence for
+                    professionals.
+                </p>
+                <h3 className="font-fira text-2xl">
+                    Certification and Standards
+                </h3>
+                <div className="flex flex-col gap-10">
+                    <p className="text-center font-fira">
+                        Certified Brain Integration Practitioners hold a
+                        recognized credential representing a level of excellence
+                        in the field of brain integration. Those who have
+                        achieved the certification have met rigorous academic
+                        and professional standards. They have the knowledge,
+                        skills, and expertise to provide high-quality services
+                        and they actively engage in ongoing professional
+                        development to keep their certification current. 
+                    </p>
+                    <p className="text-center font-fira">
+                        {' '}
+                        After receiving certification, practitioners are added
+                        to the directory on the Brain Integration Institute’s
+                        website. Every person deserves great care. That is why
+                        we maintain a directory designed to connect clients with
+                        qualified practitioners. Clients can be confident that
+                        they will be seen by someone experienced and who
+                        maintains high professional, ethical, and technical
+                        standards. 
+                    </p>
+
+                    <p className="text-center font-fira">
+                        {' '}
+                        The Brain Integration Institute requires high ethical
+                        standards for certified practitioners. Expectations for
+                        behavior can be found on this website under Code of
+                        Ethics. The Institute plays an active role in addressing
+                        ethical concerns and helping to maintain respect,
+                        honesty, and safety from those it certifies.{' '}
+                    </p>
+                    <p className="text-center font-fira">
+                        By guiding practitioners through the certification
+                        process, providing directories of colleges and certified
+                        practitioners, and requiring high ethical standards, the
+                        Brain Integration Institute helps to unify the brain
+                        integration community and increase the standard for
+                        quality care.
+                    </p>
+                </div>
+                <div className="flex flex-col border bg-white border-[#D9D9D9] rounded-xl p-5 gap-y-10 w-full max-w-[90%] md:max-w-2xl mx-auto mt-20 mb-20">
+                    <h1 className="font-fira text-4xl text-center">
+                        Board Members
                     </h1>
+                    <div className="flex flex-col gap-5 lg:gap-10">
+                        {/* Top Row - Three Images */}
+                        <div className="flex justify-center gap-5">
+                        <button onClick={() => navigate('/ron-bio')}>
+                                <img
+                                    src={ron}
+                                    className="w-40 object-cover"
+                                    alt="Ron"
+                                />
+                            </button>
+                            <img
+                                src={julissa}
+                                className="w-40 object-cover"
+                                alt="Julissa"
+                            />
+                            <img
+                                src={tami}
+                                className="w-40 object-cover"
+                                alt="Tami"
+                            />
+                        </div>
+
+                        {/* Bottom Row - Two Images Centered */}
+                        <div className="flex justify-center gap-5">
+                            <img
+                                src={steve}
+                                className="w-40 object-cover"
+                                alt="Steve"
+                            />
+                            <img
+                                src={terri}
+                                className="w-40 object-cover"
+                                alt="Terri"
+                            />
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div className="flex flex-col gap-10 text-center justify-center">
-                <h2>About Us</h2>
-                <p>
-                    Welcome to our Brain Integration App, where we believe in
-                    unlocking the full potential of the mind. Our mission is to
-                    enhance cognitive function, promote mental well-being, and
-                    empower individuals through innovative technology.
-                </p>
-                <p>
-                    At the heart of our approach lies the science of
-                    neuroplasticity, the brain's remarkable ability to
-                    reorganize itself by forming new neural connections
-                    throughout life. Our team of neuroscientists, psychologists,
-                    and tech enthusiasts have developed a comprehensive platform
-                    that integrates mindfulness practices, cognitive training,
-                    and personalized assessments.
-                </p>
-                <h3>Our Philosophy</h3>
-                <p>
-                    In an ever-evolving world, mental agility and emotional
-                    resilience are paramount. We strive to create a supportive
-                    environment that fosters growth and transformation. Our app
-                    offers a variety of features designed to challenge your
-                    brain, improve focus, and enhance memory. With engaging
-                    activities rooted in cognitive science, users can explore
-                    the vast landscapes of their minds.
-                </p>
-                <h3>Why Choose Us?</h3>
-                <ul>
-                    <li>
-                        <strong>Evidence-Based Practices</strong>: Our methods
-                        are grounded in the latest research on brain health and
-                        cognitive enhancement.
-                    </li>
-                    <li>
-                        <strong>Personalized Experience</strong>: We tailor our
-                        programs to meet the unique needs and goals of each
-                        user, ensuring a journey of self-discovery.
-                    </li>
-                    <li>
-                        <strong>Community and Support</strong>: Join a vibrant
-                        community of like-minded individuals, sharing
-                        experiences and tips to boost mental performance.
-                    </li>
-                </ul>
-                <p>
-                    Embrace the power of your mind with our Brain Integration
-                    App. Together, let’s embark on a journey towards greater
-                    awareness, sharper focus, and a deeper understanding of the
-                    human experience.
-                </p>
-            </div>
+            <Footer />
         </>
     );
 };

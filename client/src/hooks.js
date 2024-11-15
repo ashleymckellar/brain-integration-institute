@@ -1,4 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 import { useContext, useState, useEffect } from 'react';
 import { http } from './http';
@@ -20,6 +20,7 @@ const createUserEndpoint = `${baseUrl}/api/user/createuser`;
 export const useHttpAuthClient = () => {
     const { getAccessTokenSilently, user } = useAuth0();
     const [metadataCreated, setMetadataCreated] = useState(false);
+    const baseUrl = import.meta.env.VITE_API_BASE_URL
 
     const createUserMetadata = async (user) => {
         if (!user || metadataCreated) return;
@@ -27,21 +28,23 @@ export const useHttpAuthClient = () => {
         const { email, name, picture } = user;
 
         try {
-            const response = await fetch(createUserEndpoint, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${await getAccessTokenSilently()}`,
+            const response = await fetch(
+                `http://${baseUrl}/api/user/createuser`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${await getAccessTokenSilently()}`,
+                    },
+                    body: JSON.stringify({
+                        userEmail: email,
+                        userName: name,
+                        userProfilePicture: picture,
+                    }),
                 },
-                body: JSON.stringify({
-                    userEmail: email,
-                    userName: name,
-                    userProfilePicture: picture,
-                }),
-            });
+            );
 
             const data = await response.json();
-            // console.log(data);
 
             if (!response.ok) {
                 console.error(
@@ -116,7 +119,6 @@ export const useFileAPI = () => {
 export const useProfileForm = (initialValues) => {
     const [inputs, setInputs] = useState(initialValues);
     const { getAccessTokenSilently, user } = useAuth0();
-    // const [profileData, setProfileData] = useState(null)
 
     const handleInputChange = (e) => {
         // console.log('change handled');
@@ -137,7 +139,7 @@ export const useProfileForm = (initialValues) => {
 
         try {
             const response = await fetch(
-                createUserEndpoint,
+                `http://${baseUrl}/api/profile/create-profile`,
                 {
                     method: 'POST',
                     headers: {
@@ -213,11 +215,13 @@ const useProfileData = (user) => {
         }
     };
 
-    useEffect(() => {
-        fetchProfileData();
-    }, [user]);
+        useEffect(() => {
+           
+                fetchProfileData();
+            
+        }, [user]);
+        
 
-   
 
     return { profileData, loading, error, fetchProfileData, setProfileData };
 };

@@ -8,41 +8,32 @@ const ProfileSchema = new Schema({
         required: true,
     },
     firstName: {
-        type: String
-       
-    },
-
-    middleName: {
         type: String,
     },
+
     lastName: {
-        type: String
-        
+        type: String,
     },
     suffix: {
         type: String,
     },
     phoneNumber: {
-        type: String
-        
+        type: String,
     },
     email: {
-        type: String
-        
+        type: String,
     },
     addressLine1: {
-        type: String
-       
+        type: String,
     },
     addressLine2: {
         type: String,
     },
     city: {
-        type: String
-        
+        type: String,
     },
     state: {
-        type: String
+        type: String,
     },
     zip: {
         type: String,
@@ -52,6 +43,11 @@ const ProfileSchema = new Schema({
     },
     bio: {
         type: String,
+    },
+
+    userProfilePicture: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
     },
 });
 

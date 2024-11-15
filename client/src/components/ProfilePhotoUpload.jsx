@@ -1,8 +1,7 @@
 import { useState, useContext, useEffect } from 'react';
 import ProfileEditIcon from '../assets/icons/profileEditIcon.png';
-
 import { CloudinaryContext } from '../contexts';
-
+import { UserContext } from '../contexts';
 import { useAuth0 } from '@auth0/auth0-react';
 
 export const ProfilePhotoUpload = () => {
@@ -13,16 +12,14 @@ export const ProfilePhotoUpload = () => {
         setUserMetaData,
     } = useContext(CloudinaryContext);
 
-
+    const { profileData } = useContext(UserContext);
     const { isAuthenticated, user } = useAuth0();
-
-   
     const [profilePictureUrl, setProfilePictureUrl] = useState(user?.picture);
 
-   
     useEffect(() => {
         const fetchData = async () => {
             if (user) {
+                console.log(user);
                 const token = localStorage.getItem('token');
                 try {
                     const fetchedUserMetaData = await getUserMetaData(token);
@@ -46,14 +43,11 @@ export const ProfilePhotoUpload = () => {
         fetchData();
     }, []);
 
-    // Handler for uploading a new profile picture
     const handleProfilePictureUpload = async () => {
         try {
             const newProfilePictureUrl = await uploadProfilePicture();
             if (newProfilePictureUrl) {
                 setProfilePictureUrl(newProfilePictureUrl);
-
-                // Update user metadata to persist the new profile picture URL
                 const updatedUserMetaData = {
                     ...userMetaData,
                     userProfilePicture: newProfilePictureUrl,
@@ -81,11 +75,13 @@ export const ProfilePhotoUpload = () => {
                             alt="Edit Icon"
                         />
                     </button>
-            
+                    {profileData && (
+                        <h3 className="mt-4 text-xl pl-5 pr-10 font-semibold text-gray-800 text-center">
+                            {profileData.firstName} {profileData.lastName}
+                        </h3>
+                    )}
                 </div>
             ) : null}
-
-           
         </div>
     );
 };

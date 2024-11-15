@@ -46,21 +46,6 @@ return (
             </form>
         </div>
         <div>
-            {/* .map structure:
-                    <div className="practitioner--card">
-                        <img src={person.img} />
-                        <div className="card--stats">
-                            <h2>{person.name}</h2>
-                            <p>{person.speciality}</p>
-                            <p>{person.location}</p>
-                        </div>
-                        <p 
-                        style={{color: 'blue'}}
-                        >
-                            {person.contact.number}
-                        </p>
-                    </div>
-            */}
-        </div>
+      </div>
     </>
 )

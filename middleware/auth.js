@@ -1,4 +1,5 @@
 const { auth } = require('express-oauth2-jwt-bearer');
+
 const cors = require('cors');
 
 /**
@@ -10,6 +11,11 @@ const validateAuthToken = auth({
     
     tokenSigningAlg: 'RS256',
 });
+
+const validateAuthTokenMiddleware = (req, res, next) => {
+    console.log("Validating auth token...");
+    validateAuthToken(req, res, next);
+};
 
 /**
  * Enforces the authenticated request that it contains the provided permissions.
@@ -32,7 +38,7 @@ const enableCors = cors({
         ...process.env.CORS_WHITELIST.split(','),
         process.env.AUTH0_ISSUER_BASE_URL
     ],
-    methods: ['GET', 'POST', 'PUT', 'DELETE'], 
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], 
 });
 
 
@@ -43,4 +49,5 @@ module.exports = {
     validateAuthToken,
     allow,
     enableCors,
+    validateAuthTokenMiddleware
 }

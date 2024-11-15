@@ -7,7 +7,6 @@ import { Cloudinary } from '@cloudinary/url-gen';
 import { useAuth0 } from '@auth0/auth0-react';
 import axios from 'axios';
 
-// Cloudinary Provider Component
 export const CloudinaryProvider = ({ children }) => {
     // eslint-disable-next-line no-unused-vars
     const [publicId, setPublicId] = useState('');
@@ -16,6 +15,8 @@ export const CloudinaryProvider = ({ children }) => {
     const { user, getAccessTokenSilently, isAuthenticated } = useAuth0();
     const [files, setFiles] = useState([]);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [showPayment, setShowPayment] = useState(false);
+    const [showModal, setShowModal] = useState(false);
 
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [sectionName, setSectionName] = useState('');
@@ -29,14 +30,13 @@ export const CloudinaryProvider = ({ children }) => {
     // const [uploading, setUploading] = useState(false);
     // const [uploadError, setUploadError] = useState(null);
     const [imageUrl, setImageUrl] = useState(user?.userProfilePicture || '');
-    const [profilePhotoUploaded, setProfilePhotoUploaded] = useState(false)
+    const [profilePhotoUploaded, setProfilePhotoUploaded] = useState(false);
+    const [certListUploadStatus, setCertListUploadStatus] = useState({});
+    const [certificates, setCertificates] = useState([]);
+    const [imagesByDocType, setImagesByDocType] = useState([]);
+    const [expandedSection, setExpandedSection] = useState(null);
+    const [sectionFiles, setSectionFiles] = useState({});
     const baseUrl = import.meta.env.VITE_API_BASE_URL;
-    const fileMetaDataEndpoint = `${baseUrl}/api/files`;
-
-    
-
-
-
 
     const uwConfig = {
         cloudName: import.meta.env.VITE_CLOUDINARY_CLOUDNAME,
@@ -49,31 +49,55 @@ export const CloudinaryProvider = ({ children }) => {
     const apiSecret = import.meta.env.VITE_CLOUDINARY_API_SECRET;
     const apiKey = import.meta.VITE_CLOUDINARY_API_KEY;
 
-
-
     //gets file metadata
     const getFiles = async () => {
         try {
+            // Check if the user email is available
+            if (!user || !user.email) {
+                console.error('User email is missing');
+                return [];
+            }
+    
+            // Fetch the access token
             const accessToken = await getAccessTokenSilently();
-
+            if (!accessToken) {
+                console.error('Access token is missing');
+                return [];
+            }
+    
+            // Fetch files from the API
+            const email = user.email;
             const response = await axios.get(
-                fileMetaDataEndpoint,
+                `http://${baseUrl}/api/files/${email}`,
                 {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
                     },
-                },
+                }
             );
-
+    
+            // Handle case where response might be null or not OK
+            if (!response || !response.data || !response.data.files) {
+                // console.error('No files found or invalid response');
+                return []; 
+            }
+    
             return response.data.files;
         } catch (error) {
             console.error('Error fetching files:', error);
+            return [];
         }
     };
+    
 
     //gets files from Cloudinary via callback/cors proxy
     const getFilesInFolder = async () => {
         try {
+            if (!user || !user.email) {
+                throw new Error('User email is missing');
+            }
+            
+            const nickname = user.email.split('@')[0];
             const accessToken = await getAccessTokenSilently();
 
             const response = await axios.get(
@@ -84,11 +108,22 @@ export const CloudinaryProvider = ({ children }) => {
                     },
                 },
             );
+            if (!response || !response.data || !response.data.files) {
+                // console.error('No files found or invalid response');
+                return []; 
+            }
+          
             return response.data;
         } catch (error) {
             console.error('Error fetching files:', error);
+            return [];
         }
     };
+
+    // if (!user || !user.email) {
+    //     console.error('User email is missing');
+    //     return [];
+    // }
 
     const getUserMetaData = async (email) => {
         try {
@@ -103,10 +138,8 @@ export const CloudinaryProvider = ({ children }) => {
                 },
             );
             const metaData = response.data;
-
-            // Update state with the fetched metadata
             setUserMetaData(metaData);
-            setImageUrl(metaData.userProfilePicture); 
+            setImageUrl(metaData.userProfilePicture);
 
             return metaData;
         } catch (error) {
@@ -152,7 +185,7 @@ export const CloudinaryProvider = ({ children }) => {
         }
     }, [user]);
 
-    //this whole function is being called inside getStudyGuide in accordioncard
+    //this function is being called inside getStudyGuide in accordioncard
 
     const updateUserProgress = async (newProgress) => {
       
@@ -231,8 +264,61 @@ export const CloudinaryProvider = ({ children }) => {
             const data = await response.json();
           
             setStudyGuideAccess(true);
+            const newProgress = Math.min(progress + 1, 8);
+            if (newProgress > progress) {
+                try {
+                    await updateUserProgress(newProgress);
+                    console.log('User progress updated to:', newProgress);
+                    setProgress(newProgress); // Update state only after success
+                } catch (error) {
+                    console.error('Error updating user progress:', error);
+                }
+            } else {
+                console.log('Progress is already at maximum:', newProgress);
+            }
+            //call setProgress here, not in accordion
         } catch (error) {
             console.error('Error updating user study guide:', error);
+        }
+    };
+
+    const updateUserDocumentStatus = async (documentType, newStatus) => {
+        if (user) {
+            try {
+                const accessToken = await getAccessTokenSilently();
+                const response = await fetch(
+                    `http://${baseUrl}/api/user/${user.email}/document-status`,
+                    {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${accessToken}`,
+                        },
+                        body: JSON.stringify({
+                            documentType,
+                            newStatus,
+                        }),
+                    },
+                );
+
+                console.log('Response Status:', response.status);
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error(
+                        'Failed to update user doc status:',
+                        errorData,
+                    );
+                    throw new Error('Failed to update user doc status');
+                }
+
+                const data = await response.json();
+                console.log('User doc status updated on the server:', data);
+                return data;
+            } catch (error) {
+                console.error('Error updating user doc status:', error);
+            }
+        } else {
+            console.error('User is not defined');
         }
     };
 
@@ -242,15 +328,16 @@ export const CloudinaryProvider = ({ children }) => {
                 {
                     cloudName: uwConfig.cloudName,
                     uploadPreset: uwConfig.uploadPreset,
-                    asset_folder: `users/${user.nickname}`,
+                    asset_folder: `users/${user.nickname}/${section}`,
                 },
                 async (error, result) => {
                     if (error) {
                         console.error('Upload error:', error);
                         return;
                     }
-                    if (result.event === 'success') {
-                      
+                    if (!error && result && result.event === 'success') {
+                        console.log('Upload successful:', result.info);
+                        onUploadSuccess(section);
                         const newProgress = Math.max(progress + 1, 8);
 
                         setProgress(newProgress);
@@ -312,13 +399,32 @@ export const CloudinaryProvider = ({ children }) => {
         }
     };
 
+    const handleUploadClick = async (section) => {
+        setSectionName(section);
+        // Initialize Cloudinary widget with a callback for successful upload
+        initializeCloudinaryWidget(section, onUploadSuccess);
+    };
+
+    const onUploadSuccess = async (documentType) => {
+        const newStatus = 'pending approval';
+        const updatedStatus = {
+            ...certListUploadStatus,
+            [documentType]: newStatus,
+        };
+
+        setCertListUploadStatus(updatedStatus);
+        await updateUserDocumentStatus(documentType, newStatus);
+        console.log('Updated certListUploadStatus:', updatedStatus);
+        console.log('Calling updateUserProgress with value:', 1);
+    };
+
     const uploadProfilePicture = (file) => {
         if (user) {
             const myWidget = window.cloudinary.createUploadWidget(
                 {
                     cloudName: uwConfig.cloudName,
                     uploadPreset: uwConfig.uploadPreset,
-                    asset_folder: `users/${user.nickname}`,
+                    asset_folder: `users/${user.nickname}/profilePic`,
                 },
                 async (error, result) => {
                     if (error) {
@@ -329,14 +435,12 @@ export const CloudinaryProvider = ({ children }) => {
                      
                         
                         const userMetaData = {
-                            userProfilePicture: result.info.secure_url
+                            userProfilePicture: result.info.secure_url,
                         };
-    
-                        // Update state with new profile picture URL
+
                         setImageUrl(result.info.secure_url);
                         setProfilePhotoUploaded(true);
-    
-                        // Send metadata to the server
+
                         try {
                             const accessToken = await getAccessTokenSilently();
                             const response = await fetch(
@@ -348,34 +452,35 @@ export const CloudinaryProvider = ({ children }) => {
                                         Authorization: `Bearer ${accessToken}`,
                                     },
                                     body: JSON.stringify(userMetaData),
-                                }
+                                },
                             );
-    
+
                             if (response.ok) {
-                                console.log('User metadata successfully sent to the server.');
+                                console.log(
+                                    'User metadata successfully sent to the server.',
+                                );
                             } else {
-                                console.error('Failed to send user metadata to the server.');
+                                console.error(
+                                    'Failed to send user metadata to the server.',
+                                );
                             }
                         } catch (error) {
-                            console.error('Error sending user metadata:', error);
+                            console.error(
+                                'Error sending user metadata:',
+                                error,
+                            );
                         } finally {
-                            // Close the widget after processing
                             myWidget.close();
                         }
                     }
-                }
+                },
             );
-    
+
             myWidget.open();
         }
     };
-    
 
-    
-    
-
-    //delete certification file
-    const deleteFile = async (publicId) => {
+    const deleteFile = async (publicId, sectionName) => {
         try {
             const accessToken = await getAccessTokenSilently();
             const response = await fetch(
@@ -390,18 +495,24 @@ export const CloudinaryProvider = ({ children }) => {
 
             if (response.ok) {
                 console.log('File and metadata deleted successfully.');
+                const newStatus = 'waiting for upload';
+                const updatedStatus = {
+                    ...certListUploadStatus,
+                    [sectionName]: newStatus,
+                };
+                console.log(
+                    'Updated status before PUT request:',
+                    updatedStatus,
+                );
+                await updateUserDocumentStatus(sectionName, newStatus);
                 setFileMetaData((prevMetaData) =>
                     prevMetaData.filter((file) => file.publicId !== publicId),
                 );
-                setDeleteModalOpen(false);
                 setFiles((prevFiles) =>
                     prevFiles.filter((file) => file.publicId !== publicId),
                 );
-                setProgress((prevProgress) => {
-                    const newProgress = Math.max(0, prevProgress - 1);
-                    updateUserProgress(newProgress);
-                    return newProgress;
-                });
+                setCertListUploadStatus(updatedStatus);
+                setDeleteModalOpen(false);
             } else {
                 console.error('Failed to delete file.');
             }
@@ -409,6 +520,122 @@ export const CloudinaryProvider = ({ children }) => {
             console.error('Error deleting file:', error);
         }
     };
+
+    const uploadCompletionCertificate = (file) => {
+        if (user) {
+            const myWidget = window.cloudinary.createUploadWidget(
+                {
+                    cloudName: uwConfig.cloudName,
+                    uploadPreset: uwConfig.uploadPreset,
+                    asset_folder: `certificate`,
+                },
+                async (error, result) => {
+                    if (error) {
+                        console.error('Upload error:', error);
+                        return;
+                    }
+                    if (result.event === 'success') {
+                        console.log('Upload successful:', result.info);
+
+                        // Certificate data to send to the server
+                        const certificateData = {
+                            publicId: result.info.public_id,
+                            url: result.info.secure_url,
+                            uploadDate: result.info.created_at,
+                            filename: result.info.original_filename,
+                        };
+
+                        console.log(
+                            'Uploaded certificate URL:',
+                            result.info.secure_url,
+                        );
+
+                        try {
+                            const accessToken = await getAccessTokenSilently();
+                            const response = await fetch(
+                                `http://${baseUrl}/api/images/certificate`,
+                                {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        Authorization: `Bearer ${accessToken}`,
+                                    },
+                                    body: JSON.stringify(certificateData),
+                                },
+                            );
+
+                            if (response.ok) {
+                                console.log(
+                                    'Certificate data successfully sent to the server.',
+                                );
+                                setCertificates(certificateData);
+                            } else {
+                                console.error(
+                                    'Failed to send certificate data to the server.',
+                                );
+                            }
+                        } catch (error) {
+                            console.error(
+                                'Error sending certificate data:',
+                                error,
+                            );
+                        }
+                    }
+                },
+            );
+
+            myWidget.open();
+        }
+    };
+
+    //get certificate file from cloudinary
+
+    const getCertificate = async () => {
+        try {
+            const accessToken = await getAccessTokenSilently();
+            const response = await axios.get(
+                `http://${baseUrl}/api/images/certificate`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                },
+            );
+            return response.data;
+        } catch (error) {
+            console.error('Error fetching files:', error);
+        }
+    };
+
+    const deleteCertificate = async (publicId) => {
+        try {
+            const accessToken = await getAccessTokenSilently();
+            const response = await fetch(
+                `http://${baseUrl}/api/images/certificate/${publicId}`,
+                {
+                    method: 'DELETE',
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                },
+            );
+            if (response.ok) {
+                console.log('File and metadata deleted successfully.');
+
+                setCertificates((prevCertificateData) =>
+                    prevCertificateData.filter(
+                        (cert) => cert.publicId !== publicId,
+                    ),
+                );
+            } else {
+                console.error('Failed to delete file.');
+            }
+        } catch (error) {
+            console.error('Error deleting file:', error);
+        }
+    };
+
+    const isApprovedForAssessment = () => {};
 
     return (
         <CloudinaryContext.Provider
@@ -443,7 +670,24 @@ export const CloudinaryProvider = ({ children }) => {
                 setProfilePhotoUploaded,
                 imageUrl,
                 userMetaData,
-                setUserMetaData
+                setUserMetaData,
+                showPayment,
+                setShowPayment,
+                showModal,
+                setShowModal,
+                certListUploadStatus,
+                setCertListUploadStatus,
+                updateUserDocumentStatus,
+                uploadCompletionCertificate,
+                deleteCertificate,
+                getCertificate,
+                certificates,
+                setCertificates,
+                onUploadSuccess,
+                publicId,
+                setPublicId,
+                imagesByDocType,
+                setImagesByDocType,
             }}
         >
             {loaded && children}

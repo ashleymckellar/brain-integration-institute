@@ -1,6 +1,7 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 import { useState, useContext, useEffect } from 'react';
-// import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { loadStripe } from '@stripe/stripe-js';
 import UploadBtn from '../assets/icons/UploadBtn.png';
 import GetStudyGuideBtn from '../assets/icons/GetStudyGuideBtn.png';
@@ -15,7 +16,6 @@ import ProgressBar7 from '../assets/icons/ProgressBar7.png';
 import ProgressBar8 from '../assets/icons/ProgressBar8.png';
 import StudyGuidePages from '../assets/icons/StudyGuidePages.png';
 import PayforandStart from '../assets/icons/PayforandStart.png';
-
 import Assessment from './Assessment';
 import Insurance from './Insurance';
 import Brain from './Brain';
@@ -33,53 +33,52 @@ import ProfilePhotoUpload from './ProfilePhotoUpload.jsx';
 import { useAuth0 } from '@auth0/auth0-react';
 
 import { Accordion } from 'react-accessible-accordion';
-import e from 'cors';
+
 import { CloudinaryContext } from '../contexts';
 import Payment from './Payment.jsx';
 
-const AccordionCard = (props) => {
+const AccordionCard = ({ certStatus }) => {
     // eslint-disable-next-line no-unused-vars
     const {
-        uwConfig,
         initializeCloudinaryWidget,
-        filename,
         getFilesInFolder,
-        getCloudinaryFiles,
         getFiles,
-        files,
         progress,
         setProgress,
         updateUserProgress,
-        isSubmitted,
-        setIsSubmitted,
         fileMetaData,
         setFileMetaData,
-        isLoading,
-        setIsLoading,
         getUserMetaData,
         deleteFile,
         deleteModalOpen,
         setDeleteModalOpen,
-        updateUserStudyGuide,
         studyGuideAccess,
         setStudyGuideAccess,
-        email,
+        showPayment,
+        setShowPayment,
+        showModal,
+        setShowModal,
+        certListUploadStatus,
+        setCertListUploadStatus,
+        updateUserDocumentStatus,
+        onUploadSuccess,
     } = useContext(CloudinaryContext);
 
     const { isAuthenticated, user, getAccessTokenSilently } = useAuth0();
-
     const [sectionName, setSectionName] = useState('');
-
-    const [selectedFile, setSelectedFile] = useState(null);
     const [userMetaData, setUserMetaData] = useState({}); // move this to context
     const [currentFileToDelete, setCurrentFileToDelete] = useState(null);
     const [stripePromise, setStripePromise] = useState(null);
+    const [cloudinaryFiles, setCloudinaryFiles] = useState([]);
+    const [expandedSection, setExpandedSection] = useState(null);
+const [sectionFiles, setSectionFiles] = useState({});
 
     //checks to see if every section has an uploaded file, if so returns true
     const [isUploaded, setIsUploaded] = useState(false);
 
-    const [showPayment, setShowPayment] = useState(false);
-    const [showModal, setShowModal] = useState(false);
+    //to switch to true, all docs must be uploaded and admin approved and study guide purchased
+    const [isApprovedForAssessment, setIsApprovedForAssessment] =
+        useState(false);
 
     const certProgressImages = [
         ProgressBar0,
@@ -92,6 +91,22 @@ const AccordionCard = (props) => {
         ProgressBar7,
         ProgressBar8,
     ];
+
+    //will use this to set badge colors based on status
+    const getStatusBadgeClass = (status) => {
+        switch (status) {
+            case 'pending approval':
+                return 'bg-school-bus-yellow text-black';
+            case 'declined':
+                return 'bg-red text-white';
+            case 'approved':
+                return 'bg-green-is-good text-white';
+            default:
+                return 'bg-gray text-black';
+        }
+    };
+
+    //will need to add put request to user metadata route to change studyGuideAccess to true, just saving in state for now
 
     const getStudyGuide = async () => {
         try {
@@ -152,10 +167,11 @@ const AccordionCard = (props) => {
             });
     };
 
+    //move this to the cloudinarycontext and update progress there as well since it updates the progress
     const getAssessment = async () => {
         try {
             const accessToken = await getAccessTokenSilently();
-            const stripe = await stripePromise;
+            // const stripe = await stripePromise;
             const response = await fetch(
                 '/api/create-assessment-payment-intent',
                 {
@@ -172,18 +188,6 @@ const AccordionCard = (props) => {
             if (session.clientSecret) {
                 setShowPayment(true);
                 setShowModal(true);
-
-                try {
-                    await updateUserProgress(progress + 1);
-
-                    setProgress((prevProgress) => {
-                        const newProgress = Math.min(prevProgress + 1, 8);
-
-                        return newProgress;
-                    });
-                } catch (error) {
-                    console.error('Error updating user progress:', error);
-                }
             }
         } catch (error) {
             console.error('Error creating checkout session:', error);
@@ -194,41 +198,45 @@ const AccordionCard = (props) => {
         console.log('file shown');
     };
 
-    const handleUploadClick = (section) => {
+    const handleUploadClick = async (section) => {
         setSectionName(section);
-        initializeCloudinaryWidget(section);
+        const documentType = section
+        initializeCloudinaryWidget(section, onUploadSuccess);
+     
+
+        console.log('Calling updateUserProgress with value:', 1);
     };
 
-    const checkAllSectionsUploaded = () => {
-        const sections = [
-            brainMetaData,
-            clinicalMetaData,
-            firstAidMetaData,
-            cPRMetaData,
-            videoMetaData,
-            insuranceMetaData,
-        ];
 
-        const allUploaded = sections.every((section) => section.length > 0);
 
-        setIsUploaded(allUploaded);
-    };
+    // await getFilesByDocType(individualUser.userEmail, documentType);
+    //put the above in a useEffect
+
 
     useEffect(() => {
         getPublishableKey();
     }, []);
 
+
     useEffect(() => {
         const fetchData = async () => {
             if (user) {
+                console.log('User:', user); // Check the full user object
+                console.log('User email:', user.email); 
                 const token = localStorage.getItem('token');
                 try {
-                    // const folderFiles = await getFilesInFolder(token); //docs themselves
-                    const metadataFiles = await getFiles(token); //metadata
+                    const folderFiles = await getFilesInFolder(token); //docs themselves - user specific
+                    const metadataFiles = await getFiles(token);
+                    console.log(metadataFiles); //metadata
                     const userMetaData = await getUserMetaData(token);
                     setFileMetaData(metadataFiles);
                     setUserMetaData(userMetaData);
                     setProgress(userMetaData.userUploadProgress);
+                    setCertListUploadStatus(userMetaData.certListUploadStatus);
+                    setCloudinaryFiles(folderFiles); //user specific files (objects) from Cloudinary
+                    console.log(folderFiles);
+                    console.log(userMetaData);
+                    console.log(fileMetaData)
                 } catch (error) {
                     console.error(
                         'Error fetching files:',
@@ -239,13 +247,39 @@ const AccordionCard = (props) => {
         };
 
         fetchData();
-    }, [user]);
+    }, [user]); // Make sure this effect runs when 'user' changes
+    
+  
 
     useEffect(() => {
-        checkAllSectionsUploaded();
-    }, [fileMetaData]);
+        if (!userMetaData || !userMetaData.certListUploadStatus) return; 
+
+        const checkIsApprovedForAssessment = () => {
+            const allApproved = Object.values(
+                userMetaData.certListUploadStatus,
+            ).every((status) => status === 'approved');
+            const hasStudyGuideAccess = userMetaData.studyGuideAccess === true;
+
+            if (allApproved && hasStudyGuideAccess) {
+                setIsApprovedForAssessment(true);
+                console.log('User is approved for assessment');
+            } else {
+                setIsApprovedForAssessment(false);
+                console.log('User is not approved for assessment');
+            }
+        };
+
+        checkIsApprovedForAssessment();
+    }, [userMetaData]);
+
+    console.log(certListUploadStatus);
+    console.log(userMetaData);
 
     const getSectionFileNames = (sectionName) => {
+        if (!fileMetaData || fileMetaData.length === 0) {
+            return []; // Return an empty array if fileMetaData is undefined or empty
+        }
+    
         const filteredFiles = fileMetaData.filter(
             (file) => file.sectionName === sectionName,
         );
@@ -259,32 +293,31 @@ const AccordionCard = (props) => {
         const foundFile = fileMetaData.find(
             (file) => file.filename === fileName,
         );
-
         return foundFile ? foundFile.publicId : null;
     };
 
-    const brainMetaData = fileMetaData.filter((metadata) => {
-        return metadata.sectionName === 'Brain';
+    const brainMetaData =  fileMetaData && fileMetaData.filter((metadata) => {
+        return metadata.sectionName === 'brainIntegrationTraining';
     });
 
-    const clinicalMetaData = fileMetaData.filter((metadata) => {
-        return metadata.sectionName === 'Clinical';
+    const clinicalMetaData = fileMetaData && fileMetaData.filter((metadata) => {
+        return metadata.sectionName === 'clinicalHours';
     });
 
-    const firstAidMetaData = fileMetaData.filter((metadata) => {
-        return metadata.sectionName === 'FirstAid';
+    const firstAidMetaData = fileMetaData && fileMetaData.filter((metadata) => {
+        return metadata.sectionName === 'firstAidTraining';
     });
 
-    const cPRMetaData = fileMetaData.filter((metadata) => {
-        return metadata.sectionName === 'CPR';
+    const cPRMetaData = fileMetaData && fileMetaData.filter((metadata) => {
+        return metadata.sectionName === 'cprCert';
     });
 
-    const videoMetaData = fileMetaData.filter((metadata) => {
-        return metadata.sectionName === 'Video';
+    const videoMetaData = fileMetaData && fileMetaData.filter((metadata) => {
+        return metadata.sectionName === 'videoPresentation';
     });
 
-    const insuranceMetaData = fileMetaData.filter((metadata) => {
-        return metadata.sectionName === 'Insurance';
+    const insuranceMetaData = fileMetaData && fileMetaData.filter((metadata) => {
+        return metadata.sectionName === 'insurance';
     });
 
     return (
@@ -301,18 +334,28 @@ const AccordionCard = (props) => {
                     except for the assessment, which can only be accessed once
                     the preceding items are completed. If you have any questions
                     about the process, please{' '}
-                    <span className="font-fira text-lg md:text-xl font-bold text-blue">
+                    <Link
+                        className="font-fira text-lg md:text-xl font-bold text-blue"
+                        to="/contact-us"
+                    >
                         contact us
-                    </span>
+                    </Link>
                     , and a member of our board will be happy to assist you.
                 </p>
                 <div className="flex flex-col justify-center items-center pl-2 md:pl-20 gap-4 pb-5">
                     <img
-                        src={certProgressImages[progress]}
+                        src={
+                            certProgressImages[
+                                Math.min(
+                                    progress || 0,
+                                    certProgressImages.length - 1,
+                                )
+                            ]
+                        }
                         className="w-full md:w-auto"
+                        alt={`Progress level ${user.userUploadProgress}`}
                     />
                 </div>
-
                 <Accordion
                     allowMultipleExpanded={true}
                     allowZeroExpanded={true}
@@ -320,16 +363,16 @@ const AccordionCard = (props) => {
                 >
                     <Brain
                         title="Brain Integration Training"
-                        sectionName="Brain"
+                        sectionName="brainIntegrationTraining"
                         fileMetadata={fileMetaData}
-                        brainMetaData={brainMetaData}
+                        brainMetaData={brainMetaData ?? []} 
+                        certStatus={ brainMetaData && brainMetaData.length > 0 ? brainMetaData[0]?.brainIntegrationTraining : 'defaultValue'}
                     >
                         <div className="flex flex-col p-4 md:pl-6 md:pr-6 border rounded-lg border-t-0 border-solid border-black rounded-tr-none rounded-tl-none mb-5">
                             <h1 className="font-fira text-dark-green font-bold text-lg md:text-xl pt-6 md:pt-10">
                                 Complete 500 hours of relevant brain integration
                                 training.
                             </h1>
-
                             <br></br>
                             <p className="font-fira text-black text-sm md:text-base font-normal mt-4">
                                 The Brain Integration Training program requires
@@ -340,7 +383,6 @@ const AccordionCard = (props) => {
                                 and Competency Base. Below is a detailed
                                 breakdown of each component:
                             </p>
-
                             <h3 className="font-fira text-black text-sm md:text-base font-bold mt-4">
                                 Standard Knowledge Base Standard Knowledge Base
                             </h3>
@@ -362,7 +404,6 @@ const AccordionCard = (props) => {
                                 brain integration and their practical
                                 applications in clinical settings.
                             </p>
-
                             <h3 className="font-fira text-black text-sm md:text-base font-bold mt-4">
                                 Professional Training
                             </h3>
@@ -380,7 +421,6 @@ const AccordionCard = (props) => {
                                 business practices, including client management,
                                 record-keeping, and financial responsibilities.
                             </p>
-
                             <h3 className="font-fira text-black text-sm md:text-base font-bold mt-4">
                                 Competency Base
                             </h3>
@@ -403,13 +443,14 @@ const AccordionCard = (props) => {
                                 standards required to provide high-quality brain
                                 integration services.
                             </p>
-
                             <div className="flex flex-col gap-10 pt-10 pb-2">
                                 <div className="flex justify-center gap-10 pb-5">
                                     <div className="flex flex-col justify-start items-start pl-0">
                                         <ul>
-                                            {getSectionFileNames('Brain').map(
-                                                (file, index) => (
+                                            {getSectionFileNames(
+                                                'brainIntegrationTraining',
+                                            ).map((file, index) =>
+                                                file ? (
                                                     <li
                                                         key={index}
                                                         className="flex gap-5"
@@ -433,10 +474,18 @@ const AccordionCard = (props) => {
                                                             X
                                                         </button>
                                                     </li>
-                                                ),
+                                                ) : null,
                                             )}
                                         </ul>
-                                        <div></div>
+                                        {getSectionFileNames(
+                                            'brainIntegrationTraining',
+                                        ).length > 0 && (
+                                            <div>
+                                                {
+                                                    certListUploadStatus.brainIntegrationTraining
+                                                }
+                                            </div>
+                                        )}
                                         {deleteModalOpen && (
                                             <DeleteModal
                                                 open={deleteModalOpen}
@@ -450,7 +499,6 @@ const AccordionCard = (props) => {
                                                         className="w-70px h-[70px]"
                                                         alt="Delete File"
                                                     />
-
                                                     <h3 className="text-lg text-gray-500 font-bold">
                                                         Are you sure you want to
                                                         delete?
@@ -478,9 +526,12 @@ const AccordionCard = (props) => {
                                                                 getPublicId(
                                                                     currentFileToDelete,
                                                                 );
+                                                            const sectionName =
+                                                                'brainIntegrationTraining';
                                                             if (publicId) {
                                                                 deleteFile(
                                                                     publicId,
+                                                                    sectionName,
                                                                 );
                                                             } else {
                                                                 console.error(
@@ -496,13 +547,14 @@ const AccordionCard = (props) => {
                                             </DeleteModal>
                                         )}
                                     </div>
-
                                     <div className="flex justify-center items-center">
                                         <button>
                                             <img
                                                 src={UploadBtn}
                                                 onClick={() =>
-                                                    handleUploadClick('Brain')
+                                                    handleUploadClick(
+                                                        'brainIntegrationTraining',
+                                                    )
                                                 }
                                                 alt="Upload Brain"
                                             />
@@ -514,7 +566,7 @@ const AccordionCard = (props) => {
                     </Brain>
                     <Clinical
                         title="Clinical Hours"
-                        sectionName="Clinical"
+                        sectionName="clinicalHours"
                         clinicalMetaData={clinicalMetaData}
                     >
                         <div className="flex flex-col p-4 md:pl-6 md:pr-6 border rounded-lg border-t-0 border-solid border-black rounded-tr-none rounded-tl-none mb-5">
@@ -547,132 +599,147 @@ const AccordionCard = (props) => {
                                     special needs
                                 </li>
                             </ul>
-
-                            <div className="flex justify-center items-start pt-10">
-                                <div className="w-1/3">
-                                    <ul className="pl-0">
-                                        {getSectionFileNames('Clinical').map(
-                                            (file, index) => (
-                                                <li
-                                                    key={index}
-                                                    className="flex gap-5 mb-2"
-                                                >
-                                                    <button
-                                                        className="font-fira text-xl text-blue font-bold"
-                                                        onClick={showFile}
+                            <div className="flex flex-col gap-10 pt-10 pb-2">
+                                <div className="flex justify-center gap-10 pb-5">
+                                    <div className="flex flex-col justify-start items-start pl-0">
+                                        <ul>
+                                            {getSectionFileNames(
+                                                'clinicalHours',
+                                            ).map((file, index) =>
+                                                file ? (
+                                                    <li
+                                                        key={index}
+                                                        className="flex gap-5"
                                                     >
-                                                        {file}
-                                                        {''}
+                                                        <button
+                                                            className="font-fira text-xl text-blue font-bold text-left"
+                                                            onClick={showFile}
+                                                        >
+                                                            {file}{' '}
+                                                        </button>
+                                                        <button
+                                                            onClick={() => {
+                                                                setCurrentFileToDelete(
+                                                                    file,
+                                                                );
+                                                                setDeleteModalOpen(
+                                                                    true,
+                                                                );
+                                                            }}
+                                                        >
+                                                            X
+                                                        </button>
+                                                    </li>
+                                                ) : null,
+                                            )}
+                                        </ul>
+                                        {getSectionFileNames('clinicalHours')
+                                            .length > 0 && (
+                                            <div>
+                                                {
+                                                    certListUploadStatus.clinicalHours
+                                                }
+                                            </div>
+                                        )}
+                                        {deleteModalOpen && (
+                                            <DeleteModal
+                                                open={deleteModalOpen}
+                                                onClose={() =>
+                                                    setDeleteModalOpen(false)
+                                                }
+                                            >
+                                                <div className="text-center w-56 flex flex-col items-center gap-2 mb-10">
+                                                    <img
+                                                        src={DeleteFileIcon}
+                                                        className="w-70px h-[70px]"
+                                                        alt="Delete File"
+                                                    />
+
+                                                    <h3 className="text-lg text-gray-500 font-bold">
+                                                        Are you sure you want to
+                                                        delete?
+                                                    </h3>
+                                                    <p className="text-sm">
+                                                        This process cannot be
+                                                        undone.
+                                                    </p>
+                                                </div>
+                                                <div className="flex flex-col gap-10">
+                                                    <button
+                                                        className="bg-light-gray w-full py-2 rounded text-white"
+                                                        onClick={() =>
+                                                            setDeleteModalOpen(
+                                                                false,
+                                                            )
+                                                        }
+                                                    >
+                                                        Cancel
                                                     </button>
                                                     <button
+                                                        className="bg-red w-[100px] py-2 rounded text-white"
                                                         onClick={() => {
-                                                            setCurrentFileToDelete(
-                                                                file,
-                                                            );
-                                                            setDeleteModalOpen(
-                                                                true,
-                                                            );
+                                                            const publicId =
+                                                                getPublicId(
+                                                                    currentFileToDelete,
+                                                                );
+                                                            const sectionName =
+                                                                'clinicalHours';
+
+                                                            if (publicId) {
+                                                                deleteFile(
+                                                                    publicId,
+                                                                    sectionName,
+                                                                );
+                                                            } else {
+                                                                console.error(
+                                                                    'Public ID not found for file:',
+                                                                    currentFileToDelete,
+                                                                );
+                                                            }
                                                         }}
                                                     >
-                                                        X
+                                                        Delete
                                                     </button>
-                                                </li>
-                                            ),
+                                                </div>
+                                            </DeleteModal>
                                         )}
-                                    </ul>
-                                    {deleteModalOpen && (
-                                        <DeleteModal
-                                            open={deleteModalOpen}
-                                            onClose={() =>
-                                                setDeleteModalOpen(false)
+                                    </div>
+                                    <div className="flex flex-col items-center w-1/3 pt-20">
+                                        <DeleteTooltip
+                                            text="Delete current file to upload new one"
+                                            disabled={
+                                                clinicalMetaData && clinicalMetaData.length > 0
                                             }
                                         >
-                                            <div className="text-center w-56 flex flex-col items-center gap-2 mb-10">
+                                            <button
+                                                disabled={
+                                                    clinicalMetaData && clinicalMetaData.length > 0
+                                                }
+                                                className={`${
+                                                    clinicalMetaData &&  clinicalMetaData.length > 0
+                                                        ? 'opacity-50 cursor-not-allowed'
+                                                        : ''
+                                                }`}
+                                            >
                                                 <img
-                                                    src={DeleteFileIcon}
-                                                    className="w-70px h-[70px]"
-                                                    alt="Delete File"
-                                                />
-
-                                                <h3 className="text-lg text-gray-500 font-bold">
-                                                    Are you sure you want to
-                                                    delete?
-                                                </h3>
-                                                <p className="text-sm">
-                                                    This process cannot be
-                                                    undone.
-                                                </p>
-                                            </div>
-                                            <div className="flex flex-col gap-10">
-                                                <button
-                                                    className="bg-light-gray w-full py-2 rounded text-white"
+                                                    src={UploadBtn}
                                                     onClick={() =>
-                                                        setDeleteModalOpen(
-                                                            false,
+                                                        handleUploadClick(
+                                                            'clinicalHours',
                                                         )
                                                     }
-                                                >
-                                                    Cancel
-                                                </button>
-                                                <button
-                                                    className="bg-red w-full py-2 rounded text-white"
-                                                    onClick={() => {
-                                                        const publicId =
-                                                            getPublicId(
-                                                                currentFileToDelete,
-                                                            );
-                                                        if (publicId) {
-                                                            deleteFile(
-                                                                publicId,
-                                                            );
-                                                        } else {
-                                                            console.error(
-                                                                'Public ID not found for file:',
-                                                                currentFileToDelete,
-                                                            );
-                                                        }
-                                                    }}
-                                                >
-                                                    Delete
-                                                </button>
-                                            </div>
-                                        </DeleteModal>
-                                    )}
-                                </div>
-
-                                <div className="flex flex-col items-center w-1/3 pt-20">
-                                    <DeleteTooltip
-                                        text="Delete current file to upload new one"
-                                        disabled={clinicalMetaData.length > 0}
-                                    >
-                                        <button
-                                            disabled={
-                                                clinicalMetaData.length > 0
-                                            }
-                                            className={`${
-                                                clinicalMetaData.length > 0
-                                                    ? 'opacity-50 cursor-not-allowed'
-                                                    : ''
-                                            }`}
-                                        >
-                                            <img
-                                                src={UploadBtn}
-                                                onClick={() =>
-                                                    handleUploadClick(
-                                                        'Clinical',
-                                                    )
-                                                }
-                                                alt="Upload Clinical"
-                                            />
-                                        </button>
-                                    </DeleteTooltip>
+                                                    alt="Upload Clinical"
+                                                />
+                                            </button>
+                                        </DeleteTooltip>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </Clinical>
                     <FirstAid
                         title="First Aid Certification"
-                        sectionName="FirstAid"
+                        sectionName="firstAidTraining"
                         firstAidMetaData={firstAidMetaData}
                     >
                         <div className="flex flex-col p-4 md:pl-6 md:pr-6 border rounded-lg border-t-0 border-solid border-black rounded-tr-none rounded-tl-none mb-5">
@@ -686,12 +753,13 @@ const AccordionCard = (props) => {
                                 JPEG. Click the “Upload” button and select your
                                 files.
                             </p>
-
                             <div className="flex justify-center items-start pt-20">
                                 <div className="w-1/3">
                                     <ul className="pl-0">
-                                        {getSectionFileNames('FirstAid').map(
-                                            (file, index) => (
+                                        {getSectionFileNames(
+                                            'firstAidTraining',
+                                        ).map((file, index) =>
+                                            file ? (
                                                 <li
                                                     key={index}
                                                     className="flex gap-5 mb-2"
@@ -715,9 +783,17 @@ const AccordionCard = (props) => {
                                                         X
                                                     </button>
                                                 </li>
-                                            ),
+                                            ) : null,
                                         )}
                                     </ul>
+                                    {getSectionFileNames('firstAidTraining')
+                                        .length > 0 && (
+                                        <div>
+                                            {
+                                                certListUploadStatus.firstAidTraining
+                                            }
+                                        </div>
+                                    )}
                                     {deleteModalOpen && (
                                         <DeleteModal
                                             open={deleteModalOpen}
@@ -731,7 +807,6 @@ const AccordionCard = (props) => {
                                                     className="w-70px h-[70px]"
                                                     alt="Delete File"
                                                 />
-
                                                 <h3 className="text-lg text-gray-500 font-bold">
                                                     Are you sure you want to
                                                     delete?
@@ -753,15 +828,18 @@ const AccordionCard = (props) => {
                                                     Cancel
                                                 </button>
                                                 <button
-                                                    className="bg-red w-full py-2 rounded text-white"
+                                                    className="bg-red w-[100px] py-2 rounded text-white"
                                                     onClick={() => {
                                                         const publicId =
                                                             getPublicId(
                                                                 currentFileToDelete,
                                                             );
+                                                        const sectionName =
+                                                            'firstAidTraining';
                                                         if (publicId) {
                                                             deleteFile(
                                                                 publicId,
+                                                                sectionName,
                                                             );
                                                         } else {
                                                             console.error(
@@ -777,18 +855,17 @@ const AccordionCard = (props) => {
                                         </DeleteModal>
                                     )}
                                 </div>
-
                                 <div className="flex flex-col items-center w-1/3 pt-20">
                                     <DeleteTooltip
                                         text="Delete current file to upload new one"
-                                        disabled={firstAidMetaData.length > 0}
+                                        disabled={firstAidMetaData && firstAidMetaData.length > 0}
                                     >
                                         <button
                                             disabled={
-                                                firstAidMetaData.length > 0
+                                                firstAidMetaData && firstAidMetaData.length > 0
                                             }
                                             className={`${
-                                                firstAidMetaData.length > 0
+                                                firstAidMetaData && firstAidMetaData.length > 0
                                                     ? 'opacity-50 cursor-not-allowed'
                                                     : ''
                                             }`}
@@ -797,7 +874,7 @@ const AccordionCard = (props) => {
                                                 src={UploadBtn}
                                                 onClick={() =>
                                                     handleUploadClick(
-                                                        'FirstAid',
+                                                        'firstAidTraining',
                                                     )
                                                 }
                                                 alt="Upload FirstAid"
@@ -810,7 +887,7 @@ const AccordionCard = (props) => {
                     </FirstAid>
                     <CPR
                         title="CPR Certification"
-                        sectionName="CPR"
+                        sectionName="cprCert"
                         cPRMetaData={cPRMetaData}
                     >
                         <div className="flex flex-col p-4 md:pl-6 md:pr-6 border rounded-lg border-t-0 border-solid border-black rounded-tr-none rounded-tl-none mb-5">
@@ -836,39 +913,45 @@ const AccordionCard = (props) => {
                                 Once completed, copy the certificate and upload
                                 the documents.
                             </p>
-
                             <div className="flex justify-center items-start pt-20">
                                 <div className="w-1/3">
                                     <ul className="pl-0">
-                                        {getSectionFileNames('CPR').map(
-                                            (file, index) => (
-                                                <li
-                                                    key={index}
-                                                    className="flex gap-5 mb-2"
-                                                >
-                                                    <button
-                                                        className="font-fira text-xl text-blue font-bold"
-                                                        onClick={showFile}
+                                        {getSectionFileNames('cprCert').map(
+                                            (file, index) =>
+                                                file ? (
+                                                    <li
+                                                        key={index}
+                                                        className="flex gap-5 mb-2"
                                                     >
-                                                        {file}
-                                                        {''}
-                                                    </button>
-                                                    <button
-                                                        onClick={() => {
-                                                            setCurrentFileToDelete(
-                                                                file,
-                                                            );
-                                                            setDeleteModalOpen(
-                                                                true,
-                                                            );
-                                                        }}
-                                                    >
-                                                        X
-                                                    </button>
-                                                </li>
-                                            ),
+                                                        <button
+                                                            className="font-fira text-xl text-blue font-bold"
+                                                            onClick={showFile}
+                                                        >
+                                                            {file}
+                                                            {''}
+                                                        </button>
+                                                        <button
+                                                            onClick={() => {
+                                                                setCurrentFileToDelete(
+                                                                    file,
+                                                                );
+                                                                setDeleteModalOpen(
+                                                                    true,
+                                                                );
+                                                            }}
+                                                        >
+                                                            X
+                                                        </button>
+                                                    </li>
+                                                ) : null,
                                         )}
                                     </ul>
+                                    {getSectionFileNames('cprCert').length >
+                                        0 && (
+                                        <div>
+                                            {certListUploadStatus.cprCert}
+                                        </div>
+                                    )}
                                     {deleteModalOpen && (
                                         <DeleteModal
                                             open={deleteModalOpen}
@@ -882,7 +965,6 @@ const AccordionCard = (props) => {
                                                     className="w-70px h-[70px]"
                                                     alt="Delete File"
                                                 />
-
                                                 <h3 className="text-lg text-gray-500 font-bold">
                                                     Are you sure you want to
                                                     delete?
@@ -904,15 +986,19 @@ const AccordionCard = (props) => {
                                                     Cancel
                                                 </button>
                                                 <button
-                                                    className="bg-red w-full py-2 rounded text-white"
+                                                    className="bg-red w-[100px] py-2 rounded text-white"
                                                     onClick={() => {
                                                         const publicId =
                                                             getPublicId(
                                                                 currentFileToDelete,
                                                             );
+                                                        const sectionName =
+                                                            'cprCert';
+
                                                         if (publicId) {
                                                             deleteFile(
                                                                 publicId,
+                                                                sectionName,
                                                             );
                                                         } else {
                                                             console.error(
@@ -928,16 +1014,15 @@ const AccordionCard = (props) => {
                                         </DeleteModal>
                                     )}
                                 </div>
-
                                 <div className="flex flex-col items-center w-1/3 pt-20">
                                     <DeleteTooltip
                                         text="Delete current file to upload new one"
-                                        disabled={cPRMetaData.length > 0}
+                                        disabled={cPRMetaData && cPRMetaData.length > 0}
                                     >
                                         <button
-                                            disabled={cPRMetaData.length > 0}
+                                            disabled={cPRMetaData && cPRMetaData.length > 0}
                                             className={`${
-                                                cPRMetaData.length > 0
+                                                cPRMetaData && cPRMetaData.length > 0
                                                     ? 'opacity-50 cursor-not-allowed'
                                                     : ''
                                             }`}
@@ -945,7 +1030,7 @@ const AccordionCard = (props) => {
                                             <img
                                                 src={UploadBtn}
                                                 onClick={() =>
-                                                    handleUploadClick('CPR')
+                                                    handleUploadClick('cprCert')
                                                 }
                                                 alt="Upload CPR"
                                             />
@@ -957,7 +1042,7 @@ const AccordionCard = (props) => {
                     </CPR>
                     <Video
                         title="Video Presentation"
-                        sectionName="Video"
+                        sectionName="videoPresentation"
                         videoMetaData={videoMetaData}
                     >
                         <div className="flex flex-col p-4 md:pl-6 md:pr-6 border rounded-lg border-t-0 border-solid border-black rounded-tr-none rounded-tl-none mb-5">
@@ -991,12 +1076,13 @@ const AccordionCard = (props) => {
                                     Pause-lock procedure
                                 </li>
                             </ul>
-
                             <div className="flex justify-center items-start pt-20">
                                 <div className="w-1/3">
-                                    <ul className="pl-0">
-                                        {getSectionFileNames('Video').map(
-                                            (file, index) => (
+                                    <ul>
+                                        {getSectionFileNames(
+                                            'videoPresentation',
+                                        ).map((file, index) =>
+                                            file ? (
                                                 <li
                                                     key={index}
                                                     className="flex gap-5 mb-2"
@@ -1021,9 +1107,17 @@ const AccordionCard = (props) => {
                                                         X
                                                     </button>
                                                 </li>
-                                            ),
+                                            ) : null,
                                         )}
                                     </ul>
+                                    {getSectionFileNames('videoPresentation')
+                                        .length > 0 && (
+                                        <div>
+                                            {
+                                                certListUploadStatus.videoPresentation
+                                            }
+                                        </div>
+                                    )}
                                     {deleteModalOpen && (
                                         <DeleteModal
                                             open={deleteModalOpen}
@@ -1037,7 +1131,6 @@ const AccordionCard = (props) => {
                                                     className="w-70px h-[70px]"
                                                     alt="Delete File"
                                                 />
-
                                                 <h3 className="text-lg text-gray-500 font-bold">
                                                     Are you sure you want to
                                                     delete?
@@ -1059,15 +1152,19 @@ const AccordionCard = (props) => {
                                                     Cancel
                                                 </button>
                                                 <button
-                                                    className="bg-red w-full py-2 rounded text-white"
+                                                    className="bg-red w-[100px] py-2 rounded text-white"
                                                     onClick={() => {
                                                         const publicId =
                                                             getPublicId(
                                                                 currentFileToDelete,
                                                             );
+                                                        const sectionName =
+                                                            'videoPresentation';
+
                                                         if (publicId) {
                                                             deleteFile(
                                                                 publicId,
+                                                                sectionName,
                                                             );
                                                         } else {
                                                             console.error(
@@ -1083,16 +1180,15 @@ const AccordionCard = (props) => {
                                         </DeleteModal>
                                     )}
                                 </div>
-
                                 <div className="flex flex-col items-center w-1/3 pt-20">
                                     <DeleteTooltip
                                         text="Delete current file to upload new one"
-                                        disabled={videoMetaData.length > 0}
+                                        disabled={videoMetaData && videoMetaData.length > 0}
                                     >
                                         <button
-                                            disabled={videoMetaData.length > 0}
+                                            disabled={videoMetaData && videoMetaData.length > 0}
                                             className={`${
-                                                videoMetaData.length > 0
+                                                videoMetaData && videoMetaData.length > 0
                                                     ? 'opacity-50 cursor-not-allowed'
                                                     : ''
                                             }`}
@@ -1100,7 +1196,9 @@ const AccordionCard = (props) => {
                                             <img
                                                 src={UploadBtn}
                                                 onClick={() =>
-                                                    handleUploadClick('Video')
+                                                    handleUploadClick(
+                                                        'videoPresentation',
+                                                    )
                                                 }
                                                 alt="Upload Video"
                                             />
@@ -1110,10 +1208,9 @@ const AccordionCard = (props) => {
                             </div>
                         </div>
                     </Video>
-
                     <Insurance
                         title="Insurance"
-                        sectionName="Insurance"
+                        sectionName="insurance"
                         insuranceMetaData={insuranceMetaData}
                     >
                         <div className="flex flex-col p-4 md:pl-6 md:pr-6 border rounded-lg border-t-0 border-solid border-black rounded-tr-none rounded-tl-none mb-5">
@@ -1140,39 +1237,45 @@ const AccordionCard = (props) => {
                                     button below and select your file.
                                 </li>
                             </ul>
-
                             <div className="flex justify-center items-start pt-10">
                                 <div className="w-1/3">
                                     <ul className="pl-0">
-                                        {getSectionFileNames('Insurance').map(
-                                            (file, index) => (
-                                                <li
-                                                    key={index}
-                                                    className="flex gap-5 mb-2"
-                                                >
-                                                    <button
-                                                        className="font-fira text-xl text-blue font-bold"
-                                                        onClick={showFile}
+                                        {getSectionFileNames('insurance').map(
+                                            (file, index) =>
+                                                file ? (
+                                                    <li
+                                                        key={index}
+                                                        className="flex gap-5 mb-2"
                                                     >
-                                                        {file}
-                                                        {''}
-                                                    </button>
-                                                    <button
-                                                        onClick={() => {
-                                                            setCurrentFileToDelete(
-                                                                file,
-                                                            );
-                                                            setDeleteModalOpen(
-                                                                true,
-                                                            );
-                                                        }}
-                                                    >
-                                                        X
-                                                    </button>
-                                                </li>
-                                            ),
+                                                        <button
+                                                            className="font-fira text-xl text-blue font-bold"
+                                                            onClick={showFile}
+                                                        >
+                                                            {file}
+                                                            {''}
+                                                        </button>
+                                                        <button
+                                                            onClick={() => {
+                                                                setCurrentFileToDelete(
+                                                                    file,
+                                                                );
+                                                                setDeleteModalOpen(
+                                                                    true,
+                                                                );
+                                                            }}
+                                                        >
+                                                            X
+                                                        </button>
+                                                    </li>
+                                                ) : null,
                                         )}
                                     </ul>
+                                    {getSectionFileNames('insurance').length >
+                                        0 && (
+                                        <div>
+                                            {certListUploadStatus.insurance}
+                                        </div>
+                                    )}
                                     {deleteModalOpen && (
                                         <DeleteModal
                                             open={deleteModalOpen}
@@ -1208,15 +1311,21 @@ const AccordionCard = (props) => {
                                                     Cancel
                                                 </button>
                                                 <button
-                                                    className="bg-red w-full py-2 rounded text-white"
+                                                    className="bg-red w-[100px] py-2 rounded text-white"
                                                     onClick={() => {
                                                         const publicId =
                                                             getPublicId(
                                                                 currentFileToDelete,
                                                             );
+                                                        const sectionName =
+                                                            'insurance';
                                                         if (publicId) {
                                                             deleteFile(
                                                                 publicId,
+                                                                sectionName,
+                                                                console.log(
+                                                                    'deleted file',
+                                                                ),
                                                             );
                                                         } else {
                                                             console.error(
@@ -1232,18 +1341,17 @@ const AccordionCard = (props) => {
                                         </DeleteModal>
                                     )}
                                 </div>
-
                                 <div className="flex flex-col items-center w-1/3 pt10 pb-10">
                                     <DeleteTooltip
                                         text="Delete current file to upload new one"
-                                        disabled={insuranceMetaData.length > 0}
+                                        disabled={insuranceMetaData && insuranceMetaData.length > 0}
                                     >
                                         <button
                                             disabled={
-                                                insuranceMetaData.length > 0
+                                                insuranceMetaData && insuranceMetaData.length > 0
                                             }
                                             className={`${
-                                                insuranceMetaData.length > 0
+                                                insuranceMetaData && insuranceMetaData.length > 0
                                                     ? 'opacity-50 cursor-not-allowed'
                                                     : ''
                                             }`}
@@ -1252,7 +1360,7 @@ const AccordionCard = (props) => {
                                                 src={UploadBtn}
                                                 onClick={() =>
                                                     handleUploadClick(
-                                                        'Insurance',
+                                                        'insurance',
                                                     )
                                                 }
                                                 alt="Upload Insurance"
@@ -1263,7 +1371,6 @@ const AccordionCard = (props) => {
                             </div>
                         </div>
                     </Insurance>
-
                     <StudyGuide title={'Study Guide'}>
                         <div className="flex flex-col p-4 md:pl-6 md:pr-6 border rounded-lg border-t-0 border-solid border-black rounded-tr-none rounded-tl-none mb-5">
                             <h1 className="font-fira text-dark-green font-bold text-lg md:text-xl pt-6 md:pt-10">
@@ -1273,7 +1380,6 @@ const AccordionCard = (props) => {
                                 Having knowledge of Structure, Function, and
                                 Processes.
                             </h1>
-
                             <div className="flex gap-16">
                                 <div className="flex-1">
                                     <ul className="min-h-full">
@@ -1297,7 +1403,6 @@ const AccordionCard = (props) => {
                                         <li>Medulla</li>
                                     </ul>
                                 </div>
-
                                 <div className="flex-1">
                                     <ul className="min-h-full">
                                         <li>The Cerebellum</li>
@@ -1322,7 +1427,6 @@ const AccordionCard = (props) => {
                                         <li>Sensory neurons</li>
                                     </ul>
                                 </div>
-
                                 <div className="flex-1">
                                     <div className="min-h-full">
                                         <ul
@@ -1352,7 +1456,6 @@ const AccordionCard = (props) => {
                                         </ul>
                                     </div>
                                 </div>
-
                                 <div className="flex-1">
                                     <div className="min-h-full">
                                         <ul
@@ -1427,7 +1530,6 @@ const AccordionCard = (props) => {
                                 Complete 500 hours of relevant brain integration
                                 training.
                             </h1>
-
                             <p className="font-fira text-black text-base font-normal mt-2">
                                 The Brain Integration Training program requires
                                 a comprehensive 500-hour training to ensure
@@ -1437,7 +1539,6 @@ const AccordionCard = (props) => {
                                 and Competency Base. Below is a detailed
                                 breakdown of each component:
                             </p>
-
                             <h3 className="font-fira text-black text-base font-bold mt-2">
                                 Standard Knowledge Base
                             </h3>
@@ -1458,7 +1559,6 @@ const AccordionCard = (props) => {
                                 for brain integration and their practical
                                 applications in clinical settings.
                             </p>
-
                             <h3 className="font-fira text-black text-base font-bold mt-4">
                                 Professional Training
                             </h3>
@@ -1476,7 +1576,6 @@ const AccordionCard = (props) => {
                                 client management, record-keeping, and financial
                                 responsibilities.
                             </p>
-
                             <h3 className="font-fira text-black text-base font-bold mt-4">
                                 Competency Base
                             </h3>
@@ -1498,12 +1597,11 @@ const AccordionCard = (props) => {
                                 rigorous standards required to provide
                                 high-quality brain integration services.
                             </p>
-
                             <div className="form-flex gap-10 pt-20 pb-5 mt-4">
                                 <button
-                                    disabled={!isUploaded}
+                                    disabled={!isApprovedForAssessment}
                                     className={`${
-                                        !isUploaded
+                                        !isApprovedForAssessment
                                             ? 'opacity-50 cursor-not-allowed'
                                             : ''
                                     }`}
@@ -1511,7 +1609,7 @@ const AccordionCard = (props) => {
                                     <img
                                         src={PayforandStart}
                                         onClick={
-                                            isUploaded ? getAssessment : null
+                                            isApprovedForAssessment ? getAssessment : null
                                         }
                                     />
                                 </button>
