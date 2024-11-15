@@ -12,13 +12,14 @@ const Auth = () => {
     const [user, setUser] = useState(initValues)
     const [newUser, setNewUser] = useState(true)
     const {  getAccessTokenSilently } = useAuth0();
+    import.meta.env.VITE_API_BASE_URL
 
     const createUserMetadata = async (user) => {
         const { email, name, picture } = user;
 
 
         try {
-            const response = await fetch('http://localhost:8080/api/user/', {
+            const response = await fetch(`http://${baseUrl}/api/user/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

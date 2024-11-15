@@ -138,7 +138,7 @@ export const useProfileForm = (initialValues) => {
 
         try {
             const response = await fetch(
-                'http://localhost:8080/api/profile/create-profile',
+                `http://${baseUrl}/api/profile/create-profile`,
                 {
                     method: 'POST',
                     headers: {

@@ -23,6 +23,7 @@ export const AdminProvider = ({ children }) => {
     const [showModal, setShowModal] = useState(false);
     const [fileModalOpen, setFileModalOpen] = useState(false);
     const [selectedDocumentName, setSelectedDocumentName] = useState('');
+    const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
     const getManagementToken = async () => {
         const response = await axios.post(
@@ -43,7 +44,7 @@ export const AdminProvider = ({ children }) => {
     async function getAllUsers() {
         try {
             const accessToken = await getAccessTokenSilently();
-            const response = await axios.get(`http://localhost:8080/api/user`, {
+            const response = await axios.get(`http://${baseUrl}/api/user`, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
@@ -78,7 +79,7 @@ export const AdminProvider = ({ children }) => {
         const accessToken = await getAccessTokenSilently();
         try {
             const response = await fetch(
-                `http://localhost:8080/api/user/${email}/is-admin`,
+                `http://${baseUrl}/api/user/${email}/is-admin`,
                 {
                     method: 'PUT',
                     headers: {
@@ -143,7 +144,7 @@ export const AdminProvider = ({ children }) => {
             const userId = user.user_id;
 
             await axios.delete(
-                `http://localhost:8080/api/admin/delete-user/${userId}`,
+                `http://${baseUrl}/api/admin/delete-user/${userId}`,
                 {
                     headers: {
                         'Content-Type': 'application/json',
@@ -157,7 +158,7 @@ export const AdminProvider = ({ children }) => {
 
             console.log(`User with email ${userEmail} deleted successfully`);
 
-            await axios.delete(`http://localhost:8080/api/user/${userEmail}`, {
+            await axios.delete(`http://${baseUrl}/api/user/${userEmail}`, {
                 headers: {
                     Authorization: `Bearer ${accessTokenforBackend}`,
                 },
@@ -218,7 +219,7 @@ export const AdminProvider = ({ children }) => {
                 };
 
                 const response = await fetch(
-                    `http://localhost:8080/api/user/${individualUser.userEmail}/document-status`,
+                    `http://${baseUrl}/api/user/${individualUser.userEmail}/document-status`,
                     {
                         method: 'PUT',
                         headers: {

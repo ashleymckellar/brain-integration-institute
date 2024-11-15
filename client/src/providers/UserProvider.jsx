@@ -27,6 +27,7 @@ export const UserProvider = ({ children }) => {
     const [allProfiles, setAllProfiles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    import.meta.env.VITE_API_BASE_URL,
 
     const handleInputChange = (e) => {
         console.log('change handled');
@@ -47,7 +48,7 @@ export const UserProvider = ({ children }) => {
 
         try {
             const response = await fetch(
-                'http://localhost:8080/api/profile/create-profile',
+                `http://${baseUrl}/api/profile/create-profile`,
                 {
                     method: 'POST',
                     headers: {
@@ -89,7 +90,7 @@ export const UserProvider = ({ children }) => {
         try {
             const accessToken = await getAccessTokenSilently();
             const response = await fetch(
-                `http://localhost:8080/api/profile/${user.email}`,
+                `http://${baseUrl}/api/profile/${user.email}`,
                 {
                     method: 'PUT',
                     headers: {
@@ -200,47 +201,4 @@ export const UserProvider = ({ children }) => {
 
 
 
-// const updateUserProgress = async (newProgress) => {
-//     console.log('updateUserProgress called with:', newProgress);
-//     //this works
-//     if (user) {
-//         try {
-//             const accessToken = await getAccessTokenSilently();
-//             console.log('Updating user progress:', {
-//                 userUploadProgress: newProgress,
-//             });
-//             console.log('User email:', user.email);
-//             console.log('User object:', user);
 
-//             const response = await fetch(
-//                 `http://localhost:8080/api/user/${user.email}/progress`,
-//                 {
-//                     method: 'PUT',
-//                     headers: {
-//                         'Content-Type': 'application/json',
-//                         Authorization: `Bearer ${accessToken}`,
-//                     },
-//                     body: JSON.stringify({
-//                         userUploadProgress: newProgress,
-//                     }),
-//                 },
-//             );
-
-//             console.log('Response Status:', response.status);
-//             console.log('Response Status Text:', response.statusText);
-
-//             if (!response.ok) {
-//                 const errorData = await response.json();
-//                 console.error('Failed to update user progress:', errorData);
-//                 throw new Error('Failed to update user progress');
-//             }
-
-//             const data = await response.json();
-//             console.log('User progress updated on the server:', data);
-//         } catch (error) {
-//             console.error('Error updating user progress:', error);
-//         }
-//     } else {
-//         console.error('User is not defined');
-//     }
-// };

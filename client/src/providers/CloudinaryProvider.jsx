@@ -36,6 +36,7 @@ export const CloudinaryProvider = ({ children }) => {
     const [imagesByDocType, setImagesByDocType] = useState([]);
     const [expandedSection, setExpandedSection] = useState(null);
     const [sectionFiles, setSectionFiles] = useState({});
+    const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
     const uwConfig = {
         cloudName: import.meta.env.VITE_CLOUDINARY_CLOUDNAME,
@@ -67,7 +68,7 @@ export const CloudinaryProvider = ({ children }) => {
             // Fetch files from the API
             const email = user.email;
             const response = await axios.get(
-                `http://localhost:8080/api/files/${email}`,
+                `http://${baseUrl}/api/files/${email}`,
                 {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
@@ -100,7 +101,7 @@ export const CloudinaryProvider = ({ children }) => {
             const accessToken = await getAccessTokenSilently();
 
             const response = await axios.get(
-                `http://localhost:8080/api/images/${nickname}`,
+                `http://${baseUrl}/api/images/${nickname}`,
                 {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
@@ -129,7 +130,7 @@ export const CloudinaryProvider = ({ children }) => {
             const accessToken = await getAccessTokenSilently();
 
             const response = await axios.get(
-                `http://localhost:8080/api/user/${user.email}`,
+                `http://${baseUrl}/api/user/${user.email}`,
                 {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
@@ -199,7 +200,7 @@ export const CloudinaryProvider = ({ children }) => {
                 console.log('User object:', user);
 
                 const response = await fetch(
-                    `http://localhost:8080/api/user/${user.email}/progress`,
+                    `http://${baseUrl}/api/user/${user.email}/progress`,
                     {
                         method: 'PUT',
                         headers: {
@@ -239,7 +240,7 @@ export const CloudinaryProvider = ({ children }) => {
             const accessToken = await getAccessTokenSilently();
 
             const response = await fetch(
-                `http://localhost:8080/api/user/${email}/study-guide`,
+                `http://${baseUrl}/api/user/${email}/study-guide`,
                 {
                     method: 'PUT',
                     headers: {
@@ -284,7 +285,7 @@ export const CloudinaryProvider = ({ children }) => {
             try {
                 const accessToken = await getAccessTokenSilently();
                 const response = await fetch(
-                    `http://localhost:8080/api/user/${user.email}/document-status`,
+                    `http://${baseUrl}/api/user/${user.email}/document-status`,
                     {
                         method: 'PATCH',
                         headers: {
@@ -360,7 +361,7 @@ export const CloudinaryProvider = ({ children }) => {
                         try {
                             const accessToken = await getAccessTokenSilently();
                             const response = await fetch(
-                                'http://localhost:8080/api/files',
+                                `http://${baseUrl}/api/files`,
                                 {
                                     method: 'POST',
                                     headers: {
@@ -443,7 +444,7 @@ export const CloudinaryProvider = ({ children }) => {
                         try {
                             const accessToken = await getAccessTokenSilently();
                             const response = await fetch(
-                                `http://localhost:8080/api/user/${user.email}/profile-picture`,
+                                `http://${baseUrl}/api/user/${user.email}/profile-picture`,
                                 {
                                     method: 'PUT',
                                     headers: {
@@ -483,7 +484,7 @@ export const CloudinaryProvider = ({ children }) => {
         try {
             const accessToken = await getAccessTokenSilently();
             const response = await fetch(
-                `http://localhost:8080/api/files/${publicId}`,
+                `http://${baseUrl}/api/files/${publicId}`,
                 {
                     method: 'DELETE',
                     headers: {
@@ -552,7 +553,7 @@ export const CloudinaryProvider = ({ children }) => {
                         try {
                             const accessToken = await getAccessTokenSilently();
                             const response = await fetch(
-                                'http://localhost:8080/api/images/certificate',
+                                `http://${baseUrl}/api/images/certificate`,
                                 {
                                     method: 'POST',
                                     headers: {
@@ -593,7 +594,7 @@ export const CloudinaryProvider = ({ children }) => {
         try {
             const accessToken = await getAccessTokenSilently();
             const response = await axios.get(
-                `http://localhost:8080/api/images/certificate`,
+                `http://${baseUrl}/api/images/certificate`,
                 {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
@@ -610,7 +611,7 @@ export const CloudinaryProvider = ({ children }) => {
         try {
             const accessToken = await getAccessTokenSilently();
             const response = await fetch(
-                `http://localhost:8080/api/images/certificate/${publicId}`,
+                `http://${baseUrl}/api/images/certificate/${publicId}`,
                 {
                     method: 'DELETE',
                     headers: {
