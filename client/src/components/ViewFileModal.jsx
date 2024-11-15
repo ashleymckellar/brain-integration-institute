@@ -43,7 +43,7 @@ export default function ViewFileModal({
             const userEmail = individualUser.userEmail;
 
             const response = await fetch(
-                `http://${baseUrl}/api/user/${userEmail}/document-status`,
+                `${baseUrl}/api/user/${userEmail}/document-status`,
                 {
                     method: 'PATCH',
                     headers: {
@@ -76,7 +76,7 @@ export default function ViewFileModal({
         }
 
         if (newDocStatus === 'declined') {
-            await fetch(`http://${baseUrl}/api/approvalmessages`, {
+            await fetch(`${baseUrl}/api/approvalmessages`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

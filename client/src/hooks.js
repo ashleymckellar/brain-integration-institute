@@ -29,7 +29,7 @@ export const useHttpAuthClient = () => {
 
         try {
             const response = await fetch(
-                `http://${baseUrl}/api/user/createuser`,
+                `${baseUrl}/api/user/createuser`,
                 {
                     method: 'POST',
                     headers: {
@@ -139,7 +139,7 @@ export const useProfileForm = (initialValues) => {
 
         try {
             const response = await fetch(
-                `http://${baseUrl}/api/profile/create-profile`,
+                `${baseUrl}/api/profile/create-profile`,
                 {
                     method: 'POST',
                     headers: {

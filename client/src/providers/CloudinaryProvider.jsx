@@ -68,7 +68,7 @@ export const CloudinaryProvider = ({ children }) => {
             // Fetch files from the API
             const email = user.email;
             const response = await axios.get(
-                `http://${baseUrl}/api/files/${email}`,
+                `${baseUrl}/api/files/${email}`,
                 {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
@@ -287,7 +287,7 @@ export const CloudinaryProvider = ({ children }) => {
             try {
                 const accessToken = await getAccessTokenSilently();
                 const response = await fetch(
-                    `http://${baseUrl}/api/user/${user.email}/document-status`,
+                    `${baseUrl}/api/user/${user.email}/document-status`,
                     {
                         method: 'PATCH',
                         headers: {
@@ -553,7 +553,7 @@ export const CloudinaryProvider = ({ children }) => {
                         try {
                             const accessToken = await getAccessTokenSilently();
                             const response = await fetch(
-                                `http://${baseUrl}/api/images/certificate`,
+                                `${baseUrl}/api/images/certificate`,
                                 {
                                     method: 'POST',
                                     headers: {
@@ -594,7 +594,7 @@ export const CloudinaryProvider = ({ children }) => {
         try {
             const accessToken = await getAccessTokenSilently();
             const response = await axios.get(
-                `http://${baseUrl}/api/images/certificate`,
+                `${baseUrl}/api/images/certificate`,
                 {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
@@ -611,7 +611,7 @@ export const CloudinaryProvider = ({ children }) => {
         try {
             const accessToken = await getAccessTokenSilently();
             const response = await fetch(
-                `http://${baseUrl}/api/images/certificate/${publicId}`,
+                `${baseUrl}/api/images/certificate/${publicId}`,
                 {
                     method: 'DELETE',
                     headers: {
