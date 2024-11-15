@@ -18,6 +18,7 @@ import { FileContext } from './contexts';
 export const useHttpAuthClient = () => {
     const { getAccessTokenSilently, user } = useAuth0();
     const [metadataCreated, setMetadataCreated] = useState(false);
+    const baseUrl = import.meta.env.VITE_API_BASE_URL
 
     const createUserMetadata = async (user) => {
         if (!user || metadataCreated) return;
@@ -26,7 +27,7 @@ export const useHttpAuthClient = () => {
 
         try {
             const response = await fetch(
-                'http://localhost:8080/api/user/createuser',
+                `http://${baseUrl}/api/user/createuser`,
                 {
                     method: 'POST',
                     headers: {

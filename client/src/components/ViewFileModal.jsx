@@ -1,5 +1,3 @@
-
-
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -13,10 +11,11 @@ export default function ViewFileModal({
     onChange,
     newDocStatus,
     selectedDocumentType,
-    getAllUsers
+    getAllUsers,
 }) {
     const { getAccessTokenSilently } = useAuth0();
     const [reasonForDenial, setReasonForDenial] = useState('');
+    const baseUrl = import.meta.env.VITE_API_BASE_URL;
     useEffect(() => {
         if (open) {
             document.body.classList.add('overflow-hidden');
@@ -30,11 +29,11 @@ export default function ViewFileModal({
     }, [open]);
 
     const handleStatusChange = (e) => {
-        onChange(e); 
+        onChange(e);
     };
 
     const handleReasonChange = (e) => {
-        setReasonForDenial(e.target.value); 
+        setReasonForDenial(e.target.value);
     };
 
     const handleSubmit = async (e) => {
@@ -44,7 +43,7 @@ export default function ViewFileModal({
             const userEmail = individualUser.userEmail;
 
             const response = await fetch(
-                `http://localhost:8080/api/user/${userEmail}/document-status`,
+                `http://${baseUrl}/api/user/${userEmail}/document-status`,
                 {
                     method: 'PATCH',
                     headers: {
@@ -68,7 +67,7 @@ export default function ViewFileModal({
             } else {
                 const data = await response.json();
                 console.log('Successfully updated:', data);
-                getAllUsers()
+                getAllUsers();
                 alert('Document status updated successfully!');
             }
         } catch (error) {
@@ -77,7 +76,7 @@ export default function ViewFileModal({
         }
 
         if (newDocStatus === 'declined') {
-            await fetch(`http://localhost:8080/api/approvalmessages`, {
+            await fetch(`http://${baseUrl}/api/approvalmessages`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -96,7 +95,7 @@ export default function ViewFileModal({
 
         setReasonForDenial('');
         onClose();
-    }; 
+    };
 
     return (
         <div
