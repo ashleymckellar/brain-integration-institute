@@ -6,7 +6,7 @@ import bell from '../../assets/icons/bell.png';
 import placeholderProfilePic from '../../assets/icons/placeholderProfilePic.png';
 import { CloudinaryContext } from '../../contexts';
 import { Menu, X } from 'lucide-react';
-import axios from 'axios';
+// import axios from 'axios';
 import BrainIntegrationSeal from '../../assets/icons/BrainIntegrationSeal.png';
 
 export const Navbar = () => {
@@ -15,7 +15,7 @@ export const Navbar = () => {
         logout,
         isAuthenticated,
         user,
-        getAccessTokenSilently,
+        // getAccessTokenSilently,
     } = useAuth0();
     const { imageUrl, getUserMetaData, userMetaData } =
         useContext(CloudinaryContext);
@@ -40,27 +40,25 @@ export const Navbar = () => {
     console.log('Is Admin:', isAdmin);
     console.log(userMetaData, 'user metadata');
 
-    const getAuth0Token = async (targetAudience, scope) => {
-        try {
-            return await getAccessTokenSilently({
-                audience:
-                    targetAudience ||
-                    `https://${import.meta.env.VITE_AUTH0_DOMAIN}/api/v2/`,
-                scope: scope || 'read:roles',
-                cacheMode: 'off',
-            });
-        } catch (error) {
-            console.error('Error fetching token:', error);
-        }
-    };
-
-    const toggleMenu = () => setIsOpen(!isOpen);
+    // const getAuth0Token = async (targetAudience, scope) => {
+    //     try {
+    //         return await getAccessTokenSilently({
+    //             audience:
+    //                 targetAudience ||
+    //                 `https://${import.meta.env.VITE_AUTH0_DOMAIN}/api/v2/`,
+    //             scope: scope || 'read:roles',
+    //             cacheMode: 'off',
+    //         });
+    //     } catch (error) {
+    //         console.error('Error fetching token:', error);
+    //     }
+    // };
 
     const toggleMenu = () => setIsOpen(!isOpen);
 
     const handleLogout = () => {
         logout();
-       
+        console.log('logged out');
     };
 
     useEffect(() => {
