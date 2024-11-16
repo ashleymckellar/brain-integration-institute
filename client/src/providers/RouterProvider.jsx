@@ -16,6 +16,7 @@ import { ContactUs } from '../routes/ContactUs';
 import { RonBio } from '../routes/RonBio';
 import { Terms } from '../routes/Terms'
 import AddAdmins from '../routes/AddAdmins';
+import { Notifications } from '../routes/Notifications'
 import PractitionerManagement from '../routes/PractitionerManagement';
 import AdminUploadManagement from '../routes/AdminUploadManagement';
 import MessagingHub from '../routes/MessagingHub';
@@ -51,6 +52,11 @@ const router = createBrowserRouter([
             {
                 path: '/contact-us',
                 element: <ContactUs />,
+            },
+
+            {
+                path: '/notifications',
+                element: <Notifications />,
             },
             {
                 path: '/admin',

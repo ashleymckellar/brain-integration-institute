@@ -37,22 +37,22 @@ export const Navbar = () => {
             setIsAdmin(true);
         }
     };
-    console.log('Is Admin:', isAdmin);
-    console.log(userMetaData, 'user metadata');
+    // console.log('Is Admin:', isAdmin);
+    // console.log(userMetaData, 'user metadata');
 
-    const getAuth0Token = async (targetAudience, scope) => {
-        try {
-            return await getAccessTokenSilently({
-                audience:
-                    targetAudience ||
-                    `https://${import.meta.env.VITE_AUTH0_DOMAIN}/api/v2/`,
-                scope: scope || 'read:roles',
-                cacheMode: 'off',
-            });
-        } catch (error) {
-            console.error('Error fetching token:', error);
-        }
-    };
+    // const getAuth0Token = async (targetAudience, scope) => {
+    //     try {
+    //         return await getAccessTokenSilently({
+    //             audience:
+    //                 targetAudience ||
+    //                 `https://${import.meta.env.VITE_AUTH0_DOMAIN}/api/v2/`,
+    //             scope: scope || 'read:roles',
+    //             cacheMode: 'off',
+    //         });
+    //     } catch (error) {
+    //         console.error('Error fetching token:', error);
+    //     }
+    // };
 
     const toggleMenu = () => setIsOpen(!isOpen);
 
@@ -75,36 +75,7 @@ export const Navbar = () => {
         checkForAdmin();
     }, [userMetaData]);
 
-    // const fetchUserRoles = async () => {
-    //     try {
-    //         const token = await getAuth0Token(
-    //             `https://${import.meta.env.VITE_AUTH0_DOMAIN}/api/v2/`,
-    //             'read:roles',
-    //         );
-    //         if (token) {
-    //             const userId = user.sub; // User ID from Auth0
-    //             const response = await axios.get(
-    //                 `https://${
-    //                     import.meta.env.VITE_AUTH0_DOMAIN
-    //                 }/api/v2/users/${userId}/roles`,
-    //                 {
-    //                     headers: {
-    //                         Authorization: `Bearer ${token}`,
-    //                     },
-    //                 },
-    //             );
-    //             console.log('User Roles from Management API:', response.data);
-    //         }
-    //     } catch (error) {
-    //         console.error('Error fetching user roles:', error);
-    //     }
-    // };
 
-    // useEffect(() => {
-    //     if (isAuthenticated && user) {
-    //         fetchUserRoles();
-    //     }
-    // }, [isAuthenticated, user]);
 
     useEffect(() => {
         const handleResize = () => setIsLargeScreen(window.innerWidth >= 768);
@@ -163,12 +134,17 @@ export const Navbar = () => {
                     >
                         Logout
                     </button>
+                    
                     <div className="flex space-x-2">
-                        <img
-                            className="h-[32px] w-[32px]"
-                            src={bell}
-                            alt="Notifications"
-                        />
+                     
+                    <Link to="/notifications">
+                            <img
+                                className="h-[32px] w-[32px]"
+                                src={bell}
+                                alt="Notifications"
+                                style={{ minWidth: '32px', minHeight: '32px' }}
+                            />
+                        </Link>
                         <Link to="/profile">
                             <img
                                 className="h-[32px] w-[32px] rounded-full "
