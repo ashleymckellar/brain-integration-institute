@@ -6,6 +6,7 @@ const cors = require('cors');
  * Authenticates incoming JWT token from client. Creates a `req.auth` object upon success.
  */
 const validateAuthToken = auth({
+    
     issuerBaseURL: process.env.AUTH0_ISSUER_BASE_URL,
     audience: process.env.AUTH0_AUDIENCE,
     

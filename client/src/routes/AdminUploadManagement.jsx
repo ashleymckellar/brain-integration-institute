@@ -40,6 +40,8 @@ const AdminUploadManagement = () => {
         fetchData();
     }, [user]);
 
+    console.log(certificates)
+
     return (
         <div className="flex flex-col items-center">
             <h2 className="text-center font-fira text-lg md:text-xl lg:text-2xl py-6 px-4">
@@ -104,7 +106,7 @@ const AdminUploadManagement = () => {
                             <img src={whiteUploadIcon} alt="Upload Icon" className="w-6" />
                         </button>
                         <button
-                            onClick={deleteCertificate}
+                            onClick={(() =>deleteCertificate(certificates[0].publicId))}
                             className="bg-white p-2 rounded-md"
                             alt="Delete Study Guide"
                         >
@@ -113,8 +115,20 @@ const AdminUploadManagement = () => {
                     </div>
                 </div>
             ) : (
-                <div className="text-center text-lg font-fira my-4">No study guide found</div>
-            )}
+                <div className="text-center text-lg font-fira my-4">No study guide found
+                <button
+                disabled={certificates.length > 0}
+                className={`${
+                    certificates.length > 0
+                        ? 'opacity-50 cursor-not-allowed bg-green-is-good hover:bg-green-500  text-white px-4 py-2 rounded-md'
+                        : 'bg-green-is-good text-white px-4 py-2 rounded-md'
+                }`}
+                alt="Upload Study Guide"
+                onClick={uploadCompletionCertificate}
+            >
+                <img src={whiteUploadIcon} alt="Upload Icon" className="w-6" />
+            </button>
+            </div>)}
 
             {/* Assessment Section */}
             {certificates && certificates.length > 0 && certificates[0].secure_url ? (
