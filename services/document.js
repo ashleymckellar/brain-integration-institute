@@ -3,6 +3,7 @@ const Certificate = require('../models/certificate');
 
 // Function to get user specific images from Cloudinary
 const getImagesFromCloudinary = async (folder) => {
+    console.log("now why are you calling this one?  You know that ain't right!")
     const allAssets = [];
 
     try {
@@ -77,8 +78,9 @@ const getThumbnailImages = async (folders) => {
 };
 
 
-
+//getCertificateFromCloudinary
 const getCertificateFromCloudinary = async () => {
+    console.log('the right function to be called, you big dummy')
     try {
         const requestURL = `https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/resources/search`;
         const authHeader = Buffer.from(
