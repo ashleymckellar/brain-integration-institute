@@ -1,3 +1,5 @@
+
+
 import { useContext, useState, useEffect } from 'react';
 import { PractitionerCard } from '../components/PractitionerCard';
 import { PractitionerContext } from '../contexts';
@@ -60,7 +62,7 @@ export const Practitioner = () => {
 
     return (
         <>
-            {/* Banner Section */}
+      
             <div
                 className="w-full h-48 sm:h-64 md:h-80 lg:h-96 relative bg-white"
                 style={{
@@ -76,8 +78,6 @@ export const Practitioner = () => {
                     </h1>
                 </div>
             </div>
-
-            {/* Search and Filter Section */}
             <div className="w-11/12 sm:w-10/12 md:w-3/4 lg:w-2/3 xl:w-1/2 mx-auto mt-6">
                 <h2 className="text-2xl text-gray-800 font-semibold mb-4 text-center">Refine Results</h2>
                 <div className="flex flex-col sm:flex-row sm:justify-between gap-4 mb-4">
@@ -107,10 +107,10 @@ export const Practitioner = () => {
                 )}
             </div>
 
-            {/* Practitioner Cards Section */}
             <div className="flex flex-wrap gap-4 justify-center w-11/12 sm:w-10/12 md:w-3/4 lg:w-2/3 xl:w-1/2 mx-auto my-8">
                 {practitionerList}
             </div>
         </>
     );
 };
+

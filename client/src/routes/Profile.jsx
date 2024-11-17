@@ -12,7 +12,6 @@ export const Profile = withAuthenticationRequired(() => {
     const { user } = useAuth0();
     const { fetchProfileData, profileData } = useContext(UserContext);
     const [isEditing, setIsEditing] = useState(false);
-
     const [sectionName, setSectionName] = useState('profile');
 
     useEffect(() => {
@@ -66,15 +65,10 @@ export const Profile = withAuthenticationRequired(() => {
             {/* Content Section */}
             <div className="flex flex-col px-4 sm:px-8 mt-10">
                 <ProfilePhotoUpload />
-                {/* <h3 className="text-center font-poppins text-xl sm:text-2xl mb-4">
-                    {profileData
-                        ? `${profileData.firstName} ${profileData.lastName}`
-                        : user.email}
-                </h3> */}
 
                 {/* Profile Section */}
                 {(!sectionName || sectionName === 'profile') && (
-                    <div className="flex flex-col items-center gap-6 p-6 max-w-lg mx-auto bg-white shadow-md rounded-lg">
+                    <div className="flex flex-col items-center gap-6 p-6   mx-auto bg-white shadow-md rounded-lg">
                         {profileData ? (
                             <>
                                 <p className="text-lg font-semibold text-gray-700">

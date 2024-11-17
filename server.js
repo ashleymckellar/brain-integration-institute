@@ -1,6 +1,8 @@
 const ex = require('express');
 const path = require('path');
 const { apiRouter } = require('./routes/api');
+const { adminRouter } = require('./routes/admin')
+const { notifyRouter } = require('./routes/notify')
 const { enableCors, validateAuthToken } = require('./middleware/auth');
 const { staticSiteRouter } = require('./routes/static');
 // const { errorHandler, logger } = require('./middleware/log');
@@ -8,7 +10,6 @@ const { staticSiteRouter } = require('./routes/static');
 
 const server = ex();
 
-// server.use(logger)
 server.use(enableCors)
 
 server.use(ex.json());
@@ -67,7 +68,7 @@ server.use((req, res, next) => {
 //     res.status(200).send({ message: 'Webhook received successfully' });
 // });
 
-// server.use(errorHandler);
+
 
 
 module.exports = {

@@ -5,59 +5,41 @@ import { Elements } from '@stripe/react-stripe-js';
 import AssessmentCheckoutForm from './AssessmentCheckoutForm';
 import { useAuth0 } from '@auth0/auth0-react';
 
-export const AssessmentPayment = ({stripePromise, showPayment, }) => {
-
+export const AssessmentPayment = ({ stripePromise, showPayment }) => {
     const [clientSecret, setClientSecret] = useState('');
-    const {  getAccessTokenSilently } = useAuth0();
-   
-
-
-
-
-
-
-
- 
+    const { getAccessTokenSilently } = useAuth0();
 
     useEffect(() => {
         if (showPayment) {
-         createAssessmentPaymentIntent()
+            createAssessmentPaymentIntent();
         }
     }, [showPayment]);
 
-
     const createAssessmentPaymentIntent = async () => {
         const accessToken = await getAccessTokenSilently();
-      
+       
         fetch('/api/create-assessment-payment-intent', {
             method: 'POST',
             headers: {
-                            'Content-Type': 'application/json',
-                            Authorization: `Bearer ${accessToken}`,
-                        },
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${accessToken}`,
+            },
             body: JSON.stringify({}),
         }).then(async (response) => {
             const { clientSecret } = await response.json();
             setClientSecret(clientSecret);
-           
         });
-
-    }
-
+    };
 
     return (
         <>
-         
-            
             {clientSecret && stripePromise && (
-                <div className='flex flex-col'>
-                <Elements stripe={stripePromise} options={{ clientSecret }} >
-                    
-                    <AssessmentCheckoutForm/>
-                </Elements>
+                <div className="flex flex-col">
+                    <Elements stripe={stripePromise} options={{ clientSecret }}>
+                        <AssessmentCheckoutForm />
+                    </Elements>
                 </div>
             )}
-            
         </>
     );
 };
