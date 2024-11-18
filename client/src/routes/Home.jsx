@@ -1,5 +1,6 @@
 import Nature from '../assets/images/Nature.png';
 import { useAuth0 } from '@auth0/auth0-react';
+import { Footer } from '../components/Footer.jsx'
 
 export const Home = () => {
     const { loginWithRedirect } = useAuth0();
@@ -107,6 +108,7 @@ export const Home = () => {
                     </div>
                 </div>
             </div>
+            <Footer />
         </div>
     );
 };

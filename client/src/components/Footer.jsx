@@ -15,9 +15,9 @@ export const Footer = () => {
                     <img
                         src={brainSeal}
                         alt="Brain Integration Institute"
-                        width="134" // Keep the base width for smaller screens
-                        height="134" // Keep the base height for smaller screens
-                        className="w-32 sm:w-40 md:w-48 lg:w-56 xl:w-64" // Adjust width for larger screens
+                        width="134"
+                        height="134"
+                        className="w-32 sm:w-40 md:w-48 lg:w-56 xl:w-64" 
                     />
                 </div>
 
