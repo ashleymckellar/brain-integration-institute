@@ -18,8 +18,6 @@ export const ContactUs = () => {
     const [hasRequiredError, setHasRequiredError] = useState(false);
     const [validationError, setValidationError] = useState('');
     const [contactFormModalOpen, setContactFormModalOpen] = useState(false);
-    // const [isButtonDisabled, setIsButtonDisabled] = useState(true);
-    const regex = /^[0-9]+$/;
 
     const isDisabled = !(
         formData.firstName &&
@@ -38,9 +36,6 @@ export const ContactUs = () => {
         setHasRequiredError(isAnyFieldEmpty);
     };
 
-    console.log(contactFormModalOpen, 'contact modal open?');
-    console.log('button disabled?', isDisabled);
-
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         const regex = /^[0-9]+$/;
@@ -53,22 +48,16 @@ export const ContactUs = () => {
 
     const onBlur = (e) => {
         const { name, value } = e.target;
-        console.log(name, value);
         if (regex.test(value)) {
             setValidationError('');
         }
     };
 
-    console.log(requiredFieldError);
-
     const onRequiredBlur = (e) => {
         const { name, value } = e.target;
-
         if (!isSubmitted) {
             if (value === '') {
-                setRequiredFieldError(
-                    'Please enter a value in required fields.',
-                );
+                setRequiredFieldError('Please enter a value in required fields.');
                 setHasRequiredError(true);
             } else {
                 setRequiredFieldError('');
@@ -79,7 +68,6 @@ export const ContactUs = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(formData);
         try {
             const result = await emailjs.sendForm(
                 import.meta.env.VITE_EMAILJS_SERVICE,
@@ -87,7 +75,6 @@ export const ContactUs = () => {
                 e.target,
                 import.meta.env.VITE_EMAILJS_PUBLIC_KEY,
             );
-            console.log(result.text);
             setIsSubmitted(true);
             setContactFormModalOpen(true);
             setFormData({
@@ -111,17 +98,11 @@ export const ContactUs = () => {
         console.log('contactFormModalOpen changed:', contactFormModalOpen);
     }, [contactFormModalOpen]);
 
-    useEffect(() => {
-        if (contactFormModalOpen) {
-            setContactFormModalOpen(true);
-        }
-    }, [contactFormModalOpen]);
-    // TODO: Send formData to email handler
-
     return (
         <>
+            {/* Banner Section */}
             <div
-                className="w-full h-64 sm:h-80 md:h-96 relative bg-white"
+                className="w-full h-64 sm:h-80 md:h-96 lg:h-112 relative bg-white"
                 style={{
                     backgroundImage: `url(${banner}), url(${paleBanner})`,
                     backgroundSize: 'cover, cover',
@@ -130,14 +111,15 @@ export const ContactUs = () => {
                 }}
             >
                 <div className="absolute inset-0 flex items-center justify-center">
-                    <h1 className="text-white text-3xl sm:text-xl md:text-4xl lg:text-5xl font-fenix font-normal">
+                    <h1 className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-fenix font-normal">
                         Contact Us
                     </h1>
                 </div>
             </div>
 
-            <div id="contact-us" className="flex flex-col text-center gap-10 justify-center items-center">
-                <p className="text-lg">
+            {/* Contact Form Section */}
+            <div id="contact-us" className="flex flex-col text-center gap-10 justify-center items-center p-4">
+                <p className="text-lg sm:text-xl">
                     Tell us a bit about yourself and we&apos;ll get in touch as
                     soon as we can.{' '}
                 </p>
@@ -145,9 +127,9 @@ export const ContactUs = () => {
                     * Required field
                 </p>
 
-                <div className="flex justify-center w-1/4 items-center px-4">
+                <div className="flex justify-center w-full sm:w-3/4 md:w-2/3 lg:w-1/2 items-center">
                     <form
-                        className="flex flex-col items-stretch justify-center w-full p-4 bg-white rounded shadow gap-10 "
+                        className="flex flex-col items-stretch justify-center w-full p-4 bg-white rounded shadow gap-10"
                         onSubmit={handleSubmit}
                     >
                         <div className="flex flex-wrap -mx-2">
@@ -200,7 +182,7 @@ export const ContactUs = () => {
                         </div>
                         <textarea
                             name="message"
-                            className="border rounded border-dark-gray  px-3 py-2 w-full"
+                            className="border rounded border-dark-gray px-3 py-2 w-full"
                             rows="5"
                             value={formData.message}
                             placeholder="Message *"
@@ -220,7 +202,7 @@ export const ContactUs = () => {
                         <div className="flex justify-center mt-10">
                             <button
                                 disabled={isDisabled}
-                                className="bg-medium-pale-green border-b-2 border-transparent hover:bg-green-500 rounded-2xl hover:text-white text-xlrounded-full w-[204px] h-[43px] text-white font-medium px-6 py-2"
+                                className="bg-medium-pale-green border-b-2 border-transparent hover:bg-green-500 rounded-2xl hover:text-white text-xl w-[204px] h-[43px] text-white font-medium px-6 py-2"
                             >
                                 Send Message
                             </button>

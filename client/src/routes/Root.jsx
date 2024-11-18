@@ -24,7 +24,7 @@ export const Root = () => {
             <section>
                 <Outlet />
             </section>
-            <Footer className="min-h-screen flex flex-col" />
+            {/* <Footer className="min-h-screen flex flex-col" /> */}
         </div>
     );
 };

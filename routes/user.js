@@ -187,6 +187,30 @@ userRouter.put('/:email/study-guide', async (req, res) => {
     }
 });
 
+userRouter.put('/:email/assessment-access', async (req, res) => {
+    const { assessmentAccess } = req.body;
+    const { email } = req.params;
+    if (typeof assessmentAccess !== 'boolean') {
+        return res.status(400).json({
+            error: 'assessmentAccess is required and must be a boolean',
+        });
+    }
+    try {
+        const user = await UserModel.findOneAndUpdate(
+            { userEmail: email },
+            { assessmentAccess },
+            { new: true, runValidators: true },
+        );
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        res.json(user);
+    } catch (error) {
+        console.error('Error updating assessment access:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
 userRouter.put('/:email/is-admin', async (req, res) => {
     const { isAdmin } = req.body;
     const { email } = req.params;
@@ -231,10 +255,10 @@ userRouter.put('/:email/is-admin', async (req, res) => {
 
 userRouter.patch('/:email/document-status', async (req, res) => {
     const email = req.params.email;
-    const { documentType, newStatus } = req.body; 
-    console.log(`Received request to update document ${documentType} for user: ${email}`);
-
-    
+    const { documentType, newStatus } = req.body;
+    console.log(
+        `Received request to update document ${documentType} for user: ${email}`,
+    );
 
     // Ensure the documentType and status are valid
     if (!documentType || !newStatus) {
@@ -275,13 +299,13 @@ userRouter.patch('/:email/document-status', async (req, res) => {
 
         // Update the correct document status field
         user.certListUploadStatus[documentType] = newStatus;
-        
+
         // Save the updated user document
         const updatedUser = await user.save();
 
         console.log('Updated user:', updatedUser);
 
-        res.status(200).send(updatedUser); 
+        res.status(200).send(updatedUser);
     } catch (error) {
         console.error(error);
         res.status(500).send({

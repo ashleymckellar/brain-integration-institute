@@ -109,10 +109,10 @@ export const CloudinaryProvider = ({ children }) => {
                 },
             );
             if (!response || !response.data || !response.data.files) {
-                // console.error('No files found or invalid response');
+                console.error('No files found or invalid response');
                 return []; 
             }
-          
+            console.log(response.data)
             return response.data;
         } catch (error) {
             console.error('Error fetching files:', error);
@@ -591,8 +591,12 @@ export const CloudinaryProvider = ({ children }) => {
     //get certificate file from cloudinary
 
     const getCertificate = async () => {
+        console.log('certificate route tapped')
         try {
+            console.log('Attempting to retrieve access token...');
             const accessToken = await getAccessTokenSilently();
+            console.log('Access token retrieved:', accessToken);
+            console.log('Sending GET request to:', `http://${baseUrl}/api/images/certificate`);
             const response = await axios.get(
                 `${baseUrl}/api/images/certificate`,
                 {

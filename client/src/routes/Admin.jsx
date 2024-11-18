@@ -1,7 +1,7 @@
 import { Link, Outlet } from 'react-router-dom';
 import paleBanner from '../assets/icons/PaleGreenPractitionerBackground.png';
 import banner from '../assets/icons/PractitionerBackground.png';
-// import { Footer } from '../components/Footer.jsx';
+import { Footer } from '../components/Footer.jsx';
 
 export const Admin = () => {
     return (
@@ -85,8 +85,10 @@ export const Admin = () => {
                         ))}
                     </div>
 
-                    <div className="flex justify-center items-center pt-10 ">
+                    <div className="flex flex-col justify-center items-center w-full pt-10 ">
                         <Outlet />
+                        <Footer />
+                     
                        
                     </div>
                 </div>

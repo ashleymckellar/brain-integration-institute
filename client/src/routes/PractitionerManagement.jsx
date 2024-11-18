@@ -1,3 +1,6 @@
+
+
+
 /* eslint-disable react/no-unescaped-entities */
 import { useContext, useEffect } from 'react';
 import { AdminContext } from '../contexts';
@@ -11,13 +14,20 @@ const PractitionerManagement = () => {
     useEffect(() => {
         getAllUsers();
     }, []);
+
     return (
-        <div className="flex flex-col justify-center items-center gap-10 w-full  min-h-screen">
-            <div className="flex-grow pb-8">
-                {userId ? <Outlet /> : <UserList />}
+        <div className="flex flex-col justify-center items-center gap-10 w-full min-h-screen px-4 sm:px-6 md:px-8">
+            <div className="flex-grow pb-8 w-full max-w-7xl">
+                {/* Adjust layout to switch between UserList and Outlet on small screens */}
+                {userId ? (
+                    <Outlet />
+                ) : (
+                    <UserList />
+                )}
             </div>
         </div>
     );
 };
 
 export default PractitionerManagement;
+

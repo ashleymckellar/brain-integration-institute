@@ -202,6 +202,10 @@ const [sectionFiles, setSectionFiles] = useState({});
         setSectionName(section);
         const documentType = section
         initializeCloudinaryWidget(section, onUploadSuccess);
+        const updatedStatus = {
+            ...certListUploadStatus,
+            [sectionName]: 'pending approval',
+        };
      
 
         console.log('Calling updateUserProgress with value:', 1);
@@ -274,6 +278,7 @@ const [sectionFiles, setSectionFiles] = useState({});
 
     console.log(certListUploadStatus);
     console.log(userMetaData);
+    console.log(isApprovedForAssessment)
 
     const getSectionFileNames = (sectionName) => {
         if (!fileMetaData || fileMetaData.length === 0) {
