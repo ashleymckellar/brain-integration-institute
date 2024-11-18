@@ -67,6 +67,42 @@
  
 }
 
+/* Navbar.css */
+.bm-burger-button {
+    position: absolute;
+    width: 36px;
+    height: 30px;
+    right: 20px;
+    top: 20px;
+}
+
+.bm-burger-bars {
+    background: #373a47;
+}
+
+.bm-menu {
+    background: #f7f9fb;
+    padding: 2.5em 1.5em 0;
+    font-size: 1.15em;
+}
+
+.bm-item {
+    display: block;
+    padding: 0.5em;
+    color: #373a47;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.bm-item:hover {
+    color: #8d72a3;
+}
+
+.bm-overlay {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+
 
 
 
