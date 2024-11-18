@@ -27,10 +27,10 @@ export const UserProvider = ({ children }) => {
     const [allProfiles, setAllProfiles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    import.meta.env.VITE_API_BASE_URL
+    const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
     const handleInputChange = (e) => {
-        console.log('change handled');
+       
         const { name, value } = e.target;
         setInputs((prevInputs) => ({
             ...prevInputs,
@@ -39,16 +39,16 @@ export const UserProvider = ({ children }) => {
     };
 
     const resetInputs = () => {
-        console.log('inputs reset!');
+       
         setInputs(initialValues);
     };
 
     const createProfileData = async () => {
-        console.log('Inputs being sent:', inputs);
+       
 
         try {
             const response = await fetch(
-                `http://${baseUrl}/api/profile/create-profile`,
+                `${baseUrl}/api/profile/create-profile`,
                 {
                     method: 'POST',
                     headers: {
@@ -66,7 +66,7 @@ export const UserProvider = ({ children }) => {
             }
             const data = await response.json();
 
-            console.log('Response from backend:', data);
+          
             if (!data.success) throw new Error(data.error);
 
             // Reset inputs after successful submission
@@ -80,7 +80,7 @@ export const UserProvider = ({ children }) => {
 
     //
     const editProfileData = async (updatedData) => {
-        console.log('Updated data being sent:', updatedData);
+       
 
         const filteredData = Object.fromEntries(
             Object.entries(updatedData).filter(
@@ -90,7 +90,7 @@ export const UserProvider = ({ children }) => {
         try {
             const accessToken = await getAccessTokenSilently();
             const response = await fetch(
-                `http://${baseUrl}/api/profile/${user.email}`,
+                `${baseUrl}/api/profile/${user.email}`,
                 {
                     method: 'PUT',
                     headers: {
@@ -106,7 +106,7 @@ export const UserProvider = ({ children }) => {
                 );
             }
             const result = await response.json();
-            console.log(result);
+         
             if (result.success) {
                 console.log('Profile updated successfully');
             } else {
@@ -137,7 +137,7 @@ export const UserProvider = ({ children }) => {
 
                 const data = await response.json();
                 setProfileData(data);
-                console.log(profileData);
+               
             } catch (error) {
                 console.error('Error fetching profile data:', error);
                 setError(error.message);

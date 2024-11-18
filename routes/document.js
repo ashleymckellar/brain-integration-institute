@@ -38,8 +38,8 @@ documentRouter.get('/certificate', validateAuthToken, async (req, res) => {
 //this route no longer needed because cloudinary docs are all nested in a document type in the route below
 documentRouter.get('/:nickname', validateAuthToken, async (req, res) => {
     const nickname = req.params.nickname;
-    const folder = `users/${nickname}/`;
-    console.log('Fetching images from folder:', folder);
+    const folder = `users/${nickname}`;
+  
     try {
         const images = await getImagesFromCloudinary(folder);
         console.log('fetching images');

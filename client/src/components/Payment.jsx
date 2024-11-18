@@ -12,7 +12,15 @@ export const Payment = ({
     setStudyGuideAccess,
 }) => {
     const [clientSecret, setClientSecret] = useState('');
-    const { getAccessTokenSilently } = useAuth0();
+    const {  getAccessTokenSilently } = useAuth0();
+   
+
+
+
+
+
+
+ 
 
     useEffect(() => {
         if (showPayment) {
@@ -22,7 +30,7 @@ export const Payment = ({
 
     const createPaymentIntent = async () => {
         const accessToken = await getAccessTokenSilently();
-    
+      
         fetch('/api/create-payment-intent', {
             method: 'POST',
             headers: {

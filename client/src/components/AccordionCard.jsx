@@ -109,11 +109,10 @@ const [sectionFiles, setSectionFiles] = useState({});
     //will need to add put request to user metadata route to change studyGuideAccess to true, just saving in state for now
 
     const getStudyGuide = async () => {
-        console.log('getStudyGuide function invoked');
         try {
             const accessToken = await getAccessTokenSilently();
-            console.log('Access token retrieved:', accessToken);
-            // const stripe = await stripePromise();
+
+            const stripe = await stripePromise;
             const response = await fetch('/api/create-payment-intent', {
                 method: 'POST',
                 headers: {
@@ -124,24 +123,16 @@ const [sectionFiles, setSectionFiles] = useState({});
             });
 
             const session = await response.json();
-            console.log('Session retrieved:', session);
+
             if (session.clientSecret) {
-                console.log(
-                    'Payment intent created successfully',
-                    session.clientSecret,
-                );
                 //this part still works
                 setShowPayment(true);
 
                 try {
                     await updateUserProgress(progress + 1);
-                    console.log('User progress update');
+
                     setProgress((prevProgress) => {
                         const newProgress = Math.min(prevProgress + 1, 8);
-                        console.log(
-                            'Progress successfully updated:',
-                            newProgress,
-                        );
 
                         return newProgress;
                     });
@@ -153,8 +144,6 @@ const [sectionFiles, setSectionFiles] = useState({});
             console.error('Error creating checkout session:', error);
         }
     };
-
-    console.log(progress);
 
     const getPublishableKey = async () => {
         const accessToken = await getAccessTokenSilently();
@@ -172,7 +161,6 @@ const [sectionFiles, setSectionFiles] = useState({});
                 }
                 const { publishableKey } = await response.json();
                 setStripePromise(loadStripe(publishableKey));
-                console.log('Stripe promise set successfully');
             })
             .catch((error) => {
                 console.error('Error fetching publishable key:', error);
@@ -181,7 +169,6 @@ const [sectionFiles, setSectionFiles] = useState({});
 
     //move this to the cloudinarycontext and update progress there as well since it updates the progress
     const getAssessment = async () => {
-        console.log('assessment button clicked');
         try {
             const accessToken = await getAccessTokenSilently();
             // const stripe = await stripePromise;
@@ -199,10 +186,6 @@ const [sectionFiles, setSectionFiles] = useState({});
 
             const session = await response.json();
             if (session.clientSecret) {
-                console.log(
-                    'Payment intent created successfully',
-                    session.clientSecret,
-                );
                 setShowPayment(true);
                 setShowModal(true);
             }
@@ -235,7 +218,6 @@ const [sectionFiles, setSectionFiles] = useState({});
 
 
     useEffect(() => {
-        console.log('Fetching publishable key');
         getPublishableKey();
     }, []);
 
@@ -1522,9 +1504,6 @@ const [sectionFiles, setSectionFiles] = useState({});
                                                 className="pl-[100px]"
                                                 src={GetStudyGuideBtn}
                                                 onClick={() => {
-                                                    console.log(
-                                                        'Button clicked',
-                                                    );
                                                     getStudyGuide();
                                                 }}
                                             />

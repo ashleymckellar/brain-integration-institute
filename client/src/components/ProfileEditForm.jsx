@@ -5,16 +5,23 @@ import { UserContext } from '../contexts';
 
 import ProfileModal from './ProfileModal';
 
+
+
 export const ProfileEditForm = (props) => {
     const {
         inputs,
         setInputs,
+       
+
         createProfileData,
         editProfileData,
         setProfileData,
+        
         profileData,
     } = useContext(UserContext);
     const { isEditing, setIsEditing } = props;
+
+   
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [requiredFieldError, setRequiredFieldError] = useState('');
     const [hasRequiredError, setHasRequiredError] = useState(false);
@@ -22,6 +29,8 @@ export const ProfileEditForm = (props) => {
     const [validationError, setValidationError] = useState('');
     const [profileModalOpen, setProfileModalOpen] = useState(false);
     const regex = /^[0-9]+$/;
+
+   
 
     const validateRequiredFields = () => {
         if (!profileData) {
@@ -45,11 +54,13 @@ export const ProfileEditForm = (props) => {
         }
     };
 
+  
+
     const handleInputChange = (e) => {
-        console.log('change handled');
+        
         const { name, value } = e.target;
         const regex = /^[0-9]+$/;
-        console.log(name, value);
+       
         if (name === 'phoneNumber' && !regex.test(value)) {
             setValidationError('Please enter a valid number.');
             setRequiredFieldError('');
@@ -70,11 +81,12 @@ export const ProfileEditForm = (props) => {
 
     //submit handler for new profile creation (post request)
     const handleSubmit = async (event) => {
-        console.log('submitting new profile');
+      
         event.preventDefault();
         try {
             const result = await createProfileData();
-            console.log(result);
+       
+
             setProfileData(result.profileData);
             setIsSubmitted(true);
             setProfileModalOpen(true);
@@ -82,7 +94,7 @@ export const ProfileEditForm = (props) => {
             console.error('Error creating profile:', error);
             alert(`Profile creation failed: ${error.message}`);
         }
-        console.log(profileData);
+      
     };
 
     //submit handler for existing profile edits (put request)
@@ -96,9 +108,10 @@ export const ProfileEditForm = (props) => {
         }
         setProfileModalOpen(true);
         try {
-            console.log('editing profile');
+           
             const result = await editProfileData(inputs);
-            console.log(result);
+          
+
             setProfileData(result.updatedProfile);
         } catch (error) {
             console.error('Error updating profile:', error);
@@ -106,10 +119,14 @@ export const ProfileEditForm = (props) => {
         }
     };
 
+    
+   
+
     const handleCloseModal = () => {
         setProfileModalOpen(false);
         setIsEditing(false);
     };
+  
 
     const onBlur = (e) => {
         const { name, value } = e.target;
@@ -136,10 +153,14 @@ export const ProfileEditForm = (props) => {
                 // Set error if the field is empty
             } else {
                 setRequiredFieldError('');
-                setHasRequiredError(false);
+                setHasRequiredError(false); 
             }
         }
     };
+
+
+
+  
 
     useEffect(() => {
         console.log('profileModalOpen changed:', profileModalOpen);
@@ -329,6 +350,7 @@ export const ProfileEditForm = (props) => {
                                         onBlur={onRequiredBlur}
                                     >
                                         <option value="">-- State --</option>
+                                        <option value="NUS">Non-US</option>
                                         <option value="AL">AL</option>
                                         <option value="AK">AK</option>
                                         <option value="AZ">AZ</option>

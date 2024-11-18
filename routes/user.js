@@ -45,7 +45,7 @@ userRouter.post('/createuser', async (req, res) => {
 //get user specific user metadata
 userRouter.get('/:email', async (req, res) => {
     const { email } = req.params;
-    console.log('Received email param:', email);
+   
     try {
         const profile = await ProfileModel.findOne({ email });
 
@@ -105,8 +105,7 @@ userRouter.get('/', async (req, res) => {
 userRouter.put('/:email/progress', async (req, res) => {
     const { userUploadProgress } = req.body;
     const { email } = req.params;
-    console.log('Request body:', req.body);
-    console.log('Email to find:', email);
+  
 
     if (
         userUploadProgress === undefined ||
@@ -124,7 +123,7 @@ userRouter.put('/:email/progress', async (req, res) => {
             { new: true, runValidators: true },
         );
 
-        console.log('User found:', user);
+     
 
         if (!user) {
             return res.status(404).json({ error: 'User not found' });

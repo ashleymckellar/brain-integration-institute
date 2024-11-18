@@ -10,10 +10,11 @@ export const PaymentSuccessPage = ({ setStudyGuideAccess }) => {
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     const studyGuideAccess = queryParams.get('studyGuideAccess');
-    const cloudinaryUrl = queryParams.get('cloudinaryUrl');
     const assessmentUrl = queryParams.get('assessmentUrl');
     const { email } = useContext(CloudinaryContext);
-    // const { getAccessTokenSilently } = useAuth0();
+    const { getAccessTokenSilently } = useAuth0();
+
+
 
     useEffect(() => {
         if (showModal) {
@@ -42,8 +43,9 @@ export const PaymentSuccessPage = ({ setStudyGuideAccess }) => {
             console.error('Error fetching the signed URL:', err);
         }
     };
+    
 
-    console.log(cloudinaryUrl);
+
 
     const redirectToAssessment = () => {
         window.open(
