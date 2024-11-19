@@ -334,7 +334,7 @@ const UserSpecificAdminView = () => {
                             <div className='flex flex-col'>
                                 {doc.name}:
                                 <span
-                                    className={`px-2 py-1 rounded-full text-sm font-semibold text-center w-30 ${getStatusBadgeClass(
+                                    className={`px-2 py-1 rounded-full text-sm font-semibold text-center w-20 ${getStatusBadgeClass(
                                         doc.status,
                                     )}`}
                                 >
