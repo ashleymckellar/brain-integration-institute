@@ -27,7 +27,8 @@ export const UserProvider = ({ children }) => {
     const [allProfiles, setAllProfiles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    import.meta.env.VITE_API_BASE_URL
+    const [activeNotifications, setActiveNotifications] = useState([])
+    const baseUrl = import.meta.env.VITE_API_BASE_URL
 
     const handleInputChange = (e) => {
         console.log('change handled');
@@ -145,6 +146,43 @@ export const UserProvider = ({ children }) => {
         }
     }
 
+    const fetchNotifications = async () => {
+        if (user?.email) {
+            try {
+                setLoading(true);
+                const response = await fetch(`/api/notifications/${user.email}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${await getAccessTokenSilently()}`,
+                    },
+                });
+    
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+    
+                const data = await response.json();
+                console.log('Fetched data:', data);
+    
+             
+                const unreadNotifications = Object.values(data)
+                    .flat() 
+                    .filter((notification) => !notification.hasBeenRead);
+    
+                console.log('Unread Notifications:', unreadNotifications);
+    
+                setActiveNotifications(unreadNotifications);
+            } catch (error) {
+                console.error('Error fetching notifications:', error);
+                setError(error.message);
+            } finally {
+                setLoading(false);
+            }
+        }
+    };
+    
+
         const fetchAllProfiles = async () => {
             try {
                 setLoading(true);
@@ -191,7 +229,10 @@ export const UserProvider = ({ children }) => {
                 editProfileData,
                 fetchAllProfiles,
                 allProfiles,
-                setAllProfiles
+                setAllProfiles,
+                fetchNotifications,
+                activeNotifications,
+                setActiveNotifications
             }}
         >
             {children}

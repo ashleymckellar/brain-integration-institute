@@ -78,6 +78,7 @@ export const Navbar = () => {
             <Link to="/contact-us" className="py-2 px-4 hover:bg-green-500 rounded-lg hover:text-white">
                 Contact Us
             </Link>
+            
             {isAuthenticated ? (
                 <button
                     onClick={handleLogout}
@@ -93,6 +94,22 @@ export const Navbar = () => {
                     Login
                 </button>
             )}
+                  <Link to="/notifications">
+                            <img
+                                className="h-[32px] w-[32px]"
+                                src={bell}
+                                alt="Notifications"
+                                style={{ minWidth: '32px', minHeight: '32px' }}
+                            />
+                        </Link>
+                        <Link to="/profile">
+                            <img
+                                className="h-[32px] w-[32px] rounded-full "
+                                src={imageUrl || placeholderProfilePic}
+                                alt="avatar"
+                                style={{ minWidth: '32px', minHeight: '32px' }}
+                            />
+                        </Link>
         </div>
     );
 

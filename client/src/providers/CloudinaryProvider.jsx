@@ -280,7 +280,7 @@ export const CloudinaryProvider = ({ children }) => {
         }
     };
 
-    const updateUserDocumentStatus = async (documentType, newStatus) => {
+    const updateUserDocumentStatus = async (documentType, newStatus, notificationType) => {
         if (user) {
             try {
                 const accessToken = await getAccessTokenSilently();
@@ -295,6 +295,7 @@ export const CloudinaryProvider = ({ children }) => {
                         body: JSON.stringify({
                             documentType,
                             newStatus,
+                            notificationType
                         }),
                     },
                 );

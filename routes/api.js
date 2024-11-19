@@ -7,7 +7,8 @@ const signedUrlRouter = require('./signedUrl');
 const { profileRouter } = require('./profile')
 const { adminRouter } = require('./admin')
 const { notifyRouter } = require('./notify')
-const { approvalMessagesRouter } = require('./approvalMessages')
+// const { approvalMessagesRouter } = require('./approvalMessages');
+const { notificationsRouter } = require('./notifications');
 
 const apiRouter = ex.Router();
 
@@ -20,7 +21,7 @@ apiRouter.use('/', signedUrlRouter)
 apiRouter.use('/profile', profileRouter)
 apiRouter.use('/admin', adminRouter)
 apiRouter.use('/notify', notifyRouter)
-apiRouter.use('/approvalmessages', approvalMessagesRouter)
+apiRouter.use('/notifications', notificationsRouter)
 
 module.exports = {
     apiRouter

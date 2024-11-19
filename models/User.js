@@ -1,7 +1,7 @@
 const mg = require('mongoose');
 const Schema = mg.Schema;
 
-const ApprovalModel = require('./approvalMessages');
+const ApprovalModel = require('./notifications');
 
 const UploadStatus = {
     WAITINGFORUPLOAD: 'waiting for upload',

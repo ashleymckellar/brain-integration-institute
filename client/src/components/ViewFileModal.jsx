@@ -53,6 +53,7 @@ export default function ViewFileModal({
                     body: JSON.stringify({
                         documentType: selectedDocumentType,
                         newStatus: newDocStatus,
+                        notificationType: 'docStatusUpdate'
                     }),
                 },
             );
@@ -76,7 +77,7 @@ export default function ViewFileModal({
         }
 
         if (newDocStatus === 'declined') {
-            await fetch(`http://${baseUrl}/api/approvalmessages`, {
+            await fetch(`http://${baseUrl}/api/notifications`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -87,6 +88,7 @@ export default function ViewFileModal({
                     category: selectedDocumentType,
                     userEmail: 'ashley.l.mckellar@gmail.com',
                     admin: 'ashley.l.mckellar@gmail.com',
+                    notificationType: 'docStatusUpdate'
 
                     //fix the above so userEmail and admin aren't hard coded
                 }),
