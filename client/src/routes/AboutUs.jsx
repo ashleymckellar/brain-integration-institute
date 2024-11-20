@@ -131,20 +131,24 @@ export const AboutUs = () => {
                                     alt="Julissa"
                                 />
                             </button>
-                            <img
-                                src={tami}
-                                className="w-40 object-cover mb-5 md:mb-0"
-                                alt="Tami"
-                            />
+                            <button onClick={() => navigate('/tami-bio')}>
+                                <img
+                                    src={tami}
+                                    className="w-40 object-cover mb-5 md:mb-0"
+                                    alt="Tami"
+                                />
+                            </button>
                         </div>
 
                         {/* Bottom Row - Two Images Centered */}
                         <div className="flex justify-center gap-5">
-                            <img
-                                src={steve}
-                                className="w-40 object-cover mb-5 md:mb-0"
-                                alt="Steve"
-                            />
+                            <button onClick={() => navigate('/steve-bio')}>
+                                <img
+                                    src={steve}
+                                    className="w-40 object-cover mb-5 md:mb-0"
+                                    alt="Steve"
+                                />
+                            </button>
                             <button onClick={() => navigate('/terri-bio')}>
                                 <img
                                     src={terri}

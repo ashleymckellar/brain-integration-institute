@@ -25,7 +25,7 @@ export const TerriBio = () => {
                                     alt="map pin"
                                     className="w-8 h-8"
                                 />
-                                <span>West Jordan & Midvale, UT</span>
+                                <span className='font-bold'>West Jordan & Midvale, UT</span>
                             </div>
                             <div className="flex items-center gap-3">
                                 <img
@@ -35,7 +35,7 @@ export const TerriBio = () => {
                                 />
                                 <a
                                     href="tel:1-801-910-3400"
-                                    className="text-blue-600 hover:underline"
+                                    className="text-blue-600 hover:underline font-bold"
                                 >
                                     1-801-910-3400
                                 </a>
@@ -47,8 +47,8 @@ export const TerriBio = () => {
                                     className="w-8 h-8"
                                 />
                                 <a
-                                    href="terriblackberry5@gmail.com"
-                                    className="text-blue-600 hover:underline"
+                                    href="mailto:terriblackberry5@gmail.com"
+                                    className="text-blue-600 hover:underline font-bold"
                                 >
                                     terriblackberry5@gmail.com
                                 </a>

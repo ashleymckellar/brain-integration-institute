@@ -26,7 +26,7 @@ export const RonBio = () => {
                                     alt="map pin"
                                     className="w-8 h-8"
                                 />
-                                <span>West Jordan, UT</span>
+                                <span className='font-bold'>West Jordan, UT</span>
                             </div>
                             <div className="flex items-center gap-3">
                                 <img
@@ -36,7 +36,7 @@ export const RonBio = () => {
                                 />
                                 <a
                                     href="tel:1-801-566-6262"
-                                    className="text-blue-600 hover:underline"
+                                    className="text-blue-600 hover:underline font-bold"
                                 >
                                     1-801-566-6262
                                 </a>
@@ -49,7 +49,7 @@ export const RonBio = () => {
                                 />
                                 <a
                                     href="mailto:info@brainintegration.institute"
-                                    className="text-blue-600 hover:underline"
+                                    className="text-blue-600 hover:underline font-bold"
                                 >
                                     info@brainintegration.institute
                                 </a>

@@ -25,7 +25,7 @@ export const JulissaBio = () => {
                                     alt="map pin"
                                     className="w-8 h-8"
                                 />
-                                <span>Midvale, UT</span>
+                                <span className='font-bold'>Midvale, UT</span>
                             </div>
                             <div className="flex items-center gap-3">
                                 <img
@@ -35,7 +35,7 @@ export const JulissaBio = () => {
                                 />
                                 <a
                                     href="tel:1-801-577-4182"
-                                    className="text-blue-600 hover:underline"
+                                    className="text-blue-600 hover:underline font-bold"
                                 >
                                     1-801-577-4182
                                 </a>
@@ -47,8 +47,8 @@ export const JulissaBio = () => {
                                     className="w-8 h-8"
                                 />
                                 <a
-                                    href="julissa@optimizebrain.com"
-                                    className="text-blue-600 hover:underline"
+                                    href="mailto:julissa@optimizebrain.com"
+                                    className="text-blue-600 hover:underline font-bold"
                                 >
                                     julissa@optimizebrain.com
                                 </a>
@@ -134,7 +134,7 @@ export const JulissaBio = () => {
                                 <span className="font-bold">
                                     Svetlana Masgutova Education Institute for
                                     Neuro-Sensory-Motor and Reflex Integration
-                                    LLC:
+                                    LLC:{' '}
                                 </span>
                                 MNRI Dynamic & Postural Reflex Pattern
                                 Integration.
@@ -142,25 +142,25 @@ export const JulissaBio = () => {
                             <li>
                                 <span className="font-bold">
                                     International Institute of Applied
-                                    Kinesiology:
+                                    Kinesiology:{' '}
                                 </span>
                                 7 Chi Keys.
                             </li>
                             <li>
-                                <span className="font-bold">Kinergetics:</span>
+                                <span className="font-bold">Kinergetics:{' '}</span>
                                 1-6, Reset 1.
                             </li>
                             <li>
                                 <span className="font-bold">
-                                    Learning Enhancement Center (Crossinology):
+                                    Learning Enhancement Center (Crossinology):{' '}
                                 </span>
                                 Pre BIT Training, Brain Integration Technique,
                                 Brain Physiology 1 & 2, Advanced Brain
                                 Integration Technique.
                             </li>
                             <li>
-                                <span className="font-bold">KABS:</span>
-                                Pathways, Powers of stress.
+                                <span className="font-bold">KABS:{' '}</span>
+                                 Pathways, Powers of stress.
                             </li>
                         </ul>
                         <p>

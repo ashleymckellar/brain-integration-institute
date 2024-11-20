@@ -16,6 +16,8 @@ import { ContactUs } from '../routes/ContactUs';
 import { RonBio } from '../routes/RonBio';
 import { TerriBio } from '../routes/TerriBio';
 import { JulissaBio } from '../routes/JulissaBio'
+import { SteveBio } from '../routes/SteveBio';
+import { TamiBio } from '../routes/TamiBio'
 import { Terms } from '../routes/Terms'
 import AddAdmins from '../routes/AddAdmins';
 import { Notifications } from '../routes/Notifications'
@@ -105,6 +107,14 @@ const router = createBrowserRouter([
     {
         path: '/julissa-bio',
         element: <JulissaBio />,
+    },
+    {
+        path: '/steve-bio',
+        element: <SteveBio />,
+    },
+    {
+        path: '/tami-bio',
+        element: <TamiBio />,
     },
     {
         path: '/terms',
