@@ -14,6 +14,7 @@ import { NotFound } from '../routes/NotFound';
 import { Admin } from '../routes/Admin';
 import { ContactUs } from '../routes/ContactUs';
 import { RonBio } from '../routes/RonBio';
+import { TerriBio } from '../routes/TerriBio';
 import { Terms } from '../routes/Terms'
 import AddAdmins from '../routes/AddAdmins';
 import { Notifications } from '../routes/Notifications'
@@ -95,6 +96,10 @@ const router = createBrowserRouter([
     {
         path: '/ron-bio',
         element: <RonBio />,
+    },
+    {
+        path: '/terri-bio',
+        element: <TerriBio />,
     },
     {
         path: '/terms',

@@ -143,11 +143,13 @@ export const AboutUs = () => {
                                 className="w-40 object-cover mb-5 md:mb-0"
                                 alt="Steve"
                             />
-                            <img
-                                src={terri}
-                                className="w-40 object-cover mb-5 md:mb-0"
-                                alt="Terri"
-                            />
+                            <button onClick={() => navigate('/terri-bio')}>
+                                <img
+                                    src={terri}
+                                    className="w-40 object-cover mb-5 md:mb-0"
+                                    alt="Terri"
+                                />
+                            </button>
                         </div>
                     </div>
                 </div>
