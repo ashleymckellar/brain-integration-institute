@@ -124,11 +124,13 @@ export const AboutUs = () => {
                                     alt="Ron"
                                 />
                             </button>
-                            <img
-                                src={julissa}
-                                className="w-40 object-cover mb-5 md:mb-0"
-                                alt="Julissa"
-                            />
+                            <button onClick={() => navigate('/julissa-bio')}>
+                                <img
+                                    src={julissa}
+                                    className="w-40 object-cover mb-5 md:mb-0"
+                                    alt="Julissa"
+                                />
+                            </button>
                             <img
                                 src={tami}
                                 className="w-40 object-cover mb-5 md:mb-0"
