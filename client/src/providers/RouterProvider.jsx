@@ -49,10 +49,10 @@ const router = createBrowserRouter([
                 path: '/success',
                 element: <PaymentSuccessPage />,
             },
-            {
-                path: '/contact-us',
-                element: <ContactUs />,
-            },
+            // {
+            //     path: '/contact-us',
+            //     element: <ContactUs />,
+            // },
 
             {
                 path: '/notifications',
