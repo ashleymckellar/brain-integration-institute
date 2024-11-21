@@ -6,6 +6,7 @@ const {
 } = require('../services/notifications');
 const NotificationsModel = require('../models/notifications');
 const { UserModel } = require('../models/User');
+const { v4: uuidv4 } = require('uuid');
 
 const notificationsRouter = ex.Router();
 
@@ -91,29 +92,29 @@ notificationsRouter.post('/', async (req, res) => {
     }
 });
 
-notificationsRouter.put('/:email/has-been-read', async (req, res) => {
+notificationsRouter.put('/:uniqueid/has-been-read', async (req, res) => {
+    const { uniqueid } = req.params;
     const { hasBeenRead } = req.body;
-    const { email } = req.params;
-    if (typeof hasBeenRead !== 'boolean') {
-        return res.status(400).json({
-            error: 'hasBeenRead is required and must be a boolean',
-        });
-    }
+
     try {
-        const user = await NotificationsModel.findOneAndUpdate(
-            { userEmail: email },
-            { hasBeenRead },
-            { new: true, runValidators: true },
+        // Use findOneAndUpdate directly
+        const updatedNotification = await NotificationsModel.findOneAndUpdate(
+            { uniqueid },  // Find by uniqueid
+            { hasBeenRead },  // Set the new value
+            { new: true }  // Return the updated document
         );
-        if (!user) {
-            return res.status(404).json({ error: 'User not found' });
+
+        if (!updatedNotification) {
+            return res.status(404).json({ error: 'Notification not found' });
         }
-        res.json(user);
+
+        return res.status(200).json(updatedNotification);  // Return the updated document
     } catch (error) {
-        console.error('Error updating study guide access:', error);
-        res.status(500).json({ error: error.message });
+        console.error('Error updating notification:', error);
+        return res.status(500).json({ error: 'Server error' });
     }
 });
+
 
 module.exports = {
     notificationsRouter,

@@ -258,14 +258,12 @@ export const AdminProvider = ({ children }) => {
             const response = await axios.get(
                 `http://${baseUrl}/api/admin-notifications`,
                 {
-                   
                     headers: {
                         'Content-Type': 'application/json',
                         Authorization: `Bearer ${await getAccessTokenSilently()}`,
                     },
                 },
             );
-        
 
             const data = response.data;
             console.log('Fetched data:', data);
@@ -282,6 +280,30 @@ export const AdminProvider = ({ children }) => {
             setError(error.message);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const markNotificationAsRead = async (id) => {
+        try {
+            const accessToken = await getAccessTokenSilently();
+            const response = await axios.put(
+                `/api/adminnotifications/${id}/has-been-read`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                },
+            );
+            const updatedNotifications = unreadNotifications.filter(
+                (notification) => notification._id !== id,
+            );
+
+            // Update the state with the filtered array
+            unreadNotifications(updatedNotifications);
+
+            console.log('Notification marked as read:', id);
+        } catch (error) {
+            console.error('Error marking notification as read:', error);
         }
     };
 
@@ -307,7 +329,7 @@ export const AdminProvider = ({ children }) => {
                 setSelectedDocumentName,
                 updateDocumentStatusbyAdmin,
                 deleteUser,
-                fetchAdminNotifications, 
+                fetchAdminNotifications,
                 unreadNotifications,
             }}
         >

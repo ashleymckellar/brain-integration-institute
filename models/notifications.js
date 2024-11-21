@@ -1,7 +1,9 @@
 const mg = require('mongoose');
 const Schema = mg.Schema;
+const { v4: uuidv4 } = require('uuid');
 
 const NotificationsSchema = new mg.Schema({
+    uniqueid: { type: String, default: uuidv4 }, 
     message: {
         type: String
     },

@@ -2,9 +2,11 @@ const ex = require('express');
 // const { processFile } = require('../middleware/cdn');
 const { getAllNotifications } = require('../services/adminNotifications');
 const { createNotification } = require('../services/adminNotifications');
-const AdminNotificationsModel = require('../models/notifications');
+const AdminNotificationsModel = require('../models/adminNotifications');
 const { UserModel } = require('../models/User');
-const NotificationsModel = require('../models/notifications');
+// const NotificationsModel = require('../models/notifications');
+const mg = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
 
 const adminNotificationsRouter = ex.Router();
 
@@ -28,8 +30,7 @@ adminNotificationsRouter.get('/', async (req, res) => {
 
 adminNotificationsRouter.post('/', async (req, res) => {
     try {
-        const { message, category, notificationType, notificationStatus } =
-            req.body;
+        const { message, category, notificationType, notificationStatus } = req.body;
 
         // Get the authenticated user from JWT
         const authenticatedUser = await UserModel.findOne({
@@ -55,25 +56,17 @@ adminNotificationsRouter.post('/', async (req, res) => {
             category,
             notificationType,
             notificationStatus,
-            timestamp: Date.now(),
             userEmail: authenticatedUser.userEmail,
-            admin: sharedAdminEmail, // Send to the shared admin email
+            admin: sharedAdminEmail,
+            uniqueid: uuidv4(), // Generate a unique ID using uuidv4
         };
 
+        // Create notification
         const notification = await createNotification(notificationData);
-
-        // Populate the firstName and lastName fields
-        const populatedNotification = await AdminNotificationsModel.populate(
-            notification,
-            {
-                path: 'firstName lastName',
-                model: 'User',
-            },
-        );
 
         res.status(201).json({
             success: true,
-            notification: populatedNotification,
+            notification,
         });
     } catch (error) {
         console.error('Error creating notifications:', error);
@@ -81,29 +74,90 @@ adminNotificationsRouter.post('/', async (req, res) => {
     }
 });
 
-adminNotificationsRouter.put('/has-been-read', async (req, res) => {
-    const { hasBeenRead } = req.body;
+
+
+// adminNotificationsRouter.put('/has-been-read', async (req, res) => {
+//     const { id, hasBeenRead } = req.body;
+
+//     // Validate the hasBeenRead field
+//     if (typeof hasBeenRead !== 'boolean') {
+//         return res.status(400).json({
+//             error: 'hasBeenRead is required and must be a boolean',
+//         });
+//     }
+
+//     // Validate the ObjectId format
   
-    if (typeof hasBeenRead !== 'boolean') {
-        return res.status(400).json({
-            error: 'hasBeenRead is required and must be a boolean',
-        });
-    }
+
+//     try {
+//         console.log(typeof id, "id");  // Check if it's a string or an object
+//         console.log(id instanceof mg.Types.ObjectId, "is ObjectId");  // Check if it's an ObjectId
+//         console.log('Querying with:', { id }); 
+
+//         const objectId = new mg.Types.ObjectId(id);
+//         console.log('Querying with:', { _id: objectId });
+
+//         // Query the notification using the _id field, not id
+//         const notification = await AdminNotificationsModel.findOneAndUpdate(
+//             { id },  // Query using the _id field (converted to ObjectId)
+//             { $set: { hasBeenRead } },  // Set the hasBeenRead field to true
+//             { new: true, runValidators: true }  // Return the updated document
+//         );
+
+//         // Handle case where notification is not found
+//         if (!notification) {
+//             return res.status(404).json({ error: 'Notification not found' });
+//         }
+
+//         // Return the updated notification
+//         res.json(notification);
+//     } catch (error) {
+//         console.error('Error updating notification:', error);
+//         res.status(500).json({ error: error.message });
+//     }
+// });
+
+// adminNotificationsRouter.put('/:id/has-been-read', async (req, res) => {
+//     try {
+//         const notificationId = req.params.id
+//         const updatedNotification = await AdminNotificationsModel.findByIdAndUpdate(
+//             notificationId,
+//             req.body,
+//             {new: true}
+//         )
+//         return res.status(201).send(updatedNotification)
+//     } catch (error) {
+//         console.error('Error creating notifications:', error);
+//         res.status(500).json({ error: 'Server error' });
+//     }
+// });
+
+adminNotificationsRouter.put('/:uniqueid/has-been-read', async (req, res) => {
+    const { uniqueid } = req.params;
+    const { hasBeenRead } = req.body;
+
     try {
-        const user = await AdminNotificationsModel.findOneAndUpdate(
-           
-            { hasBeenRead },
-            { new: true, runValidators: true },
+        // Use findOneAndUpdate directly
+        const updatedNotification = await AdminNotificationsModel.findOneAndUpdate(
+            { uniqueid },  // Find by uniqueid
+            { hasBeenRead },  // Set the new value
+            { new: true }  // Return the updated document
         );
-        if (!user) {
-            return res.status(404).json({ error: 'User not found' });
+
+        if (!updatedNotification) {
+            return res.status(404).json({ error: 'Notification not found' });
         }
-        res.json(user);
+
+        return res.status(200).json(updatedNotification);  // Return the updated document
     } catch (error) {
-        console.error('Error updating study guide access:', error);
-        res.status(500).json({ error: error.message });
+        console.error('Error updating notification:', error);
+        return res.status(500).json({ error: 'Server error' });
     }
 });
+
+
+
+
 
 //         const admin = await UserModel.findOne({ sub: req.auth.payload.sub });
 //         const adminEmail = admin ? admin.userEmail : 'Admin not found';

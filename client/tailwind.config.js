@@ -45,6 +45,7 @@ export default {
             },
             boxShadow: {
                 'custom-red': '0px 4px 4px 0px #B32C36',
+                'custom-green': '0px 4px 4px 0px #38761d',
               },
         },
     },
