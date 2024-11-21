@@ -24,6 +24,7 @@ export const AdminProvider = ({ children }) => {
     const [fileModalOpen, setFileModalOpen] = useState(false);
     const [selectedDocumentName, setSelectedDocumentName] = useState('');
     const baseUrl = import.meta.env.VITE_API_BASE_URL;
+    const [unreadNotifications, setUnreadNotifications] = useState([]);
 
     const getManagementToken = async () => {
         const response = await axios.post(
@@ -69,7 +70,7 @@ export const AdminProvider = ({ children }) => {
                 },
             });
             setIndividualUser(response.data);
-            console.log(individualUser)
+            console.log(individualUser);
         } catch (error) {
             console.error('Error fetching user:', error);
         }
@@ -122,7 +123,7 @@ export const AdminProvider = ({ children }) => {
                 {
                     headers: {
                         'Content-Type': 'application/json',
-                        Authorization: `Bearer ${accessTokenforBackend}`, 
+                        Authorization: `Bearer ${accessTokenforBackend}`,
                     },
                 },
             );
@@ -250,6 +251,40 @@ export const AdminProvider = ({ children }) => {
             console.error('User is not defined');
         }
     };
+
+    const fetchAdminNotifications = async () => {
+        try {
+            setLoading(true);
+            const response = await axios.get(
+                `http://${baseUrl}/api/admin-notifications`,
+                {
+                   
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${await getAccessTokenSilently()}`,
+                    },
+                },
+            );
+        
+
+            const data = response.data;
+            console.log('Fetched data:', data);
+
+            const activeNotifications = Object.values(data)
+                .flat()
+                .filter((notification) => !notification.hasBeenRead);
+
+            console.log('Unread Notifications:', unreadNotifications);
+
+            setUnreadNotifications(activeNotifications);
+        } catch (error) {
+            console.error('Error fetching notifications:', error);
+            setError(error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <AdminContext.Provider
             value={{
@@ -272,6 +307,8 @@ export const AdminProvider = ({ children }) => {
                 setSelectedDocumentName,
                 updateDocumentStatusbyAdmin,
                 deleteUser,
+                fetchAdminNotifications, 
+                unreadNotifications,
             }}
         >
             {children}

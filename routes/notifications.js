@@ -9,7 +9,7 @@ const { UserModel } = require('../models/User');
 
 const notificationsRouter = ex.Router();
 
-//these routes are for messages sent by admin as to whether a docment is approved or denied
+//these routes are for messages sent by admin to user as to whether a docment is approved or denied
 
 //this works, leave it alone - 11/14/24
 notificationsRouter.get('/:useremail', async (req, res) => {

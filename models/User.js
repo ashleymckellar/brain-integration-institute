@@ -26,8 +26,10 @@ const UserSchema = new mg.Schema({
     userName: {
         type: String,
         required: true,
-        unique: true,
-        default: '',
+       
+        default: function() {
+            return this.userEmail; 
+        },
     },
 
     firstName: {

@@ -415,6 +415,7 @@ export const CloudinaryProvider = ({ children }) => {
 
         setCertListUploadStatus(updatedStatus);
         await updateUserDocumentStatus(documentType, newStatus);
+        //add await for function that makes post request to adminNotifications route
         console.log('Updated certListUploadStatus:', updatedStatus);
         console.log('Calling updateUserProgress with value:', 1);
     };

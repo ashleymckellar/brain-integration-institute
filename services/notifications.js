@@ -1,4 +1,5 @@
 const NotificationsModel = require('../models/notifications.js');
+const AdminNotificationsModel = require('../models/adminNotifications.js')
 const { UserModel } = require('../models/User.js');
 
 const getAllNotificationsByUser = async (userEmail) => {
@@ -10,6 +11,7 @@ const getAllNotificationsByUser = async (userEmail) => {
         console.log(userEmail, 'userEmail input');
 
         // Find the user by their email and populate the relevant fields for approval messages
+        //this only gets the admin status updates for a specific user 
         const user = await UserModel.findOne({ userEmail }).populate([
             {
                 path: 'approvalMessages.brainIntegrationTraining',
@@ -48,18 +50,19 @@ const getAllNotificationsByUser = async (userEmail) => {
     }
 };
 
-
+//this creates a notification when a user uploads a doc or passes/fails the exam and sends it to admins
 const createMessage = async (metadata) => {
     const message = new NotificationsModel(metadata);
     await message.save();
     return message;
 };
 
-const updateNotificationStatus = async(metadata) => {
-    
-}
+
+
 
 //get unread messages only
+
+//no longer using this route, filtering is done on frontend  
 // const unreadMessages = await ApprovalModel.find({ userEmail: user.email, hasBeenRead: false });
 
 //mark messages as read
@@ -71,5 +74,6 @@ const updateNotificationStatus = async(metadata) => {
 
 module.exports = {
     getAllNotificationsByUser,
+
     createMessage,
 };

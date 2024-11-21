@@ -1,10 +1,9 @@
+/* eslint-disable no-irregular-whitespace */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/no-unescaped-entities */
-import paleBanner from '../assets/icons/PaleGreenPractitionerBackground.png';
-import banner from '../assets/icons/PractitionerBackground.png';
+
 import { Navbar } from '../components/header/Navbar';
 import { Footer } from '../components/Footer';
-import nature2 from '../assets/images/nature2.jpg';
 import wheat from '../assets/images/wheat-fields-4439896_1920.jpg';
 import fists from '../assets/images/fists.png';
 import ron from '../assets/images/ron.png';
