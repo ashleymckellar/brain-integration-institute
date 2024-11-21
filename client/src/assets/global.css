@@ -103,6 +103,46 @@
 }
 
 
+/* Custom styles for the burger menu */
+.notification-menu {
+    background: #ffffff !important; /* White background */
+    width: 100% !important; /* Take full width of the screen */
+    max-width: 500px; /* Limit max width on larger screens */
+    box-shadow: none !important; /* Remove gray shadow */
+    padding: 20px;
+}
+
+/* Overlay customization (optional) */
+.notification-menu .bm-overlay {
+    background: rgba(0, 0, 0, 0.3) !important; /* Semi-transparent overlay */
+}
+
+/* Menu panel customization */
+.notification-menu .bm-menu {
+    background: #ffffff !important; /* White background */
+    width: 100% !important; /* Full width on small screens */
+    max-width: 500px; /* Restrict width for larger screens */
+    padding: 20px !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .notification-menu {
+        width: 100% !important; /* Full width for smaller screens */
+    }
+    .notification-menu .bm-menu {
+        width: 100% !important; /* Adjust modal to fit screen width */
+    }
+}
+
+/* Adjust notifications' layout */
+.notification-menu .bm-item {
+    outline: none;
+    width: 100%; /* Make notification content fill available space */
+}
+
+
+
 
 
 

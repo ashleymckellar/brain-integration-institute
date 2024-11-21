@@ -1,16 +1,22 @@
 /* eslint-disable react/no-unescaped-entities */
-import { useEffect, useContext } from 'react';
+import { useEffect, useContext, useState } from 'react';
 import { AdminContext } from '../contexts';
 import { format } from 'date-fns';
+import { slide as Menu } from 'react-burger-menu';
 import redNotificationIcon from '../assets/icons/red-notification-icon.svg';
 
 const MessagingHub = () => {
     const { fetchAdminNotifications, unreadNotifications } =
         useContext(AdminContext);
+        const [isOpen, setIsOpen] = useState(false);
 
     useEffect(() => {
         fetchAdminNotifications();
     }, []);
+
+    const handleMenuStateChange = (state) => {
+      setIsOpen(state.isOpen);
+  };
 
     useEffect(() => {
         console.log(unreadNotifications);
