@@ -4,6 +4,7 @@
 import { UserContext } from '../contexts';
 import { useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
+import axios from 'axios'
 
 export const UserProvider = ({ children }) => {
     const initialValues = {
@@ -181,6 +182,32 @@ export const UserProvider = ({ children }) => {
             }
         }
     };
+
+    const markNotificationAsRead = async (id) => {
+        try {
+            const accessToken = await getAccessTokenSilently();
+          
+    
+            const response = await axios.put(
+                `/api/notifications/${id}/has-been-read`,
+                {hasBeenRead: true},
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                },
+            );
+    
+            // Update state with filtered notifications
+            setActiveNotifications((prev) =>
+                prev.filter((notification) => notification.uniqueid !== id)
+            );
+    
+            console.log('Notification marked as read:', id);
+        } catch (error) {
+            console.error('Error marking notification as read:', error);
+        }
+    };
     
 
         const fetchAllProfiles = async () => {
@@ -232,7 +259,8 @@ export const UserProvider = ({ children }) => {
                 setAllProfiles,
                 fetchNotifications,
                 activeNotifications,
-                setActiveNotifications
+                setActiveNotifications,
+                markNotificationAsRead
             }}
         >
             {children}

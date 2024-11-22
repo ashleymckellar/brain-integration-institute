@@ -6,8 +6,11 @@ import { slide as Menu } from 'react-burger-menu';
 import redNotificationIcon from '../assets/icons/red-notification-icon.svg';
 
 const MessagingHub = () => {
-    const { fetchAdminNotifications, unreadNotifications, markNotificationAsRead } =
-        useContext(AdminContext);
+    const {
+        fetchAdminNotifications,
+        unreadNotifications,
+        markNotificationAsRead,
+    } = useContext(AdminContext);
     const [isOpen, setIsOpen] = useState(false);
 
     useEffect(() => {
@@ -45,14 +48,17 @@ const MessagingHub = () => {
     const getDisplayName = (key) => docTypeMapping[key] || key;
 
     const onClose = async (uniqueid) => {
-      try {
-          await markNotificationAsRead(uniqueid);
-          fetchAdminNotifications()
-          console.log(`Notification with ID ${uniqueid} marked as read.`);
-      } catch (error) {
-          console.error(`Error marking notification ${uniqueid} as read:`, error);
-      }
-  };
+        try {
+            await markNotificationAsRead(uniqueid);
+            fetchAdminNotifications();
+            console.log(`Notification with ID ${uniqueid} marked as read.`);
+        } catch (error) {
+            console.error(
+                `Error marking notification ${uniqueid} as read:`,
+                error,
+            );
+        }
+    };
 
     return (
         <>
@@ -210,7 +216,15 @@ const MessagingHub = () => {
                     })}
                 </div>
             ) : (
-                <p>No unread notifications</p>
+                <div className="flex flex-col gap-5 pt-20">
+                    <p className="text-center text-gray-500 text-xl">
+                        You're all caught up!{' '}
+                    </p>{' '}
+                    <p className="text-center text-gray-500 text-xl">
+                        {' '}
+                        No unread notifications. {String.fromCodePoint(0x1f389)}
+                    </p>
+                </div>
             )}
         </>
     );

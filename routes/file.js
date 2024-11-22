@@ -72,7 +72,7 @@ fileRouter.get('/', async (req, res) => {
 
 fileRouter.post('/', async (req, res) => {
     try {
-        const { publicId, url, uploadDate, filename, sectionName } = req.body;
+        const { publicId, url, uploadDate, filename, sectionName, uniqueid } = req.body;
 
         if (!publicId || !url || !uploadDate || !filename) {
             return res.status(400).json({ error: 'Missing required fields' });

@@ -58,17 +58,18 @@ notificationsRouter.post('/', async (req, res) => {
             category,
             notificationType,
             notificationStatus,
+            uniqueid: uuidv4(), 
         });
 
         const user = await UserModel.findOne({ userEmail });
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
-        if (user.approvalMessages[category]) {
-            user.approvalMessages[category].push(messageMetadata._id);
-        }
+        // if (user.approvalMessages[category]) {
+        //     user.approvalMessages[category].push(messageMetadata._id);
+        // }
 
-        await user.save();
+        // await user.save();
         const relatedMessages = await NotificationsModel.find({
             userEmail,
             notificationType: {
@@ -82,7 +83,7 @@ notificationsRouter.post('/', async (req, res) => {
 
         res.status(201).json({
             success: true,
-            messageMetadata,
+          
             relatedMessages,
         });
       
@@ -97,6 +98,7 @@ notificationsRouter.put('/:uniqueid/has-been-read', async (req, res) => {
     const { hasBeenRead } = req.body;
 
     try {
+        console.log(uniqueid)
         // Use findOneAndUpdate directly
         const updatedNotification = await NotificationsModel.findOneAndUpdate(
             { uniqueid },  // Find by uniqueid

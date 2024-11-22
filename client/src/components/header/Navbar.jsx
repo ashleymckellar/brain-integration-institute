@@ -18,7 +18,7 @@ export const Navbar = () => {
     const [isAdmin, setIsAdmin] = useState(false);
     const [notificationModalOpen, setNotificationModalOpen] = useState(false);
     const [burgerMenuOpen, setBurgerMenuOpen] = useState(false); // Add burger menu state
-    const { fetchNotifications, activeNotifications } = useContext(UserContext);
+    const { fetchNotifications, activeNotifications, markNotificationAsRead } = useContext(UserContext);
 
     const handleLogin = async () => {
         await loginWithRedirect({
@@ -132,7 +132,7 @@ export const Navbar = () => {
                         className="relative h-[32px] w-[32px] flex items-center justify-center"
                     >
                         {activeNotifications && activeNotifications.length > 0 && (
-                            <span className="absolute top-0 right-0 text-xs text-white bg-red-600 rounded-full w-5 h-5 flex items-center justify-center">
+                            <span className="absolute top-0 right-0 text-xs text-white bg-red rounded-full w-5 h-5 flex items-center justify-center">
                                 {activeNotifications.length}
                             </span>
                         )}
@@ -191,6 +191,9 @@ export const Navbar = () => {
                         onClose={() => setNotificationModalOpen(false)}
                         activeNotifications={activeNotifications}
                         fetchNotifications={fetchNotifications}
+                        markNotificationAsRead={markNotificationAsRead}
+                        setNotificationModalOpen={setNotificationModalOpen}
+                        notificationModalOpen={notificationModalOpen}
                     />
                 )}
             </div>

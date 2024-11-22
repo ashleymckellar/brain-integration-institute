@@ -294,7 +294,7 @@ export const AdminProvider = ({ children }) => {
     
             const response = await axios.put(
                 `/api/admin-notifications/${id}/has-been-read`,
-                {hasBeenRead: true}, // Empty body
+                {hasBeenRead: true},
                 {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,

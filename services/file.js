@@ -53,6 +53,8 @@ const createFile = async (req, res) => {
             isApproved: req.body.isApproved,
             user: user._id,
             sectionName: req.body.sectionName,
+            uniqueid: req.body.uniqueid, 
+            
         });
 
         // Save the file document

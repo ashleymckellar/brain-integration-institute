@@ -57,14 +57,14 @@ export const CloudinaryProvider = ({ children }) => {
                 console.error('User email is missing');
                 return [];
             }
-    
+
             // Fetch the access token
             const accessToken = await getAccessTokenSilently();
             if (!accessToken) {
                 console.error('Access token is missing');
                 return [];
             }
-    
+
             // Fetch files from the API
             const email = user.email;
             const response = await axios.get(
@@ -73,22 +73,21 @@ export const CloudinaryProvider = ({ children }) => {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
                     },
-                }
+                },
             );
-    
+
             // Handle case where response might be null or not OK
             if (!response || !response.data || !response.data.files) {
                 // console.error('No files found or invalid response');
-                return []; 
+                return [];
             }
-    
+
             return response.data.files;
         } catch (error) {
             console.error('Error fetching files:', error);
             return [];
         }
     };
-    
 
     //gets files from Cloudinary via callback/cors proxy
     const getFilesInFolder = async () => {
@@ -96,7 +95,7 @@ export const CloudinaryProvider = ({ children }) => {
             if (!user || !user.email) {
                 throw new Error('User email is missing');
             }
-            
+
             const nickname = user.email.split('@')[0];
             const accessToken = await getAccessTokenSilently();
 
@@ -110,9 +109,9 @@ export const CloudinaryProvider = ({ children }) => {
             );
             if (!response || !response.data || !response.data.files) {
                 console.error('No files found or invalid response');
-                return []; 
+                return [];
             }
-            console.log(response.data)
+            console.log(response.data);
             return response.data;
         } catch (error) {
             console.error('Error fetching files:', error);
@@ -280,7 +279,11 @@ export const CloudinaryProvider = ({ children }) => {
         }
     };
 
-    const updateUserDocumentStatus = async (documentType, newStatus, notificationType) => {
+    const updateUserDocumentStatus = async (
+        documentType,
+        newStatus,
+        notificationType,
+    ) => {
         if (user) {
             try {
                 const accessToken = await getAccessTokenSilently();
@@ -295,7 +298,7 @@ export const CloudinaryProvider = ({ children }) => {
                         body: JSON.stringify({
                             documentType,
                             newStatus,
-                            notificationType
+                            notificationType,
                         }),
                     },
                 );
@@ -319,6 +322,24 @@ export const CloudinaryProvider = ({ children }) => {
         } else {
             console.error('User is not defined');
         }
+    };
+
+    const sendAdminNotification = async (user, selectedDocumentType) => {
+        const accessToken = await getAccessTokenSilently();
+        console.log('Access token retrieved:', accessToken);
+        // const stripe = await stripePromise();
+        const response = await fetch('/api/admin-notifications', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${accessToken}`,
+            },
+            body: JSON.stringify({
+                notificationType: "docStatusUpdate",
+                userEmail: user,
+                category: selectedDocumentType
+            }),
+        });
     };
 
     const initializeCloudinaryWidget = (section) => {
@@ -593,12 +614,15 @@ export const CloudinaryProvider = ({ children }) => {
     //get certificate file from cloudinary
 
     const getCertificate = async () => {
-        console.log('certificate route tapped')
+        console.log('certificate route tapped');
         try {
             console.log('Attempting to retrieve access token...');
             const accessToken = await getAccessTokenSilently();
             console.log('Access token retrieved:', accessToken);
-            console.log('Sending GET request to:', `http://${baseUrl}/api/images/certificate`);
+            console.log(
+                'Sending GET request to:',
+                `http://${baseUrl}/api/images/certificate`,
+            );
             const response = await axios.get(
                 `http://${baseUrl}/api/images/certificate`,
                 {

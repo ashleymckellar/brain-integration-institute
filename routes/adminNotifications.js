@@ -30,7 +30,8 @@ adminNotificationsRouter.get('/', async (req, res) => {
 
 adminNotificationsRouter.post('/', async (req, res) => {
     try {
-        const { message, category, notificationType, notificationStatus } = req.body;
+        const { message, category, notificationType, notificationStatus } =
+            req.body;
 
         // Get the authenticated user from JWT
         const authenticatedUser = await UserModel.findOne({
@@ -74,34 +75,41 @@ adminNotificationsRouter.post('/', async (req, res) => {
     }
 });
 
-
-
 adminNotificationsRouter.put('/:uniqueid/has-been-read', async (req, res) => {
     const { uniqueid } = req.params;
     const { hasBeenRead } = req.body;
 
     try {
         // Use findOneAndUpdate directly
-        const updatedNotification = await AdminNotificationsModel.findOneAndUpdate(
-            { uniqueid },  // Find by uniqueid
-            { hasBeenRead },  // Set the new value
-            { new: true }  // Return the updated document
-        );
+        const updatedNotification =
+            await AdminNotificationsModel.findOneAndUpdate(
+                { uniqueid }, // Find by uniqueid
+                { hasBeenRead }, // Set the new value
+                { new: true }, // Return the updated document
+            );
 
         if (!updatedNotification) {
             return res.status(404).json({ error: 'Notification not found' });
         }
 
-        return res.status(200).json(updatedNotification);  // Return the updated document
+        return res.status(200).json(updatedNotification); // Return the updated document
     } catch (error) {
         console.error('Error updating notification:', error);
         return res.status(500).json({ error: 'Server error' });
     }
 });
 
+adminNotificationsRouter.delete('/:uniqueid/delete', async (req, res) => {
+    const uniqueid = req.params.uniqueid;
 
-
-
+    try {
+        await AdminNotificationsModel.findOneAndDelete({ uniqueid: uniqueid });
+        res.status(200).json({ message: 'Notification deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting notification:', error);
+        res.status(500).json({ message: 'Error deleting notification', error });
+    }
+});
 
 //         const admin = await UserModel.findOne({ sub: req.auth.payload.sub });
 //         const adminEmail = admin ? admin.userEmail : 'Admin not found';

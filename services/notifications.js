@@ -12,17 +12,17 @@ const getAllNotificationsByUser = async (userEmail) => {
 
         // Find the user by their email and populate the relevant fields for approval messages
         //this only gets the admin status updates for a specific user 
-        const user = await UserModel.findOne({ userEmail }).populate([
-            {
-                path: 'approvalMessages.brainIntegrationTraining',
-                model: 'Notifications',
-            },
-            { path: 'approvalMessages.clinicalHours', model: 'Notifications' },
-            { path: 'approvalMessages.firstAidTraining', model: 'Notifications' },
-            { path: 'approvalMessages.cprCert', model: 'Notifications' },
-            { path: 'approvalMessages.videoPresentation', model: 'Notifications' },
-            { path: 'approvalMessages.insurance', model: 'Notifications' },
-        ]);
+        const user = await UserModel.findOne({ userEmail })
+        //     {
+        //         path: 'approvalMessages.brainIntegrationTraining',
+        //         model: 'Notifications',
+        //     },
+        //     { path: 'approvalMessages.clinicalHours', model: 'Notifications' },
+        //     { path: 'approvalMessages.firstAidTraining', model: 'Notifications' },
+        //     { path: 'approvalMessages.cprCert', model: 'Notifications' },
+        //     { path: 'approvalMessages.videoPresentation', model: 'Notifications' },
+        //     { path: 'approvalMessages.insurance', model: 'Notifications' },
+        // ]);
 
         console.log(user, 'user email');
 
@@ -36,7 +36,7 @@ const getAllNotificationsByUser = async (userEmail) => {
 
             // Combine the populated approvalMessages and additional notifications
             const allNotifications = {
-                approvalMessages: user.approvalMessages,
+                // approvalMessages: user.approvalMessages,
                 additionalNotifications, // add the additional notifications to the result
             };
 
