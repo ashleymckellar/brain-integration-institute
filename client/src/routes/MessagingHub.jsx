@@ -6,17 +6,17 @@ import { slide as Menu } from 'react-burger-menu';
 import redNotificationIcon from '../assets/icons/red-notification-icon.svg';
 
 const MessagingHub = () => {
-    const { fetchAdminNotifications, unreadNotifications } =
+    const { fetchAdminNotifications, unreadNotifications, markNotificationAsRead } =
         useContext(AdminContext);
-        const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
 
     useEffect(() => {
         fetchAdminNotifications();
     }, []);
 
     const handleMenuStateChange = (state) => {
-      setIsOpen(state.isOpen);
-  };
+        setIsOpen(state.isOpen);
+    };
 
     useEffect(() => {
         console.log(unreadNotifications);
@@ -25,8 +25,8 @@ const MessagingHub = () => {
     console.log(unreadNotifications);
 
     const handleClick = (e) => {
-      console.log(e)
-    }
+        console.log(e);
+    };
 
     const docTypeMapping = {
         brainIntegrationTraining: 'brain integration training',
@@ -38,16 +38,21 @@ const MessagingHub = () => {
     };
 
     const formatDate = (timestamp) => {
-        console.log('Timestamp received:', timestamp);
+        // console.log('Timestamp received:', timestamp);
         return format(new Date(timestamp), 'MM/dd/yy');
     };
 
     const getDisplayName = (key) => docTypeMapping[key] || key;
 
-    const onClose = (notificationId) => {
-        // Placeholder for your close logic, for example, dismissing the notification
-        console.log(`Closing notification with ID: ${notificationId}`);
-    };
+    const onClose = async (uniqueid) => {
+      try {
+          await markNotificationAsRead(uniqueid);
+          fetchAdminNotifications()
+          console.log(`Notification with ID ${uniqueid} marked as read.`);
+      } catch (error) {
+          console.error(`Error marking notification ${uniqueid} as read:`, error);
+      }
+  };
 
     return (
         <>
@@ -57,51 +62,61 @@ const MessagingHub = () => {
                         switch (notification.notificationType) {
                             case 'assessmentUpdate':
                                 return (
-                                  <div
-                                  key={index}
-                                  className={`border border-black rounded-xl p-6 bg-white flex gap-5 items-start relative ${
-                                      notification.notificationStatus === 'passed'
-                                          ? 'shadow-custom-green'
-                                          : 'shadow-custom-red'
-                                  }`}
-                              >
-                                  <p
-                                      className="absolute top-2 right-2 z-10 cursor-pointer text-lg font-bold text-gray-500 hover:text-red-500"
-                                      onClick={() => handleClick(notification._id)}
-                                  >
-                                      X
-                                  </p>
-                              
-                                  <p className="pt-8">
-                                      {notification.notificationStatus === 'passed' ? (
-                                          <>
-                                              <span className="font-bold">
-                                                  {notification.userEmail}
-                                              </span>{' '}
-                                              passed their assessment. <br />
-                                              <div className="flex flex-col justify-center">
-                                                  <button className="py-2 px-4 mt-5 bg-green-500 rounded-lg text-white">
-                                                      Approve for Certification
-                                                  </button>
-                                                  <p className="text-sm text-light-grey mt-2">
-                                                      {formatDate(notification.timestamp)}
-                                                  </p>
-                                              </div>
-                                          </>
-                                      ) : (
-                                          <>
-                                              <span className="font-bold">
-                                                  {notification.userEmail}
-                                              </span>{' '}
-                                              failed their assessment. <br />
-                                              <p className="text-sm text-light-grey mt-2">
-                                                  {formatDate(notification.timestamp)}
-                                              </p>
-                                          </>
-                                      )}
-                                  </p>
-                              </div>
-                              
+                                    <div
+                                        key={index}
+                                        className={`border border-black rounded-xl p-6 bg-white flex gap-5 items-start relative ${
+                                            notification.notificationStatus ===
+                                            'passed'
+                                                ? 'shadow-custom-green'
+                                                : 'shadow-custom-red'
+                                        }`}
+                                    >
+                                        <p
+                                            className="absolute top-2 right-2 z-10 cursor-pointer text-lg font-bold text-gray-500 hover:text-red-500"
+                                            onClick={() =>
+                                                onClose(notification.uniqueid)
+                                            }
+                                        >
+                                            X
+                                        </p>
+
+                                        <p className="pt-8">
+                                            {notification.notificationStatus ===
+                                            'passed' ? (
+                                                <>
+                                                    <span className="font-bold">
+                                                        {notification.userEmail}
+                                                    </span>{' '}
+                                                    passed their assessment.{' '}
+                                                    <br />
+                                                    <div className="flex flex-col justify-center">
+                                                        <button className="py-2 px-4 mt-5 bg-green-500 rounded-lg text-white">
+                                                            Approve for
+                                                            Certification
+                                                        </button>
+                                                        <p className="text-sm text-light-grey mt-2">
+                                                            {formatDate(
+                                                                notification.timestamp,
+                                                            )}
+                                                        </p>
+                                                    </div>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <span className="font-bold">
+                                                        {notification.userEmail}
+                                                    </span>{' '}
+                                                    failed their assessment.{' '}
+                                                    <br />
+                                                    <p className="text-sm text-light-grey mt-2">
+                                                        {formatDate(
+                                                            notification.timestamp,
+                                                        )}
+                                                    </p>
+                                                </>
+                                            )}
+                                        </p>
+                                    </div>
                                 );
                             case 'docExpirationReminder':
                                 return (
@@ -112,7 +127,7 @@ const MessagingHub = () => {
                                         <p
                                             className="absolute top-2 right-2 cursor-pointer"
                                             onClick={() =>
-                                                onClose(notification.id)
+                                                onClose(notification.uniqueid)
                                             }
                                         >
                                             X
@@ -150,7 +165,7 @@ const MessagingHub = () => {
                                         <p
                                             className="absolute top-2 right-2 cursor-pointer"
                                             onClick={() =>
-                                                onClose(notification.id)
+                                                onClose(notification.uniqueid)
                                             }
                                         >
                                             X
@@ -162,17 +177,22 @@ const MessagingHub = () => {
                                                 className="w-8 h-8"
                                             />
                                             <p className="flex-1">
+                                                {' '}
+                                                <span className="font-bold">
+                                                    {notification.userEmail}{' '}
+                                                </span>{' '}
+                                                has uploaded a new{' '}
                                                 {getDisplayName(
                                                     notification.category,
                                                 )}{' '}
-                                                was declined.
+                                                file.
                                             </p>
                                         </div>
                                         <div className="flex flex-col mt-4">
                                             <p>{notification.message}</p>
                                             <div className="flex justify-between items-center mt-4">
                                                 <button className="border border-black rounded-lg px-4 py-2">
-                                                    Update Now
+                                                    Review Now
                                                 </button>
                                                 <p className="text-sm text-gray-500 mt-2">
                                                     {formatDate(

@@ -26,6 +26,10 @@ export const AdminProvider = ({ children }) => {
     const baseUrl = import.meta.env.VITE_API_BASE_URL;
     const [unreadNotifications, setUnreadNotifications] = useState([]);
 
+    //create put request function to mark notification as read
+    //will need notification uniqueid as param
+
+
     const getManagementToken = async () => {
         const response = await axios.post(
             `https://${import.meta.env.VITE_AUTH0_DOMAIN}/oauth/token`,
@@ -286,26 +290,29 @@ export const AdminProvider = ({ children }) => {
     const markNotificationAsRead = async (id) => {
         try {
             const accessToken = await getAccessTokenSilently();
+          
+    
             const response = await axios.put(
-                `/api/adminnotifications/${id}/has-been-read`,
+                `/api/admin-notifications/${id}/has-been-read`,
+                {hasBeenRead: true}, // Empty body
                 {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
                     },
                 },
             );
-            const updatedNotifications = unreadNotifications.filter(
-                (notification) => notification._id !== id,
+    
+            // Update state with filtered notifications
+            setUnreadNotifications((prev) =>
+                prev.filter((notification) => notification.uniqueid !== id)
             );
-
-            // Update the state with the filtered array
-            unreadNotifications(updatedNotifications);
-
+    
             console.log('Notification marked as read:', id);
         } catch (error) {
             console.error('Error marking notification as read:', error);
         }
     };
+    
 
     return (
         <AdminContext.Provider
@@ -331,6 +338,7 @@ export const AdminProvider = ({ children }) => {
                 deleteUser,
                 fetchAdminNotifications,
                 unreadNotifications,
+                markNotificationAsRead
             }}
         >
             {children}

@@ -49,7 +49,7 @@ const AdminNotificationsSchema = new mg.Schema({
     },
     notificationStatus: {
         type: String,
-        enum: ['approved', 'declined', 'passed', 'failed'],
+        enum: ['approved', 'declined', 'passed', 'failed', 'pending'],
     },
 });
 

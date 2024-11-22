@@ -7,7 +7,6 @@ import redNotificationIcon from '../assets/icons/red-notification-icon.svg';
 
 export const Notifications = ({
     activeNotifications,
-    fetchNotifications,
     onClose,
 }) => {
     useEffect(() => {

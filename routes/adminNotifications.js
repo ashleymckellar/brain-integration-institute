@@ -76,62 +76,6 @@ adminNotificationsRouter.post('/', async (req, res) => {
 
 
 
-// adminNotificationsRouter.put('/has-been-read', async (req, res) => {
-//     const { id, hasBeenRead } = req.body;
-
-//     // Validate the hasBeenRead field
-//     if (typeof hasBeenRead !== 'boolean') {
-//         return res.status(400).json({
-//             error: 'hasBeenRead is required and must be a boolean',
-//         });
-//     }
-
-//     // Validate the ObjectId format
-  
-
-//     try {
-//         console.log(typeof id, "id");  // Check if it's a string or an object
-//         console.log(id instanceof mg.Types.ObjectId, "is ObjectId");  // Check if it's an ObjectId
-//         console.log('Querying with:', { id }); 
-
-//         const objectId = new mg.Types.ObjectId(id);
-//         console.log('Querying with:', { _id: objectId });
-
-//         // Query the notification using the _id field, not id
-//         const notification = await AdminNotificationsModel.findOneAndUpdate(
-//             { id },  // Query using the _id field (converted to ObjectId)
-//             { $set: { hasBeenRead } },  // Set the hasBeenRead field to true
-//             { new: true, runValidators: true }  // Return the updated document
-//         );
-
-//         // Handle case where notification is not found
-//         if (!notification) {
-//             return res.status(404).json({ error: 'Notification not found' });
-//         }
-
-//         // Return the updated notification
-//         res.json(notification);
-//     } catch (error) {
-//         console.error('Error updating notification:', error);
-//         res.status(500).json({ error: error.message });
-//     }
-// });
-
-// adminNotificationsRouter.put('/:id/has-been-read', async (req, res) => {
-//     try {
-//         const notificationId = req.params.id
-//         const updatedNotification = await AdminNotificationsModel.findByIdAndUpdate(
-//             notificationId,
-//             req.body,
-//             {new: true}
-//         )
-//         return res.status(201).send(updatedNotification)
-//     } catch (error) {
-//         console.error('Error creating notifications:', error);
-//         res.status(500).json({ error: 'Server error' });
-//     }
-// });
-
 adminNotificationsRouter.put('/:uniqueid/has-been-read', async (req, res) => {
     const { uniqueid } = req.params;
     const { hasBeenRead } = req.body;
