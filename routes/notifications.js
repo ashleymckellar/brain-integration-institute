@@ -40,7 +40,7 @@ notificationsRouter.post('/', async (req, res) => {
         console.log('Category:', category);
         if (!userEmail) {
             return res.status(400).json({
-                error: 'userEmail, and category are required fields',
+                error: 'userEmail is a required fields',
             });
         }
         const admin = await UserModel.findOne({ sub: req.auth.payload.sub });

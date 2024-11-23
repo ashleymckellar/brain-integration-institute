@@ -25,11 +25,11 @@ export const AdminProvider = ({ children }) => {
     const [selectedDocumentName, setSelectedDocumentName] = useState('');
     const baseUrl = import.meta.env.VITE_API_BASE_URL;
     const [unreadNotifications, setUnreadNotifications] = useState([]);
-    const [isNotificationDrawerOpen, setisNotificationDrawerOpen] = useState(false);
+    const [isNotificationDrawerOpen, setisNotificationDrawerOpen] =
+        useState(false);
 
     //create put request function to mark notification as read
     //will need notification uniqueid as param
-
 
     const getManagementToken = async () => {
         const response = await axios.post(
@@ -291,23 +291,22 @@ export const AdminProvider = ({ children }) => {
     const markNotificationAsRead = async (id) => {
         try {
             const accessToken = await getAccessTokenSilently();
-          
-    
+
             const response = await axios.put(
                 `/api/admin-notifications/${id}/has-been-read`,
-                {hasBeenRead: true},
+                { hasBeenRead: true },
                 {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
                     },
                 },
             );
-    
+
             // Update state with filtered notifications
             setUnreadNotifications((prev) =>
-                prev.filter((notification) => notification.uniqueid !== id)
+                prev.filter((notification) => notification.uniqueid !== id),
             );
-    
+
             console.log('Notification marked as read:', id);
         } catch (error) {
             console.error('Error marking notification as read:', error);
@@ -320,7 +319,7 @@ export const AdminProvider = ({ children }) => {
         message,
         admin,
         notificationType,
-        notificationStatus
+        notificationStatus,
     }) => {
         const accessToken = await getAccessTokenSilently();
         await fetch('/api/notifications', {
@@ -335,12 +334,33 @@ export const AdminProvider = ({ children }) => {
                 message,
                 admin,
                 notificationType,
-                notificationStatus
+                notificationStatus,
             }),
         });
     };
-    
-    
+
+    const issueCertification = async (email) => {
+        try {
+            const accessToken = await getAccessTokenSilently();
+
+            const response = await axios.put(
+                `/api/user/${email}/is-certified`,
+                { isCertified: true },
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                },
+            );
+
+            // Update state with filtered notifications
+         
+
+            console.log('User is now certified!');
+        } catch (error) {
+            console.error('Error issuing certification', error);
+        }
+    };
 
     return (
         <AdminContext.Provider
@@ -369,7 +389,8 @@ export const AdminProvider = ({ children }) => {
                 markNotificationAsRead,
                 isNotificationDrawerOpen,
                 setisNotificationDrawerOpen,
-                sendAdminNotification
+                sendAdminNotification,
+                issueCertification,
             }}
         >
             {children}

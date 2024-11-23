@@ -23,7 +23,7 @@ import AddAdmins from '../routes/AddAdmins';
 import { Notifications } from '../routes/Notifications'
 import PractitionerManagement from '../routes/PractitionerManagement';
 import AdminUploadManagement from '../routes/AdminUploadManagement';
-import MessagingHub from '../routes/MessagingHub';
+// import MessagingHub from '../routes/MessagingHub';
 import UserSpecificAdminView from '../components/UserSpecificAdminView';
 
 const router = createBrowserRouter([
@@ -71,7 +71,7 @@ const router = createBrowserRouter([
                         element: <PractitionerManagement />,
                         children: [
                             {
-                                path: ':userId',
+                                path: ':userEmail',
                                 element: <UserSpecificAdminView />,
                             },
                         ],

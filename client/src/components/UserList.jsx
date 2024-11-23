@@ -71,9 +71,10 @@ function UserList() {
         }));
     };
 
-    const handleViewProfileClick = (userId) => {
-        setIndividualUser(users.find((user) => user._id === userId));
-        navigate(`/admin/practitioner-management/${userId}`);
+    const handleViewProfileClick = (userEmail) => {
+        setIndividualUser(users.find((user) => user.userEmail === userEmail));
+        console.log(individualUser)
+        navigate(`/admin/practitioner-management/${userEmail}`);
     };
 
     const handleUserCheckboxClick = (userEmail) => {
@@ -144,7 +145,7 @@ function UserList() {
                 {users.map((user) => (
                     <div
                         className="flex border border-black rounded p-10 mb-10 items-center"
-                        key={user._id}
+                        key={user.userEmail}
                     >
                         <div>
                             <input
@@ -184,7 +185,7 @@ function UserList() {
                                     className=" bg-green-is-good hover:bg-green-500  text-white px-4 py-2 rounded-md"
                                     type="submit"
                                     onClick={() =>
-                                        handleViewProfileClick(user._id)
+                                        handleViewProfileClick(user.userEmail)
                                     }
                                 >
                                     View Profile

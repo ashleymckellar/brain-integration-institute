@@ -151,16 +151,15 @@ const UserSchema = new mg.Schema({
 
     //will toggle to true once all docs approved and assessment receives passing score
     isCertified: {
-        status: {
-            type: Boolean,
-            default: false,
-        },
+        type: Boolean,
+        default: false,
+    },
         certifiedDate: {
             type: Date,
-            default: null,
+            default: Date.now
         },
     },
-});
+);
 
 const UserModel = mg.model('User', UserSchema);
 

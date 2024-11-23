@@ -22,8 +22,10 @@ import shield from '../assets/icons/shield-half.png';
 import briefcase from '../assets/icons/briefcase-medical.png';
 import clipboard from '../assets/icons/clipboard-list.png';
 import video from '../assets/icons/video.png';
+import brainSeal from '../assets/icons/BrainIntegrationSeal.png';
 
 const UserSpecificAdminView = () => {
+    console.log('usav component mounted');
     const {
         individualUser,
         setIndividualUser,
@@ -37,9 +39,10 @@ const UserSpecificAdminView = () => {
         getUserById,
         updateUserToAdmin,
         getAllUsers,
+        issueCertification,
     } = useContext(AdminContext);
 
-    const { userId } = useParams();
+    const { userEmail } = useParams();
     const [imagesByDocType, setImagesByDocType] = useState([]);
     const { getAccessTokenSilently } = useAuth0();
     const [newDocStatus, setNewDocStatus] = useState('');
@@ -71,13 +74,19 @@ const UserSpecificAdminView = () => {
         ProgressBar8,
     ];
 
+    console.log(profileData);
+
     useEffect(() => {
-        if (userId && users.length > 0) {  // Ensure users array is populated
-            const foundUser = users.find((user) => user._id === userId);
+        if (userEmail && users.length > 0) {
+            // Ensure users array is populated
+            const foundUser = users.find(
+                (user) => user.userEmail === userEmail,
+            );
             setIndividualUser(foundUser);
+            console.log(foundUser);
         }
-    }, [userId, users]); // Remove setIndividualUser from dependency array
-    
+    }, [userEmail, users]); // Remove setIndividualUser from dependency array
+
     // Log `individualUser` when it changes
     useEffect(() => {
         if (individualUser) {
@@ -214,10 +223,10 @@ const UserSpecificAdminView = () => {
     return (
         <div className="flex flex-col items-center w-full gap-6 pt-20 pb-20">
             <div className="flex items-center gap-20 flex-grow: 1">
-                <button className="font-fira" onClick={handleBackButton}>
+                <button className="font-fira text-xl" onClick={handleBackButton}>
                     &lt; Back
                 </button>
-                <div className="flex bg-yet-another-light-grey w-[739px] h-[355px] pt-10 pl-10 pb-10">
+                <div className="flex bg-yet-another-light-grey w-[1000px] h-[455px] shadow-md pt-10 pl-10 pb-10">
                     {profileData && Object.keys(profileData).length > 0 ? (
                         <>
                             {profileData.userId && (
@@ -241,6 +250,12 @@ const UserSpecificAdminView = () => {
                                 <p className="text-xl font-bold text-blue">
                                     {profileData.email}
                                 </p>
+                                {individualUser.isCertified && (
+                        <div className='flex flex-col justify-center items-center border border-white rounded-xl bg-white pt-2 shadow-md'>
+                            <img src={brainSeal} className='h-20 w-20'/>
+                            <h1 className='pt-2'>Certified Practitioner</h1>
+                        </div>
+                    )}
                             </div>
                         </>
                     ) : (
@@ -250,6 +265,7 @@ const UserSpecificAdminView = () => {
                             </p>
                         </div>
                     )}
+                 
                 </div>
 
                 <div>
@@ -265,6 +281,29 @@ const UserSpecificAdminView = () => {
                         className="w-auto md:w-auto"
                         alt={`Progress level ${individualUser.userUploadProgress}`}
                     />
+                    <div>
+                        {profileData && !individualUser.isCertified ? (
+                            <div className='flex flex-col items-center gap-5'>
+                                <h1 className="pt-10 pl-[100px]">
+                                    Has {profileData.firstName}{' '}
+                                    {profileData.lastName} met all of the
+                                    requirements to become certified?
+                                </h1>
+                                <button
+                                    className="bg-green-is-good text-white rounded-md px-4 py-1 ml-4 font-bold shadow-lg"
+                                    onClick={() =>
+                                        issueCertification(
+                                            individualUser.userEmail,
+                                        )
+                                    }
+                                >
+                                    Issue Certification
+                                </button>{' '}
+                            </div>
+                        ) : (
+                          null
+                        )}
+                    </div>
                 </div>
             </div>
 
@@ -331,7 +370,7 @@ const UserSpecificAdminView = () => {
                                 )}
                                 onChange={() => handleCheckboxClick(doc.name)}
                             />
-                            <div className='flex flex-col'>
+                            <div className="flex flex-col">
                                 {doc.name}:
                                 <span
                                     className={`px-2 py-1 rounded-full text-sm font-semibold text-center w-20 ${getStatusBadgeClass(

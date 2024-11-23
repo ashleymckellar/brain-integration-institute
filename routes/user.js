@@ -244,6 +244,44 @@ userRouter.put('/:email/is-admin', async (req, res) => {
     }
 });
 
+userRouter.put('/:email/is-certified', async (req, res) => {
+    const { isCertified } = req.body;
+    const { email } = req.params;
+
+    if (typeof isCertified !== 'boolean') {
+        return res.status(400).json({
+            error: 'isCertified is required and must be a boolean',
+        });
+    }
+
+    try {
+        console.log(`Updating certification status for user ${email} to ${isCertified}`);
+
+        const updateFields = isCertified
+        ? { isCertified, certifiedDate: Date.now() }
+        : { isCertified };
+
+        const user = await UserModel.findOneAndUpdate(
+            { userEmail: email },
+            updateFields,
+            { new: true, runValidators: true },
+        );
+
+        if (!user) {
+            console.log(`User with email ${email} not found`);
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        console.log(`User ${email} admin status updated to:`, user.isCertified);
+        res.json(user);
+    } catch (error) {
+        console.error('Error updating admin status:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
+
 //create put route for assessment access
 
 //assessmentAccess will toggle to true

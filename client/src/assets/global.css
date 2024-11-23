@@ -84,6 +84,7 @@
     background: #f7f9fb;
     padding: 2.5em 1.5em 0;
     font-size: 1.15em;
+    transition: transform 0.5s ease-in-out;
 }
 
 .bm-item {
@@ -100,7 +101,31 @@
 
 .bm-overlay {
     background: rgba(0, 0, 0, 0.3);
+    transition: opacity 0.5s ease-in-out;
 }
+
+.dropdown-container {
+    position: relative; /* Parent container to position dropdown */
+}
+
+.dropdown-menu {
+    position: absolute; 
+    top: 100%;
+    left: 0;
+    z-index: 100; 
+    width: 200px; 
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+    border-radius: 8px;
+    padding: 10px 0;
+    display: none; /* Hidden by default */
+}
+
+.dropdown-container:hover .dropdown-menu,
+.dropdown-container:focus-within .dropdown-menu {
+    display: block; /* Show on hover or focus */
+}
+
 
 
 /* Custom styles for the burger menu */
@@ -117,29 +142,31 @@
     background: rgba(0, 0, 0, 0.3) !important; /* Semi-transparent overlay */
 }
 
-/* Menu panel customization */
+
 .notification-menu .bm-menu {
-    background: #ffffff !important; /* White background */
-    width: 100% !important; /* Full width on small screens */
-    max-width: 500px; /* Restrict width for larger screens */
+    background: #ffffff !important;
+    width: 100% !important; 
+    max-width: 500px; 
     padding: 20px !important;
 }
 
-/* Responsive Design */
+
 @media (max-width: 768px) {
     .notification-menu {
-        width: 100% !important; /* Full width for smaller screens */
+        width: 100% !important; 
     }
     .notification-menu .bm-menu {
-        width: 100% !important; /* Adjust modal to fit screen width */
+        width: 100% !important; 
     }
 }
 
 /* Adjust notifications' layout */
 .notification-menu .bm-item {
     outline: none;
-    width: 100%; /* Make notification content fill available space */
+    width: 100%; 
 }
+
+
 
 
 

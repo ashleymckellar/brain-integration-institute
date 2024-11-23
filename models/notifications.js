@@ -26,7 +26,7 @@ const NotificationsSchema = new mg.Schema({
     },
     notificationType: {
         type: String,
-        enum: ['assessmentUpdate', 'docExpirationReminder', 'docStatusUpdate'],
+        enum: ['assessmentUpdate', 'docExpirationReminder', 'docStatusUpdate', 'certificationComplete'],
         required: true
     },
 

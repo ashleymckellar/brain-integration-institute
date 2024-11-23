@@ -29,6 +29,8 @@ export const UserProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [activeNotifications, setActiveNotifications] = useState([])
+    const [isNotificationDrawerOpen, setisNotificationDrawerOpen] =
+    useState(false);
     const baseUrl = import.meta.env.VITE_API_BASE_URL
 
     const handleInputChange = (e) => {
@@ -208,6 +210,27 @@ export const UserProvider = ({ children }) => {
             console.error('Error marking notification as read:', error);
         }
     };
+
+    const filteredNotifications = activeNotifications.reduce(
+        (acc, notification) => {
+            const existing = acc.find(
+                (item) => item.category === notification.category,
+            );
+
+            if (
+                !existing ||
+                new Date(notification.timestamp) > new Date(existing.timestamp)
+            ) {
+                // Replace older notifications with the newer one
+                return acc
+                    .filter((item) => item.category !== notification.category)
+                    .concat(notification);
+            }
+
+            return acc;
+        },
+        [],
+    );
     
 
         const fetchAllProfiles = async () => {
@@ -260,7 +283,10 @@ export const UserProvider = ({ children }) => {
                 fetchNotifications,
                 activeNotifications,
                 setActiveNotifications,
-                markNotificationAsRead
+                markNotificationAsRead,
+                isNotificationDrawerOpen,
+                setisNotificationDrawerOpen,
+                filteredNotifications
             }}
         >
             {children}

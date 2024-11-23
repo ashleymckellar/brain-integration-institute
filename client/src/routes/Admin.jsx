@@ -7,6 +7,7 @@ import banner from '../assets/icons/PractitionerBackground.png';
 import { Footer } from '../components/Footer.jsx';
 import { slide as Menu } from 'react-burger-menu';
 import { format } from 'date-fns';
+import { useNavigate } from 'react-router-dom';
 import redNotificationIcon from '../assets/icons/red-notification-icon.svg';
 
 export const Admin = () => {
@@ -15,13 +16,13 @@ export const Admin = () => {
         isNotificationDrawerOpen,
         setisNotificationDrawerOpen,
         fetchAdminNotifications,
-
         markNotificationAsRead,
-    } = useContext(AdminContext); // Assuming notifications are in context
+        users,
+    } = useContext(AdminContext);
 
     console.log(unreadNotifications);
+    const navigate = useNavigate();
 
-    // Group unread notifications by category
     const groupedNotifications = unreadNotifications.reduce(
         (acc, notification) => {
             acc[notification.category] = (acc[notification.category] || 0) + 1;
@@ -30,7 +31,7 @@ export const Admin = () => {
         {},
     );
 
-    
+    console.log(users, 'users list');
 
     const formatDate = (timestamp) => {
         return format(new Date(timestamp), 'MM/dd/yy');
@@ -44,7 +45,6 @@ export const Admin = () => {
         firstAidTraining: 'first aid training',
         insurance: 'insurance',
     };
-
 
     const getDisplayName = (key) => docTypeMapping[key] || key;
 
@@ -101,9 +101,13 @@ export const Admin = () => {
         setisNotificationDrawerOpen((prev) => !prev);
     };
 
+    const handleReviewClick = (userEmail) => {
+        navigate(`/admin/practitioner-management/${userEmail}`);
+        setisNotificationDrawerOpen(false);
+    };
+
     return (
         <div>
-  
             <Menu
                 right
                 isOpen={isNotificationDrawerOpen}
@@ -112,170 +116,203 @@ export const Admin = () => {
                 }
                 customBurgerIcon={false}
                 className="z-50 "
-                width={ '30%' } 
+                width={'30%'}
                 styles={{
                     bmMenu: {
-                        background: '#fff', // Background color of the drawer
-                        width: '100%', // Adjust this value for the width
+                        background: '#fff',
+                        width: '100%',
                     },
                     bmOverlay: {
-                        background: 'rgba(0, 0, 0, 0.3)'
+                        background: 'rgba(0, 0, 0, 0.3)',
                     },
                 }}
-                
             >
                 <div className="flex flex-col gap-6">
-                {isNotificationDrawerOpen && unreadNotifications && unreadNotifications.length > 0 ? (
-                    unreadNotifications.map((notification, index) => {
-                        switch (notification.notificationType) {
-                            case 'assessmentUpdate':
-                                return (
-                                    <div
-                                        key={index}
-                                        className={`border border-black rounded-xl p-6 bg-white flex gap-5 items-start relative ${
-                                            notification.notificationStatus ===
-                                            'passed'
-                                                ? 'shadow-custom-green'
-                                                : 'shadow-custom-red'
-                                        }`}
-                                    >
-                                        <p
-                                            className="absolute top-2 right-2 z-10 cursor-pointer text-lg font-bold text-gray-500 hover:text-red-500"
-                                            onClick={() =>
-                                                onClose(notification.uniqueid)
-                                            }
+                    {isNotificationDrawerOpen &&
+                    unreadNotifications &&
+                    unreadNotifications.length > 0 ? (
+                        unreadNotifications.map((notification, index) => {
+                            switch (notification.notificationType) {
+                                case 'assessmentUpdate':
+                                    return (
+                                        <div
+                                            key={index}
+                                            className={`border border-black rounded-xl p-6 bg-white flex gap-5 items-start relative ${
+                                                notification.notificationStatus ===
+                                                'passed'
+                                                    ? 'shadow-custom-green'
+                                                    : 'shadow-custom-red'
+                                            }`}
                                         >
-                                            X
-                                        </p>
+                                            <p
+                                                className="absolute top-2 right-2 z-10 cursor-pointer text-lg font-bold text-gray-500 hover:text-red-500"
+                                                onClick={() =>
+                                                    onClose(
+                                                        notification.uniqueid,
+                                                    )
+                                                }
+                                            >
+                                                X
+                                            </p>
 
-                                        <p className="pt-8">
-                                            {notification.notificationStatus ===
-                                            'passed' ? (
-                                                <>
-                                                    <span className="font-bold">
-                                                        {notification.userEmail}
-                                                    </span>{' '}
-                                                    passed their assessment.{' '}
-                                                    <br />
-                                                    <div className="flex flex-col justify-center">
-                                                        <button className="py-2 px-4 mt-5 bg-green-500 rounded-lg text-white">
-                                                            Approve for
-                                                            Certification
-                                                        </button>
+                                            <p className="pt-8">
+                                                {notification.notificationStatus ===
+                                                'passed' ? (
+                                                    <>
+                                                        <span className="font-bold">
+                                                            {
+                                                                notification.userEmail
+                                                            }
+                                                        </span>{' '}
+                                                        passed their assessment.{' '}
+                                                        <br />
+                                                        <div className="flex flex-col justify-center">
+                                                            <button
+                                                                className="py-2 px-4 mt-5 bg-green-500 rounded-lg text-white"
+                                                                onClick={() =>
+                                                                    handleReviewClick(
+                                                                        notification.userEmail,
+                                                                    )
+                                                                }
+                                                            >
+                                                                Approve for
+                                                                Certification
+                                                            </button>
+                                                            <p className="text-sm text-light-grey mt-2">
+                                                                {formatDate(
+                                                                    notification.timestamp,
+                                                                )}
+                                                            </p>
+                                                        </div>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <span className="font-bold">
+                                                            {
+                                                                notification.userEmail
+                                                            }
+                                                        </span>{' '}
+                                                        failed their assessment.{' '}
+                                                        <br />
                                                         <p className="text-sm text-light-grey mt-2">
                                                             {formatDate(
                                                                 notification.timestamp,
                                                             )}
                                                         </p>
-                                                    </div>
-                                                </>
-                                            ) : (
-                                                <>
+                                                    </>
+                                                )}
+                                            </p>
+                                        </div>
+                                    );
+                                case 'docExpirationReminder':
+                                    return (
+                                        <div
+                                            key={index}
+                                            className="border border-black rounded-xl p-6 bg-white shadow-custom-red flex flex-col gap-5 items-start relative"
+                                        >
+                                            <p
+                                                className="absolute top-2 right-2 cursor-pointer"
+                                                onClick={() =>
+                                                    onClose(
+                                                        notification.uniqueid,
+                                                    )
+                                                }
+                                            >
+                                                X
+                                            </p>
+                                            <div className="flex gap-5">
+                                                <img
+                                                    src={redNotificationIcon}
+                                                    alt="Notification Icon"
+                                                />
+                                                <p>
                                                     <span className="font-bold">
                                                         {notification.userEmail}
+                                                        's{' '}
+                                                    </span>
+                                                    {getDisplayName(
+                                                        notification.category,
+                                                    )}{' '}
+                                                    documentation has expired.
+                                                </p>
+                                            </div>
+                                            <p className="text-sm text-light-grey mt-2">
+                                                {formatDate(
+                                                    notification.timestamp,
+                                                )}
+                                            </p>
+                                        </div>
+                                    );
+                                case 'docStatusUpdate':
+                                    return (
+                                        <div
+                                            key={index}
+                                            className="border border-black rounded-xl p-6 bg-white shadow-custom-red flex flex-col relative"
+                                        >
+                                            <p
+                                                className="absolute top-2 right-2 cursor-pointer"
+                                                onClick={() =>
+                                                    onClose(
+                                                        notification.uniqueid,
+                                                    )
+                                                }
+                                            >
+                                                X
+                                            </p>
+                                            <div className="flex items-center gap-4">
+                                                <img
+                                                    src={redNotificationIcon}
+                                                    alt="Notification Icon"
+                                                    className="w-8 h-8"
+                                                />
+                                                <p className="flex-1">
+                                                    <span className="font-bold">
+                                                        {notification.userEmail}{' '}
                                                     </span>{' '}
-                                                    failed their assessment.{' '}
-                                                    <br />
-                                                    <p className="text-sm text-light-grey mt-2">
+                                                    has uploaded a new{' '}
+                                                    {getDisplayName(
+                                                        notification.category,
+                                                    )}{' '}
+                                                    file.
+                                                </p>
+                                            </div>
+                                            <div className="flex flex-col mt-4">
+                                                <p>{notification.message}</p>
+                                                <div className="flex justify-between items-center mt-4">
+                                                    <button
+                                                        className="border border-black rounded-lg px-4 py-2"
+                                                        onClick={() =>
+                                                            handleReviewClick(
+                                                                notification.userEmail,
+                                                            )
+                                                        }
+                                                    >
+                                                        Review Now
+                                                    </button>
+                                                    <p className="text-sm text-gray-500 mt-2">
                                                         {formatDate(
                                                             notification.timestamp,
                                                         )}
                                                     </p>
-                                                </>
-                                            )}
-                                        </p>
-                                    </div>
-                                );
-                            case 'docExpirationReminder':
-                                return (
-                                    <div
-                                        key={index}
-                                        className="border border-black rounded-xl p-6 bg-white shadow-custom-red flex flex-col gap-5 items-start relative"
-                                    >
-                                        <p
-                                            className="absolute top-2 right-2 cursor-pointer"
-                                            onClick={() =>
-                                                onClose(notification.uniqueid)
-                                            }
-                                        >
-                                            X
-                                        </p>
-                                        <div className="flex gap-5">
-                                            <img
-                                                src={redNotificationIcon}
-                                                alt="Notification Icon"
-                                            />
-                                            <p>
-                                                <span className="font-bold">
-                                                    {notification.userEmail}'s{' '}
-                                                </span>
-                                                {getDisplayName(
-                                                    notification.category,
-                                                )}{' '}
-                                                documentation has expired.
-                                            </p>
-                                        </div>
-                                        <p className="text-sm text-light-grey mt-2">
-                                            {formatDate(notification.timestamp)}
-                                        </p>
-                                    </div>
-                                );
-                            case 'docStatusUpdate':
-                                return (
-                                    <div
-                                        key={index}
-                                        className="border border-black rounded-xl p-6 bg-white shadow-custom-red flex flex-col relative"
-                                    >
-                                        <p
-                                            className="absolute top-2 right-2 cursor-pointer"
-                                            onClick={() =>
-                                                onClose(notification.uniqueid)
-                                            }
-                                        >
-                                            X
-                                        </p>
-                                        <div className="flex items-center gap-4">
-                                            <img
-                                                src={redNotificationIcon}
-                                                alt="Notification Icon"
-                                                className="w-8 h-8"
-                                            />
-                                            <p className="flex-1">
-                                                <span className="font-bold">
-                                                    {notification.userEmail}{' '}
-                                                </span>{' '}
-                                                has uploaded a new{' '}
-                                                {getDisplayName(
-                                                    notification.category,
-                                                )}{' '}
-                                                file.
-                                            </p>
-                                        </div>
-                                        <div className="flex flex-col mt-4">
-                                            <p>{notification.message}</p>
-                                            <div className="flex justify-between items-center mt-4">
-                                                <button className="border border-black rounded-lg px-4 py-2">
-                                                    Review Now
-                                                </button>
-                                                <p className="text-sm text-gray-500 mt-2">
-                                                    {formatDate(
-                                                        notification.timestamp,
-                                                    )}
-                                                </p>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                );
-                            default:
-                                return null;
-                        }
-                    })
-                ) : (
-                    <div className="flex flex-col gap-5 pt-20">
-                        <p className="text-center text-gray-500 text-xl">You're all caught up!</p>
-                        <p className="text-center text-gray-500 text-xl">No unread notifications. {String.fromCodePoint(0x1f389)}</p>
-                    </div>
-                )}
+                                    );
+                                default:
+                                    return null;
+                            }
+                        })
+                    ) : (
+                        <div className="flex flex-col gap-5 pt-20">
+                            <p className="text-center text-gray-500 text-xl">
+                                You're all caught up!
+                            </p>
+                            <p className="text-center text-gray-500 text-xl">
+                                No unread notifications.{' '}
+                                {String.fromCodePoint(0x1f389)}
+                            </p>
+                        </div>
+                    )}
                 </div>
             </Menu>
             <div
@@ -295,7 +332,6 @@ export const Admin = () => {
             </div>
 
             <div className="flex h-[calc(100vh-256px)] items-between p-4">
-                {/* Sidebar for Admin Menu */}
                 <div className="min-w-[220px] bg-gray p-6 border border-gray rounded-2xl h-full shadow-lg">
                     <h2 className="font-bold text-xl mb-4 text-center text-black">
                         Admin Menu
@@ -309,17 +345,17 @@ export const Admin = () => {
                             { path: 'add-admins', label: 'Admin Management' },
                             {
                                 path: 'admin-uploads',
-                                label: 'Document Uploads',
+                                label: 'Upload Certificate Template/Study Guide',
                             },
                             {
-                                label: 'Notifications',
+                                label: 'Admin Notifications',
                                 badge: unreadNotifications.length,
                                 onClick: handleNotificationsClick,
                             },
                         ].map((item) => (
                             <li key={item.label} className="relative">
                                 {/* If 'Notifications', use button instead of Link */}
-                                {item.label === 'Notifications' ? (
+                                {item.label === 'Admin Notifications' ? (
                                     <button
                                         onClick={item.onClick}
                                         className="py-3 px-4 w-full transition duration-200 border-b-2 border-transparent hover:bg-green-500 rounded-xl hover:text-white text-lg text-black flex justify-between items-center"
