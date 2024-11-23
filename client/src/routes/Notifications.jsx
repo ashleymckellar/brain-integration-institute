@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { format } from 'date-fns';
 import redNotificationIcon from '../assets/icons/red-notification-icon.svg';
+import successfile from '../assets/icons/successfile.png';
 
 export const Notifications = ({
     activeNotifications,
@@ -11,10 +12,11 @@ export const Notifications = ({
     setNotificationModalOpen,
     notificationModalOpen,
     fetchNotifications,
+    filteredNotifications,
 }) => {
     useEffect(() => {
-        console.log(activeNotifications);
-    }, [activeNotifications]);
+        console.log(filteredNotifications, 'filtered not');
+    }, [filteredNotifications]);
 
     const docTypeMapping = {
         brainIntegrationTraining: 'Brain Integration Training',
@@ -43,7 +45,7 @@ export const Notifications = ({
         }
     };
 
-    console.log(activeNotifications, 'active notifications');
+    console.log(filteredNotifications, 'active notifications');
 
     const getDisplayName = (key) => docTypeMapping[key] || key;
 
@@ -74,9 +76,9 @@ export const Notifications = ({
                     Notifications Panel
                 </h2>
 
-                {activeNotifications && activeNotifications.length > 0 ? (
+                {filteredNotifications && filteredNotifications.length > 0 ? (
                     <div className="flex flex-col gap-6">
-                        {activeNotifications.map((notification, index) => {
+                        {filteredNotifications.map((notification, index) => {
                             switch (notification.notificationType) {
                                 case 'assessmentUpdate':
                                     return (
@@ -152,7 +154,7 @@ export const Notifications = ({
                                     return (
                                         <div
                                             key={index}
-                                            className="border border-black rounded-xl p-6 bg-white shadow-custom-red flex flex-col relative"
+                                            className="border border-black rounded-xl p-6 bg-white flex flex-col relative"
                                         >
                                             <p
                                                 className="absolute top-2 right-6 cursor-pointer"
@@ -166,41 +168,56 @@ export const Notifications = ({
                                             </p>
 
                                             <div className="flex items-center gap-4">
-                                                <img
-                                                    src={redNotificationIcon}
-                                                    alt="Notification Icon"
-                                                    className="w-8 h-8" // Optional: controls the size of the icon
-                                                />
+                                                {/* <img
+                                                        src={redNotificationIcon}
+                                                        alt="Notification Icon"
+                                                        className="w-8 h-8"
+                                                    /> */}
                                                 <p className="flex-1">
                                                     {getDisplayName(
                                                         notification.category,
                                                     )}{' '}
-                                                    was declined.
+                                                    {notification.message}
                                                 </p>
                                             </div>
 
-                                            <div className="flex flex-col mt-4">
-                                                <p>{notification.message}</p>
-                                                <div className="flex justify-between items-center mt-4">
-                                                    <button className="border border-black rounded-lg px-4 py-2">
-                                                        Update Now
-                                                    </button>
-                                                    <p className="text-sm text-gray-500 mt-2">
-                                                        {formatDate(
-                                                            notification.timestamp,
-                                                        )}
+                                            {notification.notificationStatus ===
+                                                'declined' && (
+                                                <div className="flex flex-col mt-4">
+                                                    <img src={redNotificationIcon} className='h-[40px] '/>
+                                                    {/* <p>{notification.message}</p> */}
+                                                    <div className="flex justify-between items-center mt-4">
+                                                        <button className="border border-black rounded-lg px-4 py-2">
+                                                            Update Now
+                                                        </button>
+                                                        <p className="text-sm text-gray-500 mt-2">
+                                                            {formatDate(
+                                                                notification.timestamp,
+                                                            )}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            {notification.notificationStatus ===
+                                                'approved' && (
+                                                <div className='flex gap-10'>
+                                                    <img src={successfile} alt='file icon'/>
+                                                    <p className="text-sm text-gray-500 mt-4">
+                                                        {/* {notification.message} */}
                                                     </p>
                                                 </div>
-                                            </div>
+                                            )}
                                         </div>
                                     );
+
                                 default:
                                     return null; // Handle unexpected notification types
                             }
                         })}
                     </div>
                 ) : (
-                    <div className='flex flex-col gap-5'>
+                    <div className="flex flex-col gap-5">
                         <p className="text-center text-gray-500 text-xl">
                             You're all caught up!{' '}
                         </p>{' '}

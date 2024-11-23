@@ -1,19 +1,56 @@
+/* eslint-disable react/no-unescaped-entities */
+import { useContext, useEffect } from 'react';
 import { Link, Outlet } from 'react-router-dom';
+import { AdminContext } from '../contexts.js';
 import paleBanner from '../assets/icons/PaleGreenPractitionerBackground.png';
 import banner from '../assets/icons/PractitionerBackground.png';
 import { Footer } from '../components/Footer.jsx';
-import { useContext } from 'react';
-import { AdminContext } from '../contexts.js';
+import { slide as Menu } from 'react-burger-menu';
+import { format } from 'date-fns';
+import redNotificationIcon from '../assets/icons/red-notification-icon.svg';
 
 export const Admin = () => {
-    const { unreadNotifications } = useContext(AdminContext); // Assuming notifications are in context
+    const {
+        unreadNotifications,
+        isNotificationDrawerOpen,
+        setisNotificationDrawerOpen,
+        fetchAdminNotifications,
+
+        markNotificationAsRead,
+    } = useContext(AdminContext); // Assuming notifications are in context
+
+    console.log(unreadNotifications);
 
     // Group unread notifications by category
-    const groupedNotifications = unreadNotifications.reduce((acc, notification) => {
-        acc[notification.category] = (acc[notification.category] || 0) + 1;
-        return acc;
-    }, {});
+    const groupedNotifications = unreadNotifications.reduce(
+        (acc, notification) => {
+            acc[notification.category] = (acc[notification.category] || 0) + 1;
+            return acc;
+        },
+        {},
+    );
 
+    
+
+    const formatDate = (timestamp) => {
+        return format(new Date(timestamp), 'MM/dd/yy');
+    };
+
+    const docTypeMapping = {
+        brainIntegrationTraining: 'brain integration training',
+        videoPresentation: 'video presentation',
+        cprCert: 'CPR certification',
+        clinicalHours: 'clinical hours',
+        firstAidTraining: 'first aid training',
+        insurance: 'insurance',
+    };
+
+
+    const getDisplayName = (key) => docTypeMapping[key] || key;
+
+    useEffect(() => {
+        fetchAdminNotifications();
+    }, []);
     const dashboardItems = [
         {
             label: 'Video Presentation',
@@ -25,7 +62,11 @@ export const Admin = () => {
             color: 'bg-mauve',
             category: 'brainIntegrationTraining',
         },
-        { label: 'Clinical Hours', color: 'bg-ice-blue', category: 'clinicalHours' },
+        {
+            label: 'Clinical Hours',
+            color: 'bg-ice-blue',
+            category: 'clinicalHours',
+        },
         {
             label: 'First Aid Certification',
             color: 'bg-lavender',
@@ -37,12 +78,206 @@ export const Admin = () => {
             category: 'cprCert',
         },
         { label: 'Insurance', color: 'bg-greyish-blue', category: 'insurance' },
-        { label: 'Assessment', color: 'bg-pinky-pink', category: 'assessmentUpdate' },
+        {
+            label: 'Assessment',
+            color: 'bg-pinky-pink',
+            category: 'assessmentUpdate',
+        },
     ];
+
+    const onClose = async (uniqueid) => {
+        try {
+            await markNotificationAsRead(uniqueid);
+            fetchAdminNotifications();
+        } catch (error) {
+            console.error(
+                `Error marking notification ${uniqueid} as read:`,
+                error,
+            );
+        }
+    };
+
+    const handleNotificationsClick = () => {
+        setisNotificationDrawerOpen((prev) => !prev);
+    };
 
     return (
         <div>
-            {/* Banner Section */}
+  
+            <Menu
+                right
+                isOpen={isNotificationDrawerOpen}
+                onStateChange={({ isOpen }) =>
+                    setisNotificationDrawerOpen(isOpen)
+                }
+                customBurgerIcon={false}
+                className="z-50 "
+                width={ '30%' } 
+                styles={{
+                    bmMenu: {
+                        background: '#fff', // Background color of the drawer
+                        width: '100%', // Adjust this value for the width
+                    },
+                    bmOverlay: {
+                        background: 'rgba(0, 0, 0, 0.3)'
+                    },
+                }}
+                
+            >
+                <div className="flex flex-col gap-6">
+                {isNotificationDrawerOpen && unreadNotifications && unreadNotifications.length > 0 ? (
+                    unreadNotifications.map((notification, index) => {
+                        switch (notification.notificationType) {
+                            case 'assessmentUpdate':
+                                return (
+                                    <div
+                                        key={index}
+                                        className={`border border-black rounded-xl p-6 bg-white flex gap-5 items-start relative ${
+                                            notification.notificationStatus ===
+                                            'passed'
+                                                ? 'shadow-custom-green'
+                                                : 'shadow-custom-red'
+                                        }`}
+                                    >
+                                        <p
+                                            className="absolute top-2 right-2 z-10 cursor-pointer text-lg font-bold text-gray-500 hover:text-red-500"
+                                            onClick={() =>
+                                                onClose(notification.uniqueid)
+                                            }
+                                        >
+                                            X
+                                        </p>
+
+                                        <p className="pt-8">
+                                            {notification.notificationStatus ===
+                                            'passed' ? (
+                                                <>
+                                                    <span className="font-bold">
+                                                        {notification.userEmail}
+                                                    </span>{' '}
+                                                    passed their assessment.{' '}
+                                                    <br />
+                                                    <div className="flex flex-col justify-center">
+                                                        <button className="py-2 px-4 mt-5 bg-green-500 rounded-lg text-white">
+                                                            Approve for
+                                                            Certification
+                                                        </button>
+                                                        <p className="text-sm text-light-grey mt-2">
+                                                            {formatDate(
+                                                                notification.timestamp,
+                                                            )}
+                                                        </p>
+                                                    </div>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <span className="font-bold">
+                                                        {notification.userEmail}
+                                                    </span>{' '}
+                                                    failed their assessment.{' '}
+                                                    <br />
+                                                    <p className="text-sm text-light-grey mt-2">
+                                                        {formatDate(
+                                                            notification.timestamp,
+                                                        )}
+                                                    </p>
+                                                </>
+                                            )}
+                                        </p>
+                                    </div>
+                                );
+                            case 'docExpirationReminder':
+                                return (
+                                    <div
+                                        key={index}
+                                        className="border border-black rounded-xl p-6 bg-white shadow-custom-red flex flex-col gap-5 items-start relative"
+                                    >
+                                        <p
+                                            className="absolute top-2 right-2 cursor-pointer"
+                                            onClick={() =>
+                                                onClose(notification.uniqueid)
+                                            }
+                                        >
+                                            X
+                                        </p>
+                                        <div className="flex gap-5">
+                                            <img
+                                                src={redNotificationIcon}
+                                                alt="Notification Icon"
+                                            />
+                                            <p>
+                                                <span className="font-bold">
+                                                    {notification.userEmail}'s{' '}
+                                                </span>
+                                                {getDisplayName(
+                                                    notification.category,
+                                                )}{' '}
+                                                documentation has expired.
+                                            </p>
+                                        </div>
+                                        <p className="text-sm text-light-grey mt-2">
+                                            {formatDate(notification.timestamp)}
+                                        </p>
+                                    </div>
+                                );
+                            case 'docStatusUpdate':
+                                return (
+                                    <div
+                                        key={index}
+                                        className="border border-black rounded-xl p-6 bg-white shadow-custom-red flex flex-col relative"
+                                    >
+                                        <p
+                                            className="absolute top-2 right-2 cursor-pointer"
+                                            onClick={() =>
+                                                onClose(notification.uniqueid)
+                                            }
+                                        >
+                                            X
+                                        </p>
+                                        <div className="flex items-center gap-4">
+                                            <img
+                                                src={redNotificationIcon}
+                                                alt="Notification Icon"
+                                                className="w-8 h-8"
+                                            />
+                                            <p className="flex-1">
+                                                <span className="font-bold">
+                                                    {notification.userEmail}{' '}
+                                                </span>{' '}
+                                                has uploaded a new{' '}
+                                                {getDisplayName(
+                                                    notification.category,
+                                                )}{' '}
+                                                file.
+                                            </p>
+                                        </div>
+                                        <div className="flex flex-col mt-4">
+                                            <p>{notification.message}</p>
+                                            <div className="flex justify-between items-center mt-4">
+                                                <button className="border border-black rounded-lg px-4 py-2">
+                                                    Review Now
+                                                </button>
+                                                <p className="text-sm text-gray-500 mt-2">
+                                                    {formatDate(
+                                                        notification.timestamp,
+                                                    )}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            default:
+                                return null;
+                        }
+                    })
+                ) : (
+                    <div className="flex flex-col gap-5 pt-20">
+                        <p className="text-center text-gray-500 text-xl">You're all caught up!</p>
+                        <p className="text-center text-gray-500 text-xl">No unread notifications. {String.fromCodePoint(0x1f389)}</p>
+                    </div>
+                )}
+                </div>
+            </Menu>
             <div
                 className="w-full sm:h-80 md:h-96 relative bg-white"
                 style={{
@@ -72,25 +307,38 @@ export const Admin = () => {
                                 label: 'Practitioner Management',
                             },
                             { path: 'add-admins', label: 'Admin Management' },
-                            { path: 'admin-uploads', label: 'Document Uploads' },
                             {
-                                path: 'messaging-hub',
+                                path: 'admin-uploads',
+                                label: 'Document Uploads',
+                            },
+                            {
                                 label: 'Notifications',
                                 badge: unreadNotifications.length,
+                                onClick: handleNotificationsClick,
                             },
                         ].map((item) => (
-                            <li key={item.path} className="relative">
-                                <Link
-                                    to={item.path}
-                                    className="py-3 px-4 w-full block transition duration-200 border-b-2 border-transparent hover:bg-green-500 rounded-xl hover:text-white text-lg text-black flex justify-between items-center"
-                                >
-                                    {item.label}
-                                    {item.badge > 0 && (
-                                        <span className="bg-red text-white text-sm font-bold rounded-full h-6 w-6 flex items-center justify-center">
-                                            {item.badge}
-                                        </span>
-                                    )}
-                                </Link>
+                            <li key={item.label} className="relative">
+                                {/* If 'Notifications', use button instead of Link */}
+                                {item.label === 'Notifications' ? (
+                                    <button
+                                        onClick={item.onClick}
+                                        className="py-3 px-4 w-full transition duration-200 border-b-2 border-transparent hover:bg-green-500 rounded-xl hover:text-white text-lg text-black flex justify-between items-center"
+                                    >
+                                        {item.label}
+                                        {item.badge > 0 && (
+                                            <span className="bg-red text-white text-sm font-bold rounded-full h-6 w-6 flex items-center justify-center">
+                                                {item.badge}
+                                            </span>
+                                        )}
+                                    </button>
+                                ) : (
+                                    <Link
+                                        to={item.path}
+                                        className="py-3 px-4 w-full transition duration-200 border-b-2 border-transparent hover:bg-green-500 rounded-xl hover:text-white text-lg text-black flex justify-between items-center"
+                                    >
+                                        {item.label}
+                                    </Link>
+                                )}
                             </li>
                         ))}
                     </ul>
@@ -126,4 +374,3 @@ export const Admin = () => {
 };
 
 export default Admin;
-

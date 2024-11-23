@@ -81,7 +81,7 @@ const router = createBrowserRouter([
                         path: 'admin-uploads',
                         element: <AdminUploadManagement />,
                     },
-                    { path: 'messaging-hub', element: <MessagingHub /> },
+                
                 ],
             },
         ],

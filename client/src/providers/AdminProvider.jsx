@@ -25,6 +25,7 @@ export const AdminProvider = ({ children }) => {
     const [selectedDocumentName, setSelectedDocumentName] = useState('');
     const baseUrl = import.meta.env.VITE_API_BASE_URL;
     const [unreadNotifications, setUnreadNotifications] = useState([]);
+    const [isNotificationDrawerOpen, setisNotificationDrawerOpen] = useState(false);
 
     //create put request function to mark notification as read
     //will need notification uniqueid as param
@@ -312,6 +313,33 @@ export const AdminProvider = ({ children }) => {
             console.error('Error marking notification as read:', error);
         }
     };
+
+    const sendAdminNotification = async ({
+        userEmail,
+        category,
+        message,
+        admin,
+        notificationType,
+        notificationStatus
+    }) => {
+        const accessToken = await getAccessTokenSilently();
+        await fetch('/api/notifications', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${accessToken}`,
+            },
+            body: JSON.stringify({
+                userEmail,
+                category,
+                message,
+                admin,
+                notificationType,
+                notificationStatus
+            }),
+        });
+    };
+    
     
 
     return (
@@ -338,7 +366,10 @@ export const AdminProvider = ({ children }) => {
                 deleteUser,
                 fetchAdminNotifications,
                 unreadNotifications,
-                markNotificationAsRead
+                markNotificationAsRead,
+                isNotificationDrawerOpen,
+                setisNotificationDrawerOpen,
+                sendAdminNotification
             }}
         >
             {children}

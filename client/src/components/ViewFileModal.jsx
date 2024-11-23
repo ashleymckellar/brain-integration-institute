@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
+import { AdminContext, UserContext } from '../contexts';
 
 export default function ViewFileModal({
     open,
@@ -13,8 +14,10 @@ export default function ViewFileModal({
     selectedDocumentType,
     getAllUsers,
 }) {
-    const { getAccessTokenSilently } = useAuth0();
+    const { getAccessTokenSilently, user } = useAuth0();
     const [reasonForDenial, setReasonForDenial] = useState('');
+    const { sendAdminNotification } = useContext(AdminContext)
+    const { fetchNotifications } = useContext(UserContext)
     const baseUrl = import.meta.env.VITE_API_BASE_URL;
     useEffect(() => {
         if (open) {
@@ -31,6 +34,8 @@ export default function ViewFileModal({
     const handleStatusChange = (e) => {
         onChange(e);
     };
+
+    console.log(user.email, 'auth user')
 
     const handleReasonChange = (e) => {
         setReasonForDenial(e.target.value);
@@ -53,50 +58,70 @@ export default function ViewFileModal({
                     body: JSON.stringify({
                         documentType: selectedDocumentType,
                         newStatus: newDocStatus,
-                        notificationType: 'docStatusUpdate'
+                        notificationType: 'docStatusUpdate',
+                   
                     }),
                 },
             );
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                console.error(
-                    'Error updating document status:',
-                    errorData.message,
-                );
-                alert(`Error: ${errorData.message}`);
-            } else {
+            if (response.ok) {
                 const data = await response.json();
                 console.log('Successfully updated:', data);
+    
+                // Refresh user data and notifications
                 getAllUsers();
+                fetchNotifications();
+    
                 alert('Document status updated successfully!');
+            } else {
+                const errorData = await response.json();
+                console.error('Error updating document status:', errorData.message);
+                alert(`Error: ${errorData.message}`);
             }
         } catch (error) {
             console.error('Failed to submit the form:', error);
             alert('Something went wrong. Please try again.');
+            return;
         }
 
-        if (newDocStatus === 'declined') {
-            await fetch(`http://${baseUrl}/api/notifications`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${accessToken}`,
-                },
-                body: JSON.stringify({
-                    message: reasonForDenial,
-                    category: selectedDocumentType,
-                    userEmail: 'ashley.l.mckellar@gmail.com',
-                    admin: 'ashley.l.mckellar@gmail.com',
-                    notificationType: 'docStatusUpdate'
+        let message;
+if (newDocStatus === 'approved') {
+    message = ` has been approved.`;
+} else if (newDocStatus === 'declined') {
+    if (!reasonForDenial || reasonForDenial.trim() === '') {
+        console.error('Reason for denial is required but not provided.');
+        alert('Please provide a reason for denial.');
+        return; // Exit early to prevent sending an incomplete notification
+    }
+    message = `Declined. Reason for denial: ${reasonForDenial}`;
+}
 
-                    //fix the above so userEmail and admin aren't hard coded
-                }),
+        if (message) {
+            console.log('Sending notification with:', {
+                userEmail: individualUser.userEmail,
+                category: selectedDocumentType,
+                message,
+                admin: user.email,
+                notificationType: 'docStatusUpdate',
             });
+            try {
+                await sendAdminNotification({
+                    userEmail: individualUser.userEmail,
+                    category: selectedDocumentType,
+                    message,
+                    admin: user.email, // Adjust as needed for the authenticated admin's email
+                    notificationType: 'docStatusUpdate',
+                    notificationStatus: newDocStatus
+                    
+                });
+            } catch (error) {
+                console.error('Failed to send notification:', error);
+                alert('Notification could not be sent.');
+            }
         }
-
-        setReasonForDenial('');
-        onClose();
+    
+        setReasonForDenial(''); // Clear the reason for denial
+        onClose(); // Close the modal or reset the form
     };
 
     return (
@@ -162,7 +187,7 @@ export default function ViewFileModal({
                                 placeholder="Reason for denial (if applicable)"
                                 className="border border-black rounded-xl p-5 mt-10 w-[300px]"
                             ></textarea>
-                            <button className="border border-black rounded-xl px-5 py-2 bg-green-is-good text-white">
+                            <button className="border border-black rounded-xl px-5 py-2 bg-green-is-good text-white" >
                                 Submit
                             </button>
                         </div>

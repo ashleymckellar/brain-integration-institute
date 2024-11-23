@@ -65,9 +65,9 @@ notificationsRouter.post('/', async (req, res) => {
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
-        // if (user.approvalMessages[category]) {
-        //     user.approvalMessages[category].push(messageMetadata._id);
-        // }
+        if (user.approvalMessages[category]) {
+            user.approvalMessages[category].push(messageMetadata._id);
+        }
 
         // await user.save();
         const relatedMessages = await NotificationsModel.find({

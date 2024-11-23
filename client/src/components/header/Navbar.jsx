@@ -28,6 +28,10 @@ export const Navbar = () => {
         });
     };
 
+    useEffect(() => {
+        fetchNotifications();
+    }, []);
+
     const handleLogout = () => {
         logout();
     };
@@ -38,11 +42,25 @@ export const Navbar = () => {
         }
     };
 
-    console.log(activeNotifications.length) //render this number on top of bell
+    console.log(activeNotifications.length) 
+
+    const filteredNotifications = activeNotifications.reduce((acc, notification) => {
+        const existing = acc.find(
+            (item) => item.category === notification.category
+        );
+    
+        if (!existing || new Date(notification.timestamp) > new Date(existing.timestamp)) {
+            // Replace older notifications with the newer one
+            return acc.filter((item) => item.category !== notification.category).concat(notification);
+        }
+    
+        return acc;
+    }, []);
+    
 
     const handleClick = async () => {
         try {
-            setBurgerMenuOpen(false); // Close burger menu
+            setBurgerMenuOpen(false);
             setNotificationModalOpen(false);
             await fetchNotifications();
             setNotificationModalOpen(true);
@@ -194,6 +212,7 @@ export const Navbar = () => {
                         markNotificationAsRead={markNotificationAsRead}
                         setNotificationModalOpen={setNotificationModalOpen}
                         notificationModalOpen={notificationModalOpen}
+                        filteredNotifications={filteredNotifications}
                     />
                 )}
             </div>
