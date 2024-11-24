@@ -6,6 +6,7 @@ const {
 } = require('../services/notifications');
 const NotificationsModel = require('../models/notifications');
 const { UserModel } = require('../models/User');
+const { sendMail } = require('../nodemailer/sendMail.js');
 const { v4: uuidv4 } = require('uuid');
 
 const notificationsRouter = ex.Router();
@@ -80,6 +81,20 @@ notificationsRouter.post('/', async (req, res) => {
                 ],
             },
         }).sort({ timestamp: -1 });
+        const sharedAdminEmail = 'ashley.l.mckellar@gmail.com';
+        let userSubject = '';
+        let userHtmlContent = '';
+        if (notificationType === 'docStatusUpdate') {
+            userSubject = 'Document Status Update';
+            const appUrl = 'https://brain-integration-institute.onrender.com/'
+            userHtmlContent = `<p>An admin has reviewed your document.   
+              <p>To view response, <a href="${appUrl}">click here</a> to log in.  Message: ${message}  </p></p>`;
+        } else {
+            userSubject = 'New Notification';
+            userHtmlContent = `<p>Notification: ${message}</p>`;
+        }
+        
+        await sendMail(sharedAdminEmail, userSubject, message, userHtmlContent);
 
         res.status(201).json({
             success: true,

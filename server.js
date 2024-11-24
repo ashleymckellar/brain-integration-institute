@@ -1,4 +1,5 @@
 const ex = require('express');
+require('dotenv').config()
 const path = require('path');
 const { apiRouter } = require('./routes/api');
 const { adminRouter } = require('./routes/admin')

@@ -3,6 +3,7 @@ const ex = require('express');
 const { getAllNotifications } = require('../services/adminNotifications');
 const { createNotification } = require('../services/adminNotifications');
 const AdminNotificationsModel = require('../models/adminNotifications');
+const { sendMail } = require('../nodemailer/sendMail.js');
 const { UserModel } = require('../models/User');
 // const NotificationsModel = require('../models/notifications');
 const mg = require('mongoose');
@@ -49,7 +50,7 @@ adminNotificationsRouter.post('/', async (req, res) => {
                 .json({ error: 'Access denied. Admins only.' });
         }
 
-        const sharedAdminEmail = 'sharedadmin@test.com';
+        const sharedAdminEmail = 'ashley.l.mckellar@gmail.com';
 
         // Create notifications for each admin
         const notificationData = {
@@ -58,12 +59,27 @@ adminNotificationsRouter.post('/', async (req, res) => {
             notificationType,
             notificationStatus,
             userEmail: authenticatedUser.userEmail,
-            admin: sharedAdminEmail,
+            admin: 'ashley.l.mckellar@gmail.com',
             uniqueid: uuidv4(), // Generate a unique ID using uuidv4
         };
 
         // Create notification
         const notification = await createNotification(notificationData);
+
+        let adminSubject = '';
+        let userHtmlContent = '';
+        if (notificationType === 'docStatusUpdate') {
+            adminSubject = 'Document Status Update';
+            const appUrl = 'https://brain-integration-institute.onrender.com/'
+            userHtmlContent = `<p>${authenticatedUser.userEmail} has uploaded a document for your review.   Message: ${message}  
+              <p>To review the document, <a href="${appUrl}">click here</a>.</p></p>`;
+        } else {
+            adminSubject = 'New Notification';
+            userHtmlContent = `<p>Notification: ${message}</p>`;
+        }
+        
+        await sendMail(sharedAdminEmail, adminSubject, message, userHtmlContent);
+
 
         res.status(201).json({
             success: true,
