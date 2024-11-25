@@ -29,11 +29,11 @@ server.get('/api/files', (req, res) => {
 
 
 
-server.post('/webhook', (req, res) => {
-    const payload = req.body; 
-    console.log('Webhook received:', payload);
-    res.status(200).send({ message: 'Webhook received successfully' });
-});
+// server.post('/webhook', (req, res) => {
+//     const payload = req.body; 
+//     // console.log('Webhook received:', payload);
+//     res.status(200).send({ message: 'Webhook received successfully' });
+// });
 
 
 

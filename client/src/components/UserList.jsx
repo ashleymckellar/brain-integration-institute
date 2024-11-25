@@ -21,7 +21,6 @@ function UserList() {
         setIndividualUser,
         individualUser,
         fetchProfileData,
-        profileData,
         deleteUser,
     } = useContext(AdminContext);
 
@@ -58,11 +57,8 @@ function UserList() {
         fetchProfileData(individualUser);
     }, [individualUser]);
 
-    console.log(individualUser);
-    console.log(profileData);
-
     const handleChange = (e) => {
-        console.log('change handled');
+       
         const { name, value } = e.target;
 
         setSearchInput((prevInput) => ({
@@ -73,7 +69,6 @@ function UserList() {
 
     const handleViewProfileClick = (userEmail) => {
         setIndividualUser(users.find((user) => user.userEmail === userEmail));
-        console.log(individualUser)
         navigate(`/admin/practitioner-management/${userEmail}`);
     };
 

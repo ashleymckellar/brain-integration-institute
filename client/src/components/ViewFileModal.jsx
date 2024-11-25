@@ -35,7 +35,7 @@ export default function ViewFileModal({
         onChange(e);
     };
 
-    console.log(user.email, 'auth user')
+
 
     const handleReasonChange = (e) => {
         setReasonForDenial(e.target.value);

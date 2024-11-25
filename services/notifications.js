@@ -8,33 +8,22 @@ const getAllNotificationsByUser = async (userEmail) => {
             throw new Error('userEmail should be a string.');
         }
 
-        console.log(userEmail, 'userEmail input');
+       
 
-        // Find the user by their email and populate the relevant fields for approval messages
-        //this only gets the admin status updates for a specific user 
+       
         const user = await UserModel.findOne({ userEmail })
-        //     {
-        //         path: 'approvalMessages.brainIntegrationTraining',
-        //         model: 'Notifications',
-        //     },
-        //     { path: 'approvalMessages.clinicalHours', model: 'Notifications' },
-        //     { path: 'approvalMessages.firstAidTraining', model: 'Notifications' },
-        //     { path: 'approvalMessages.cprCert', model: 'Notifications' },
-        //     { path: 'approvalMessages.videoPresentation', model: 'Notifications' },
-        //     { path: 'approvalMessages.insurance', model: 'Notifications' },
-        // ]);
 
-        console.log(user, 'user email');
+     
 
-        // Check if user exists
+  
         if (user) {
-            // Fetch additional notification types (e.g., assessmentUpdate, docExpirationReminder)
+           
             const additionalNotifications = await NotificationsModel.find({
                 userEmail,
                 notificationType: { $in: ['assessmentUpdate', 'docExpirationReminder', 'docStatusUpdate'] },
             }).sort({ timestamp: -1 }); // Sort notifications by timestamp (newest first)
 
-            // Combine the populated approvalMessages and additional notifications
+           
             const allNotifications = {
                 // approvalMessages: user.approvalMessages,
                 additionalNotifications, // add the additional notifications to the result

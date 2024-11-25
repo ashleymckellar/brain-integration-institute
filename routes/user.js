@@ -6,6 +6,7 @@ const {
     getAllUserMetaData,
     deleteUserMetaData,
 } = require('../services/user');
+const { deleteProfileData } = require('../services/profile')
 const { UserModel } = require('../models/User');
 const { ProfileModel } = require('../models/profile');
 
@@ -45,7 +46,7 @@ userRouter.post('/createuser', async (req, res) => {
 //get user specific user metadata
 userRouter.get('/:email', async (req, res) => {
     const { email } = req.params;
-    console.log('Received email param:', email);
+   
     try {
         const profile = await ProfileModel.findOne({ email });
 
@@ -105,8 +106,7 @@ userRouter.get('/', async (req, res) => {
 userRouter.put('/:email/progress', async (req, res) => {
     const { userUploadProgress } = req.body;
     const { email } = req.params;
-    console.log('Request body:', req.body);
-    console.log('Email to find:', email);
+
 
     if (
         userUploadProgress === undefined ||
@@ -124,7 +124,7 @@ userRouter.put('/:email/progress', async (req, res) => {
             { new: true, runValidators: true },
         );
 
-        console.log('User found:', user);
+       
 
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
@@ -342,7 +342,7 @@ userRouter.patch('/:email/document-status', async (req, res) => {
         // Save the updated user document
         const updatedUser = await user.save();
 
-        console.log('Updated user:', updatedUser);
+        
 
         res.status(200).send(updatedUser);
     } catch (error) {
@@ -356,7 +356,7 @@ userRouter.patch('/:email/document-status', async (req, res) => {
 //delete user route - can only be accessed by admins
 userRouter.delete('/:email', async (req, res) => {
     const email = req.params.email;
-    console.log(email, 'email');
+    
     try {
         const deletedUser = await UserModel.findOneAndDelete({
             userEmail: email,
@@ -367,6 +367,17 @@ userRouter.delete('/:email', async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
         console.log('[Delete Route] User deleted successfully');
+
+        try {
+            const userId = deletedUser._id; // Assuming `UserModel`'s `_id` corresponds to the `userId` in `ProfileModel`
+            await deleteProfileData(userId);
+            console.log('[Delete Route] Profile data deleted successfully');
+        } catch (profileError) {
+            console.error('[Delete Route] Error deleting profile data:', profileError);
+            return res
+                .status(500)
+                .json({ message: 'User deleted, but an error occurred while deleting profile data' });
+        }
         return res
             .status(200)
             .json({ message: 'User and metadata deleted successfully' });

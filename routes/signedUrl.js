@@ -35,4 +35,39 @@ signedUrlRouter.post('/get-signed-url', async (req, res) => {
     }
 });
 
+//apiRouter.use('/signed/get-signed-url
+
+signedUrlRouter.get('/get-signed-url', async (req, res) => {
+    const { publicId, fileType } = req.query;
+
+    if (!publicId || !fileType) {
+        return res.status(400).json({ error: 'publicId and fileType are required' });
+    }
+
+    let resourceType;
+    if (['jpg', 'jpeg', 'png', 'gif'].includes(fileType)) {
+        resourceType = 'image';
+    } else if (['mp4', 'avi', 'mkv'].includes(fileType)) {
+        resourceType = 'video';
+    } else {
+        resourceType = 'raw'; 
+    }
+
+    try {
+        const signedUrl = cloudinary.utils.signed_url(
+            publicId,
+            {
+                resource_type: resourceType,
+                type: 'private',
+                expires_at: Math.floor(Date.now() / 1000) + 3600, 
+            }
+        );
+
+        res.json({ signedUrl });
+    } catch (error) {
+        console.error('Error generating signed URL:', error);
+        res.status(500).json({ error: 'Failed to generate signed URL' });
+    }
+});
+
 module.exports = signedUrlRouter

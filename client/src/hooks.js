@@ -8,12 +8,10 @@ import { FileContext } from './contexts';
 /**
  * Automatically attaches Auth0 user access token to outgoing requests
  * @example
- * const { request } = useHttpAuthClient()
- * request('/api/path/to/authorized/resource')
- *  .then(data => {console.log(data)})
+
  *
  *
- * for protected routes that require authentication
+ 
  */
 export const useHttpAuthClient = () => {
     const { getAccessTokenSilently, user } = useAuth0();
@@ -120,7 +118,7 @@ export const useProfileForm = (initialValues) => {
     const { getAccessTokenSilently, user } = useAuth0();
 
     const handleInputChange = (e) => {
-        console.log('change handled');
+       
         const { name, value } = e.target;
         setInputs((prevInputs) => ({
             ...prevInputs,
@@ -129,12 +127,12 @@ export const useProfileForm = (initialValues) => {
     };
 
     const resetInputs = () => {
-        console.log('inputs reset!');
+        
         setInputs(initialValues);
     };
 
     const createProfileData = async () => {
-        console.log('Inputs being sent:', inputs);
+       
 
         try {
             const response = await fetch(
@@ -157,7 +155,7 @@ export const useProfileForm = (initialValues) => {
             const data = await response.json();
            
             
-            console.log('Response from backend:', data);
+           
             if (!data.success) throw new Error(data.error);
           
             // Reset inputs after successful submission
@@ -210,7 +208,7 @@ const useProfileData = (user) => {
         
                     const data = await response.json();
                     setProfileData(data); 
-                    console.log(profileData)
+                  
                 } catch (error) {
                     console.error('Error fetching profile data:', error);
                     setError(error.message); 

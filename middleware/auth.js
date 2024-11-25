@@ -14,7 +14,7 @@ const validateAuthToken = auth({
 });
 
 const validateAuthTokenMiddleware = (req, res, next) => {
-    console.log("Validating auth token...");
+    
     validateAuthToken(req, res, next);
 };
 

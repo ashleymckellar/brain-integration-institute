@@ -75,7 +75,7 @@ export const AdminProvider = ({ children }) => {
                 },
             });
             setIndividualUser(response.data);
-            console.log(individualUser);
+           
         } catch (error) {
             console.error('Error fetching user:', error);
         }
@@ -106,7 +106,7 @@ export const AdminProvider = ({ children }) => {
             }
 
             const updatedUser = await response.json();
-            console.log('Admin status updated:', updatedUser);
+           
         } catch (error) {
             console.error('Error updating user to admin:', error);
         }
@@ -162,7 +162,7 @@ export const AdminProvider = ({ children }) => {
                 },
             );
 
-            console.log(`User with email ${userEmail} deleted successfully`);
+         
 
             await axios.delete(`http://${baseUrl}/api/user/${userEmail}`, {
                 headers: {
@@ -170,7 +170,7 @@ export const AdminProvider = ({ children }) => {
                 },
             });
 
-            console.log(`User with email ${userEmail} deleted successfully`);
+           
         } catch (error) {
             console.error('Error deleting user:', error);
         }
@@ -271,7 +271,7 @@ export const AdminProvider = ({ children }) => {
             );
 
             const data = response.data;
-            console.log('Fetched data:', data);
+          
 
             const activeNotifications = Object.values(data)
                 .flat()

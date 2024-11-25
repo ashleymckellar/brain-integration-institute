@@ -22,10 +22,10 @@ import shield from '../assets/icons/shield-half.png';
 import briefcase from '../assets/icons/briefcase-medical.png';
 import clipboard from '../assets/icons/clipboard-list.png';
 import video from '../assets/icons/video.png';
-import brainSeal from '../assets/icons/BrainIntegrationSeal.png';
+import brainSeal from '../assets/icons/BrainIntegrationSealCropped.png';
 
 const UserSpecificAdminView = () => {
-    console.log('usav component mounted');
+   
     const {
         individualUser,
         setIndividualUser,
@@ -74,7 +74,7 @@ const UserSpecificAdminView = () => {
         ProgressBar8,
     ];
 
-    console.log(profileData);
+   
 
     useEffect(() => {
         if (userEmail && users.length > 0) {
@@ -83,7 +83,7 @@ const UserSpecificAdminView = () => {
                 (user) => user.userEmail === userEmail,
             );
             setIndividualUser(foundUser);
-            console.log(foundUser);
+           
         }
     }, [userEmail, users]); // Remove setIndividualUser from dependency array
 
@@ -97,6 +97,28 @@ const UserSpecificAdminView = () => {
     useEffect(() => {
         console.log('Updated imagesByDocType:', imagesByDocType);
     }, [imagesByDocType]);
+
+    const fetchSignedUrl = async (publicId, fileType) => {
+        try {
+             const accessToken = await getAccessTokenSilently();
+            const response = await fetch(`/api/signed/get-signed-url?publicId=${publicId}&fileType=${fileType}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                },
+            );
+            const data = await response.json();
+    
+            if (data.signedUrl) {
+                return data.signedUrl;
+            } else {
+                console.error('Error: No signed URL returned');
+            }
+        } catch (error) {
+            console.error('Error fetching signed URL:', error);
+        }
+    };
 
     const getFilesByDocType = async (userEmail, documentType) => {
         try {
@@ -114,27 +136,25 @@ const UserSpecificAdminView = () => {
                 throw new Error('Failed to fetch images');
             }
             const image = await response.json();
-            console.log('API Response:', image);
             setImagesByDocType(image);
-            console.log(image);
             setPublicId(image[0].public_id);
-            console.log('Set publicId:', image[0].public_id);
+           
         } catch (error) {
             console.error('Error fetching images:', error);
         }
     };
 
-    const promoteUsertoAdmin = async () => {
-        const email = individualUser.userEmail;
-        await updateUserToAdmin(email);
-        console.log('updated user to admin');
-    };
+    // const promoteUsertoAdmin = async () => {
+    //     const email = individualUser.userEmail;
+    //     await updateUserToAdmin(email);
+    //   
+    // };
 
     useEffect(() => {
         fetchProfileData(individualUser);
     }, [individualUser]);
 
-    console.log(imagesByDocType.public_id);
+   
 
     if (!individualUser) return <p>Loading...</p>;
 
@@ -156,8 +176,7 @@ const UserSpecificAdminView = () => {
         const documentType = docTypeMapping[documentName];
         setSelectedDocumentName(documentName);
         setSelectedDocumentType(documentType);
-        console.log(documentName);
-        console.log(documentType);
+       
 
         try {
             setFileModalOpen(false);
@@ -179,14 +198,14 @@ const UserSpecificAdminView = () => {
             return;
         }
 
-        console.log('Admin doc review form submitted');
+       
         try {
             await updateDocumentStatusbyAdmin(
                 individualUser,
                 newDocStatus,
                 selectedDocumentType,
             );
-            console.log('Document status updated successfully');
+            
             getUserById(individualUser.userEmail);
             setFileModalOpen(false);
         } catch (error) {

@@ -3,20 +3,19 @@ const Certificate = require('../models/certificate');
 
 // Function to get user specific images from Cloudinary
 const getImagesFromCloudinary = async (folder) => {
-    console.log("now why are you calling this one?  You know that ain't right!")
+  
     const allAssets = [];
 
     try {
         const requestURL = `https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/resources/search`;
-        console.log('Requesting from URL:', requestURL);
-        console.log('Folder path:', folder);
+        
 
         const authHeader = Buffer.from(
             `${process.env.CLOUDINARY_API_KEY}:${process.env.CLOUDINARY_API_SECRET}`,
         ).toString('base64');
 
         const searchParams = {
-            expression: `folder=${folder} AND resource_type:image`,
+            expression: `folder=${folder}`,
         };
 
         const cloudinaryResponse = await axios.post(requestURL, searchParams, {
@@ -27,7 +26,7 @@ const getImagesFromCloudinary = async (folder) => {
         });
 
         const resources = cloudinaryResponse.data.resources;
-        console.log('Fetched resources count:', resources.length);
+      
 
         allAssets.push(...resources);
         return allAssets;
@@ -80,13 +79,13 @@ const getThumbnailImages = async (folders) => {
 
 //getCertificateFromCloudinary
 const getCertificateFromCloudinary = async () => {
-    console.log('the right function to be called, you big dummy')
+
     try {
         const requestURL = `https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/resources/search`;
         const authHeader = Buffer.from(
             `${process.env.CLOUDINARY_API_KEY}:${process.env.CLOUDINARY_API_SECRET}`
         ).toString('base64');
-        console.log('Requesting from URL:', requestURL);
+        
 
         const searchParams = {
             expression: `folder=certificate`,

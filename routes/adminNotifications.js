@@ -38,7 +38,7 @@ adminNotificationsRouter.post('/', async (req, res) => {
         const authenticatedUser = await UserModel.findOne({
             sub: req.auth.payload.sub,
         });
-        console.log(authenticatedUser, 'authenticated user');
+    
         if (!authenticatedUser) {
             return res.status(401).json({ error: 'User not authenticated' });
         }

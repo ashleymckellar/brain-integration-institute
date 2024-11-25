@@ -71,7 +71,7 @@ const AccordionCard = ({ certStatus }) => {
     const [stripePromise, setStripePromise] = useState(null);
     const [cloudinaryFiles, setCloudinaryFiles] = useState([]);
     const [expandedSection, setExpandedSection] = useState(null);
-const [sectionFiles, setSectionFiles] = useState({});
+    const [sectionFiles, setSectionFiles] = useState({});
 
     //checks to see if every section has an uploaded file, if so returns true
     const [isUploaded, setIsUploaded] = useState(false);
@@ -109,10 +109,9 @@ const [sectionFiles, setSectionFiles] = useState({});
     //will need to add put request to user metadata route to change studyGuideAccess to true, just saving in state for now
 
     const getStudyGuide = async () => {
-        console.log('getStudyGuide function invoked');
         try {
             const accessToken = await getAccessTokenSilently();
-            console.log('Access token retrieved:', accessToken);
+
             // const stripe = await stripePromise();
             const response = await fetch('/api/create-payment-intent', {
                 method: 'POST',
@@ -124,7 +123,7 @@ const [sectionFiles, setSectionFiles] = useState({});
             });
 
             const session = await response.json();
-            console.log('Session retrieved:', session);
+
             if (session.clientSecret) {
                 console.log(
                     'Payment intent created successfully',
@@ -135,13 +134,9 @@ const [sectionFiles, setSectionFiles] = useState({});
 
                 try {
                     await updateUserProgress(progress + 1);
-                    console.log('User progress update');
+
                     setProgress((prevProgress) => {
                         const newProgress = Math.min(prevProgress + 1, 8);
-                        console.log(
-                            'Progress successfully updated:',
-                            newProgress,
-                        );
 
                         return newProgress;
                     });
@@ -153,8 +148,6 @@ const [sectionFiles, setSectionFiles] = useState({});
             console.error('Error creating checkout session:', error);
         }
     };
-
-    console.log(progress);
 
     const getPublishableKey = async () => {
         const accessToken = await getAccessTokenSilently();
@@ -181,7 +174,6 @@ const [sectionFiles, setSectionFiles] = useState({});
 
     //move this to the cloudinarycontext and update progress there as well since it updates the progress
     const getAssessment = async () => {
-        console.log('assessment button clicked');
         try {
             const accessToken = await getAccessTokenSilently();
             // const stripe = await stripePromise;
@@ -211,54 +203,39 @@ const [sectionFiles, setSectionFiles] = useState({});
         }
     };
 
-    const showFile = () => {
-        console.log('file shown');
-    };
-
     const handleUploadClick = async (section) => {
         setSectionName(section);
-        const documentType = section
+        const documentType = section;
         initializeCloudinaryWidget(section, onUploadSuccess);
         const updatedStatus = {
             ...certListUploadStatus,
             [sectionName]: 'pending approval',
         };
-     
 
         console.log('Calling updateUserProgress with value:', 1);
     };
 
-
-
     // await getFilesByDocType(individualUser.userEmail, documentType);
     //put the above in a useEffect
 
-
     useEffect(() => {
-        console.log('Fetching publishable key');
         getPublishableKey();
     }, []);
-
 
     useEffect(() => {
         const fetchData = async () => {
             if (user) {
-                console.log('User:', user); // Check the full user object
-                console.log('User email:', user.email); 
                 const token = localStorage.getItem('token');
                 try {
                     const folderFiles = await getFilesInFolder(token); //docs themselves - user specific
                     const metadataFiles = await getFiles(token);
-                    console.log(metadataFiles); //metadata
+
                     const userMetaData = await getUserMetaData(token);
                     setFileMetaData(metadataFiles);
                     setUserMetaData(userMetaData);
                     setProgress(userMetaData.userUploadProgress);
                     setCertListUploadStatus(userMetaData.certListUploadStatus);
                     setCloudinaryFiles(folderFiles); //user specific files (objects) from Cloudinary
-                    console.log(folderFiles);
-                    console.log(userMetaData);
-                    console.log(fileMetaData)
                 } catch (error) {
                     console.error(
                         'Error fetching files:',
@@ -270,11 +247,9 @@ const [sectionFiles, setSectionFiles] = useState({});
 
         fetchData();
     }, [user]); // Make sure this effect runs when 'user' changes
-    
-  
 
     useEffect(() => {
-        if (!userMetaData || !userMetaData.certListUploadStatus) return; 
+        if (!userMetaData || !userMetaData.certListUploadStatus) return;
 
         const checkIsApprovedForAssessment = () => {
             const allApproved = Object.values(
@@ -284,25 +259,19 @@ const [sectionFiles, setSectionFiles] = useState({});
 
             if (allApproved && hasStudyGuideAccess) {
                 setIsApprovedForAssessment(true);
-                console.log('User is approved for assessment');
             } else {
                 setIsApprovedForAssessment(false);
-                console.log('User is not approved for assessment');
             }
         };
 
         checkIsApprovedForAssessment();
     }, [userMetaData]);
 
-    console.log(certListUploadStatus);
-    console.log(userMetaData);
-    console.log(isApprovedForAssessment)
-
     const getSectionFileNames = (sectionName) => {
         if (!fileMetaData || fileMetaData.length === 0) {
             return []; // Return an empty array if fileMetaData is undefined or empty
         }
-    
+
         const filteredFiles = fileMetaData.filter(
             (file) => file.sectionName === sectionName,
         );
@@ -319,29 +288,41 @@ const [sectionFiles, setSectionFiles] = useState({});
         return foundFile ? foundFile.publicId : null;
     };
 
-    const brainMetaData =  fileMetaData && fileMetaData.filter((metadata) => {
-        return metadata.sectionName === 'brainIntegrationTraining';
-    });
+    const brainMetaData =
+        fileMetaData &&
+        fileMetaData.filter((metadata) => {
+            return metadata.sectionName === 'brainIntegrationTraining';
+        });
 
-    const clinicalMetaData = fileMetaData && fileMetaData.filter((metadata) => {
-        return metadata.sectionName === 'clinicalHours';
-    });
+    const clinicalMetaData =
+        fileMetaData &&
+        fileMetaData.filter((metadata) => {
+            return metadata.sectionName === 'clinicalHours';
+        });
 
-    const firstAidMetaData = fileMetaData && fileMetaData.filter((metadata) => {
-        return metadata.sectionName === 'firstAidTraining';
-    });
+    const firstAidMetaData =
+        fileMetaData &&
+        fileMetaData.filter((metadata) => {
+            return metadata.sectionName === 'firstAidTraining';
+        });
 
-    const cPRMetaData = fileMetaData && fileMetaData.filter((metadata) => {
-        return metadata.sectionName === 'cprCert';
-    });
+    const cPRMetaData =
+        fileMetaData &&
+        fileMetaData.filter((metadata) => {
+            return metadata.sectionName === 'cprCert';
+        });
 
-    const videoMetaData = fileMetaData && fileMetaData.filter((metadata) => {
-        return metadata.sectionName === 'videoPresentation';
-    });
+    const videoMetaData =
+        fileMetaData &&
+        fileMetaData.filter((metadata) => {
+            return metadata.sectionName === 'videoPresentation';
+        });
 
-    const insuranceMetaData = fileMetaData && fileMetaData.filter((metadata) => {
-        return metadata.sectionName === 'insurance';
-    });
+    const insuranceMetaData =
+        fileMetaData &&
+        fileMetaData.filter((metadata) => {
+            return metadata.sectionName === 'insurance';
+        });
 
     return (
         <div>
@@ -388,8 +369,12 @@ const [sectionFiles, setSectionFiles] = useState({});
                         title="Brain Integration Training"
                         sectionName="brainIntegrationTraining"
                         fileMetadata={fileMetaData}
-                        brainMetaData={brainMetaData ?? []} 
-                        certStatus={ brainMetaData && brainMetaData.length > 0 ? brainMetaData[0]?.brainIntegrationTraining : 'defaultValue'}
+                        brainMetaData={brainMetaData ?? []}
+                        certStatus={
+                            brainMetaData && brainMetaData.length > 0
+                                ? brainMetaData[0]?.brainIntegrationTraining
+                                : 'defaultValue'
+                        }
                     >
                         <div className="flex flex-col p-4 md:pl-6 md:pr-6 border rounded-lg border-t-0 border-solid border-black rounded-tr-none rounded-tl-none mb-5">
                             <h1 className="font-fira text-dark-green font-bold text-lg md:text-xl pt-6 md:pt-10">
@@ -478,10 +463,7 @@ const [sectionFiles, setSectionFiles] = useState({});
                                                         key={index}
                                                         className="flex gap-5"
                                                     >
-                                                        <button
-                                                            className="font-fira text-xl text-blue font-bold text-left"
-                                                            onClick={showFile}
-                                                        >
+                                                        <button className="font-fira text-xl text-blue font-bold text-left">
                                                             {file}{' '}
                                                         </button>
                                                         <button
@@ -634,10 +616,7 @@ const [sectionFiles, setSectionFiles] = useState({});
                                                         key={index}
                                                         className="flex gap-5"
                                                     >
-                                                        <button
-                                                            className="font-fira text-xl text-blue font-bold text-left"
-                                                            onClick={showFile}
-                                                        >
+                                                        <button className="font-fira text-xl text-blue font-bold text-left">
                                                             {file}{' '}
                                                         </button>
                                                         <button
@@ -729,17 +708,20 @@ const [sectionFiles, setSectionFiles] = useState({});
                                     </div>
                                     <div className="flex flex-col items-center w-1/3 pt-20">
                                         <DeleteTooltip
-                                            text="Delete current file to upload new one"
+                                            text="Maximum number of uploads.  Please delete files to upload new ones"
                                             disabled={
-                                                clinicalMetaData && clinicalMetaData.length > 0
+                                                clinicalMetaData &&
+                                                clinicalMetaData.length > 4
                                             }
                                         >
                                             <button
                                                 disabled={
-                                                    clinicalMetaData && clinicalMetaData.length > 0
+                                                    clinicalMetaData &&
+                                                    clinicalMetaData.length > 4
                                                 }
                                                 className={`${
-                                                    clinicalMetaData &&  clinicalMetaData.length > 0
+                                                    clinicalMetaData &&
+                                                    clinicalMetaData.length > 4
                                                         ? 'opacity-50 cursor-not-allowed'
                                                         : ''
                                                 }`}
@@ -787,10 +769,7 @@ const [sectionFiles, setSectionFiles] = useState({});
                                                     key={index}
                                                     className="flex gap-5 mb-2"
                                                 >
-                                                    <button
-                                                        className="font-fira text-xl text-blue font-bold"
-                                                        onClick={showFile}
-                                                    >
+                                                    <button className="font-fira text-xl text-blue font-bold">
                                                         {file}{' '}
                                                     </button>
                                                     <button
@@ -880,15 +859,20 @@ const [sectionFiles, setSectionFiles] = useState({});
                                 </div>
                                 <div className="flex flex-col items-center w-1/3 pt-20">
                                     <DeleteTooltip
-                                        text="Delete current file to upload new one"
-                                        disabled={firstAidMetaData && firstAidMetaData.length > 0}
+                                        text="Delete current files to upload new ones"
+                                        disabled={
+                                            firstAidMetaData &&
+                                            firstAidMetaData.length > 1
+                                        }
                                     >
                                         <button
                                             disabled={
-                                                firstAidMetaData && firstAidMetaData.length > 0
+                                                firstAidMetaData &&
+                                                firstAidMetaData.length > 1
                                             }
                                             className={`${
-                                                firstAidMetaData && firstAidMetaData.length > 0
+                                                firstAidMetaData &&
+                                                firstAidMetaData.length > 1
                                                     ? 'opacity-50 cursor-not-allowed'
                                                     : ''
                                             }`}
@@ -946,10 +930,7 @@ const [sectionFiles, setSectionFiles] = useState({});
                                                         key={index}
                                                         className="flex gap-5 mb-2"
                                                     >
-                                                        <button
-                                                            className="font-fira text-xl text-blue font-bold"
-                                                            onClick={showFile}
-                                                        >
+                                                        <button className="font-fira text-xl text-blue font-bold">
                                                             {file}
                                                             {''}
                                                         </button>
@@ -1039,13 +1020,20 @@ const [sectionFiles, setSectionFiles] = useState({});
                                 </div>
                                 <div className="flex flex-col items-center w-1/3 pt-20">
                                     <DeleteTooltip
-                                        text="Delete current file to upload new one"
-                                        disabled={cPRMetaData && cPRMetaData.length > 0}
+                                        text="Delete current files to upload new ones"
+                                        disabled={
+                                            cPRMetaData &&
+                                            cPRMetaData.length > 1
+                                        }
                                     >
                                         <button
-                                            disabled={cPRMetaData && cPRMetaData.length > 0}
+                                            disabled={
+                                                cPRMetaData &&
+                                                cPRMetaData.length > 1
+                                            }
                                             className={`${
-                                                cPRMetaData && cPRMetaData.length > 0
+                                                cPRMetaData &&
+                                                cPRMetaData.length > 1
                                                     ? 'opacity-50 cursor-not-allowed'
                                                     : ''
                                             }`}
@@ -1110,10 +1098,7 @@ const [sectionFiles, setSectionFiles] = useState({});
                                                     key={index}
                                                     className="flex gap-5 mb-2"
                                                 >
-                                                    <button
-                                                        className="font-fira text-xl text-blue font-bold"
-                                                        onClick={showFile}
-                                                    >
+                                                    <button className="font-fira text-xl text-blue font-bold">
                                                         {file}
                                                         {''}
                                                     </button>
@@ -1206,12 +1191,19 @@ const [sectionFiles, setSectionFiles] = useState({});
                                 <div className="flex flex-col items-center w-1/3 pt-20">
                                     <DeleteTooltip
                                         text="Delete current file to upload new one"
-                                        disabled={videoMetaData && videoMetaData.length > 0}
+                                        disabled={
+                                            videoMetaData &&
+                                            videoMetaData.length > 0
+                                        }
                                     >
                                         <button
-                                            disabled={videoMetaData && videoMetaData.length > 0}
+                                            disabled={
+                                                videoMetaData &&
+                                                videoMetaData.length > 0
+                                            }
                                             className={`${
-                                                videoMetaData && videoMetaData.length > 0
+                                                videoMetaData &&
+                                                videoMetaData.length > 0
                                                     ? 'opacity-50 cursor-not-allowed'
                                                     : ''
                                             }`}
@@ -1270,10 +1262,7 @@ const [sectionFiles, setSectionFiles] = useState({});
                                                         key={index}
                                                         className="flex gap-5 mb-2"
                                                     >
-                                                        <button
-                                                            className="font-fira text-xl text-blue font-bold"
-                                                            onClick={showFile}
-                                                        >
+                                                        <button className="font-fira text-xl text-blue font-bold">
                                                             {file}
                                                             {''}
                                                         </button>
@@ -1367,14 +1356,19 @@ const [sectionFiles, setSectionFiles] = useState({});
                                 <div className="flex flex-col items-center w-1/3 pt10 pb-10">
                                     <DeleteTooltip
                                         text="Delete current file to upload new one"
-                                        disabled={insuranceMetaData && insuranceMetaData.length > 0}
+                                        disabled={
+                                            insuranceMetaData &&
+                                            insuranceMetaData.length > 0
+                                        }
                                     >
                                         <button
                                             disabled={
-                                                insuranceMetaData && insuranceMetaData.length > 0
+                                                insuranceMetaData &&
+                                                insuranceMetaData.length > 0
                                             }
                                             className={`${
-                                                insuranceMetaData && insuranceMetaData.length > 0
+                                                insuranceMetaData &&
+                                                insuranceMetaData.length > 0
                                                     ? 'opacity-50 cursor-not-allowed'
                                                     : ''
                                             }`}
@@ -1522,9 +1516,6 @@ const [sectionFiles, setSectionFiles] = useState({});
                                                 className="pl-[100px]"
                                                 src={GetStudyGuideBtn}
                                                 onClick={() => {
-                                                    console.log(
-                                                        'Button clicked',
-                                                    );
                                                     getStudyGuide();
                                                 }}
                                             />
@@ -1635,7 +1626,9 @@ const [sectionFiles, setSectionFiles] = useState({});
                                     <img
                                         src={PayforandStart}
                                         onClick={
-                                            isApprovedForAssessment ? getAssessment : null
+                                            isApprovedForAssessment
+                                                ? getAssessment
+                                                : null
                                         }
                                     />
                                 </button>

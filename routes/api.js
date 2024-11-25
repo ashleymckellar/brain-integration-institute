@@ -19,7 +19,7 @@ apiRouter.use('/files/:user', fileRouter);
 apiRouter.use('/images', documentRouter)
 apiRouter.use('/user', userRouter)
 apiRouter.use('/', checkoutRouter)
-apiRouter.use('/', signedUrlRouter)
+apiRouter.use('/signed', signedUrlRouter)
 apiRouter.use('/profile', profileRouter)
 apiRouter.use('/admin', adminRouter)
 apiRouter.use('/notify', notifyRouter)

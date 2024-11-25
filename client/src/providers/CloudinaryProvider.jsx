@@ -35,7 +35,7 @@ export const CloudinaryProvider = ({ children }) => {
     const [certificates, setCertificates] = useState([]);
     const [imagesByDocType, setImagesByDocType] = useState([]);
     const [expandedSection, setExpandedSection] = useState(null);
-    const [sectionFiles, setSectionFiles] = useState({});
+    // const [sectionFiles, setSectionFiles] = useState({});
     const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
     const uwConfig = {
@@ -195,8 +195,7 @@ export const CloudinaryProvider = ({ children }) => {
                 console.log('Updating user progress:', {
                     userUploadProgress: newProgress,
                 });
-                console.log('User email:', user.email);
-                console.log('User object:', user);
+              
 
                 const response = await fetch(
                     `http://${baseUrl}/api/user/${user.email}/progress`,
@@ -229,7 +228,7 @@ export const CloudinaryProvider = ({ children }) => {
     };
 
     const updateUserStudyGuide = async (email) => {
-        console.log('updateUserStudyGuide called');
+       
         if (!email) {
             console.error('Email is required to update the study guide.');
             return;
@@ -326,7 +325,7 @@ export const CloudinaryProvider = ({ children }) => {
 
     const sendAdminNotification = async (user, selectedDocumentType) => {
         const accessToken = await getAccessTokenSilently();
-        console.log('Access token retrieved:', accessToken);
+        
         // const stripe = await stripePromise();
         const response = await fetch('/api/admin-notifications', {
             method: 'POST',
@@ -525,16 +524,13 @@ export const CloudinaryProvider = ({ children }) => {
             );
 
             if (response.ok) {
-                console.log('File and metadata deleted successfully.');
+               
                 const newStatus = 'waiting for upload';
                 const updatedStatus = {
                     ...certListUploadStatus,
                     [sectionName]: newStatus,
                 };
-                console.log(
-                    'Updated status before PUT request:',
-                    updatedStatus,
-                );
+              
                 await updateUserDocumentStatus(sectionName, newStatus);
                 setFileMetaData((prevMetaData) =>
                     prevMetaData.filter((file) => file.publicId !== publicId),
@@ -622,11 +618,11 @@ export const CloudinaryProvider = ({ children }) => {
     //get certificate file from cloudinary
 
     const getCertificate = async () => {
-        console.log('certificate route tapped');
+      
         try {
-            console.log('Attempting to retrieve access token...');
+          
             const accessToken = await getAccessTokenSilently();
-            console.log('Access token retrieved:', accessToken);
+         
             console.log(
                 'Sending GET request to:',
                 `http://${baseUrl}/api/images/certificate`,

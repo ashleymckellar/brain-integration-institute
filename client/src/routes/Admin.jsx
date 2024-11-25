@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/no-unescaped-entities */
 import { useContext, useEffect } from 'react';
 import { Link, Outlet } from 'react-router-dom';
@@ -17,10 +18,10 @@ export const Admin = () => {
         setisNotificationDrawerOpen,
         fetchAdminNotifications,
         markNotificationAsRead,
-        users,
+        users
     } = useContext(AdminContext);
 
-    console.log(unreadNotifications);
+  
     const navigate = useNavigate();
 
     const groupedNotifications = unreadNotifications.reduce(
@@ -31,7 +32,7 @@ export const Admin = () => {
         {},
     );
 
-    console.log(users, 'users list');
+  
 
     const formatDate = (timestamp) => {
         return format(new Date(timestamp), 'MM/dd/yy');

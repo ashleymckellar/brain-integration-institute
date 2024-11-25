@@ -18,7 +18,7 @@ notificationsRouter.get('/:useremail', async (req, res) => {
     try {
         const { useremail } = req.params;
         const messages = await getAllNotificationsByUser(useremail);
-        console.log(messages, 'message');
+       
         res.json(messages);
     } catch (error) {
         console.error('Error fetching messages:', error);
@@ -36,9 +36,8 @@ notificationsRouter.post('/', async (req, res) => {
             notificationType,
             notificationStatus,
         } = req.body;
-        console.log('JWT sub:', req.auth.payload);
-        console.log(req.body, 'req.body');
-        console.log('Category:', category);
+       
+      
         if (!userEmail) {
             return res.status(400).json({
                 error: 'userEmail is a required fields',
@@ -46,7 +45,7 @@ notificationsRouter.post('/', async (req, res) => {
         }
         const admin = await UserModel.findOne({ sub: req.auth.payload.sub });
         const adminEmail = admin ? admin.userEmail : 'Admin not found';
-        console.log('Admin Email:', adminEmail);
+
         if (!admin || !admin.userEmail) {
             return res.status(401).json({ error: 'Admin not found' });
         }
@@ -113,7 +112,7 @@ notificationsRouter.put('/:uniqueid/has-been-read', async (req, res) => {
     const { hasBeenRead } = req.body;
 
     try {
-        console.log(uniqueid)
+       
         // Use findOneAndUpdate directly
         const updatedNotification = await NotificationsModel.findOneAndUpdate(
             { uniqueid },  // Find by uniqueid

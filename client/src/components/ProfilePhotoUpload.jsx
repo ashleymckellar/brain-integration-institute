@@ -19,7 +19,7 @@ export const ProfilePhotoUpload = () => {
     useEffect(() => {
         const fetchData = async () => {
             if (user) {
-                console.log(user);
+               
                 const token = localStorage.getItem('token');
                 try {
                     const fetchedUserMetaData = await getUserMetaData(token);

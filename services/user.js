@@ -10,7 +10,7 @@ const getUserMetaData = async (email) => {
     const user = await UserModel.findOne({
         userEmail: email,
     });
-    console.log(user, 'user');
+  
     return user;
 };
 

@@ -6,7 +6,7 @@ import redNotificationIcon from '../assets/icons/red-notification-icon.svg';
 
 const MessagingHub = () => {
 
-  console.log('MessagingHub is rendered');
+
     const {
         fetchAdminNotifications,
         unreadNotifications,
@@ -58,7 +58,7 @@ const MessagingHub = () => {
         }
     };
 
-    console.log(unreadNotifications)
+ 
 
     return (
         <>

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 
 import { useState, useEffect, useContext } from 'react';
@@ -43,7 +44,7 @@ export const PaymentSuccessPage = ({ setStudyGuideAccess }) => {
         }
     };
 
-    console.log(cloudinaryUrl);
+  
 
     const redirectToAssessment = () => {
         window.open(

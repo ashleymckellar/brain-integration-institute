@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState, useEffect } from 'react';
 import banner from '../assets/icons/PractitionerBackground.png';
 import paleBanner from '../assets/icons/PaleGreenPractitionerBackground.png';
@@ -48,6 +49,7 @@ export const ContactUs = () => {
     };
 
     const onBlur = (e) => {
+        const regex = /^[0-9]+$/;
         const { name, value } = e.target;
         if (regex.test(value)) {
             setValidationError('');
