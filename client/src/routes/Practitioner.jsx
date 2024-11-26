@@ -48,7 +48,8 @@ export const Practitioner = () => {
                 const associatedUser = users.find((user) => user._id === profile.userId);
                 return {
                     ...profile,
-                    practitionerImage: associatedUser?.userProfilePicture || '', // Merge userProfilePicture
+                    practitionerImage: associatedUser?.userProfilePicture || '', 
+                    isCertified: associatedUser?.isCertified || false, 
                 };
             });
     
@@ -63,7 +64,9 @@ export const Practitioner = () => {
                     (name === '' ||
                         firstName.includes(name) ||
                         lastName.includes(name)) &&
-                    (location === '' || practitionerLocation.includes(location))
+                    (location === '' || practitionerLocation.includes(location)) &&
+                    profile.isCertified
+                    
                 );
             });
     
