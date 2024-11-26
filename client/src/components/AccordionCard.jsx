@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 import { useState, useContext, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useParams, useNavigate, useLocation, Link } from 'react-router-dom';
 import { loadStripe } from '@stripe/stripe-js';
 import UploadBtn from '../assets/icons/UploadBtn.png';
 import GetStudyGuideBtn from '../assets/icons/GetStudyGuideBtn.png';
@@ -72,6 +72,7 @@ const AccordionCard = ({ certStatus }) => {
     const [cloudinaryFiles, setCloudinaryFiles] = useState([]);
     const [expandedSection, setExpandedSection] = useState(null);
     const [sectionFiles, setSectionFiles] = useState({});
+    const navigate = useNavigate();
 
     //checks to see if every section has an uploaded file, if so returns true
     const [isUploaded, setIsUploaded] = useState(false);
@@ -222,20 +223,23 @@ const AccordionCard = ({ certStatus }) => {
         getPublishableKey();
     }, []);
 
+
+    //fetches user and file metadata on page load
     useEffect(() => {
         const fetchData = async () => {
             if (user) {
                 const token = localStorage.getItem('token');
                 try {
-                    const folderFiles = await getFilesInFolder(token); //docs themselves - user specific
+                    const folderFiles = await getFilesInFolder(token);
                     const metadataFiles = await getFiles(token);
 
                     const userMetaData = await getUserMetaData(token);
                     setFileMetaData(metadataFiles);
                     setUserMetaData(userMetaData);
+                    console.log(userMetaData)
                     setProgress(userMetaData.userUploadProgress);
                     setCertListUploadStatus(userMetaData.certListUploadStatus);
-                    setCloudinaryFiles(folderFiles); //user specific files (objects) from Cloudinary
+                    setCloudinaryFiles(folderFiles); 
                 } catch (error) {
                     console.error(
                         'Error fetching files:',
@@ -246,7 +250,7 @@ const AccordionCard = ({ certStatus }) => {
         };
 
         fetchData();
-    }, [user]); // Make sure this effect runs when 'user' changes
+    }, []); 
 
     useEffect(() => {
         if (!userMetaData || !userMetaData.certListUploadStatus) return;
@@ -266,6 +270,25 @@ const AccordionCard = ({ certStatus }) => {
 
         checkIsApprovedForAssessment();
     }, [userMetaData]);
+
+    // useEffect(() => {
+    //     const handleHashChange = () => {
+    //         const section = document.getElementById(sectionName);
+    //         if (section) {
+    //             section.scrollIntoView({ behavior: 'smooth' });
+    //             console.log('scrolled smoothly')
+    //         }
+    //     };
+
+    //     window.addEventListener('hashchange', handleHashChange);
+
+    //     // Initial scroll if the page is loaded with a hash
+    //     handleHashChange();
+
+    //     return () => {
+    //         window.removeEventListener('hashchange', handleHashChange);
+    //     };
+    // }, [sectionName]);
 
     const getSectionFileNames = (sectionName) => {
         if (!fileMetaData || fileMetaData.length === 0) {
@@ -368,6 +391,7 @@ const AccordionCard = ({ certStatus }) => {
                     <Brain
                         title="Brain Integration Training"
                         sectionName="brainIntegrationTraining"
+                        id={sectionName}
                         fileMetadata={fileMetaData}
                         brainMetaData={brainMetaData ?? []}
                         certStatus={
@@ -376,7 +400,10 @@ const AccordionCard = ({ certStatus }) => {
                                 : 'defaultValue'
                         }
                     >
-                        <div className="flex flex-col p-4 md:pl-6 md:pr-6 border rounded-lg border-t-0 border-solid border-black rounded-tr-none rounded-tl-none mb-5">
+                        <div
+                            id={sectionName}
+                            className="flex flex-col p-4 md:pl-6 md:pr-6 border rounded-lg border-t-0 border-solid border-black rounded-tr-none rounded-tl-none mb-5"
+                        >
                             <h1 className="font-fira text-dark-green font-bold text-lg md:text-xl pt-6 md:pt-10">
                                 Complete 500 hours of relevant brain integration
                                 training.
@@ -572,9 +599,13 @@ const AccordionCard = ({ certStatus }) => {
                     <Clinical
                         title="Clinical Hours"
                         sectionName="clinicalHours"
+                        id={sectionName}
                         clinicalMetaData={clinicalMetaData}
                     >
-                        <div className="flex flex-col p-4 md:pl-6 md:pr-6 border rounded-lg border-t-0 border-solid border-black rounded-tr-none rounded-tl-none mb-5">
+                        <div
+                            id={sectionName}
+                            className="flex flex-col p-4 md:pl-6 md:pr-6 border rounded-lg border-t-0 border-solid border-black rounded-tr-none rounded-tl-none mb-5"
+                        >
                             <p className="font-fira text-dark-green font-bold text-lg md:text-xl pt-6 md:pt-10">
                                 Completion of 200 hours of clinical practice in
                                 brain integration or kinesiology including
@@ -745,9 +776,13 @@ const AccordionCard = ({ certStatus }) => {
                     <FirstAid
                         title="First Aid Certification"
                         sectionName="firstAidTraining"
+                        id={sectionName}
                         firstAidMetaData={firstAidMetaData}
                     >
-                        <div className="flex flex-col p-4 md:pl-6 md:pr-6 border rounded-lg border-t-0 border-solid border-black rounded-tr-none rounded-tl-none mb-5">
+                        <div
+                            id={sectionName}
+                            className="flex flex-col p-4 md:pl-6 md:pr-6 border rounded-lg border-t-0 border-solid border-black rounded-tr-none rounded-tl-none mb-5"
+                        >
                             <h1 className="font-fira text-dark-green font-bold text-lg md:text-xl pt-6 md:pt-10">
                                 Show proof of First Aid certification.
                             </h1>
@@ -895,9 +930,13 @@ const AccordionCard = ({ certStatus }) => {
                     <CPR
                         title="CPR Certification"
                         sectionName="cprCert"
+                       
                         cPRMetaData={cPRMetaData}
                     >
-                        <div className="flex flex-col p-4 md:pl-6 md:pr-6 border rounded-lg border-t-0 border-solid border-black rounded-tr-none rounded-tl-none mb-5">
+                        <div
+                           id="cprCert" 
+                            className="flex flex-col p-4 md:pl-6 md:pr-6 border rounded-lg border-t-0 border-solid border-black rounded-tr-none rounded-tl-none mb-5"
+                        >
                             <h1 className="font-fira text-dark-green font-bold text-lg md:text-xl pt-6 md:pt-10">
                                 Show proof of CPR certification
                             </h1>
@@ -1055,8 +1094,12 @@ const AccordionCard = ({ certStatus }) => {
                         title="Video Presentation"
                         sectionName="videoPresentation"
                         videoMetaData={videoMetaData}
+                        id={sectionName}
                     >
-                        <div className="flex flex-col p-4 md:pl-6 md:pr-6 border rounded-lg border-t-0 border-solid border-black rounded-tr-none rounded-tl-none mb-5">
+                        <div
+                            id={sectionName}
+                            className="flex flex-col p-4 md:pl-6 md:pr-6 border rounded-lg border-t-0 border-solid border-black rounded-tr-none rounded-tl-none mb-5"
+                        >
                             <h1 className="font-fira text-dark-green font-bold text-lg md:text-xl pt-6 md:pt-10">
                                 Submit video recording of a documented Brain
                                 Integration session.
@@ -1227,8 +1270,12 @@ const AccordionCard = ({ certStatus }) => {
                         title="Insurance"
                         sectionName="insurance"
                         insuranceMetaData={insuranceMetaData}
+                        id={sectionName}
                     >
-                        <div className="flex flex-col p-4 md:pl-6 md:pr-6 border rounded-lg border-t-0 border-solid border-black rounded-tr-none rounded-tl-none mb-5">
+                        <div
+                            id={sectionName}
+                            className="flex flex-col p-4 md:pl-6 md:pr-6 border rounded-lg border-t-0 border-solid border-black rounded-tr-none rounded-tl-none mb-5"
+                        >
                             <h1 className="font-fira text-dark-green font-bold text-lg md:text-xl pt-6 md:pt-10">
                                 Show proof of professional and liability
                                 insurance

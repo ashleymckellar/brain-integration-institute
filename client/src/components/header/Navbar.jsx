@@ -85,7 +85,7 @@ export const Navbar = () => {
         if (user?.email) {
             getUserMetaData(user.email);
         }
-    }, [user]);
+    }, []);
 
     useEffect(() => {
         checkForAdmin();

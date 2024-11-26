@@ -4,6 +4,7 @@ import { AdminContext } from '../contexts';
 import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useState } from 'react';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 
 export const AdminProvider = ({ children }) => {
     const {
@@ -27,6 +28,8 @@ export const AdminProvider = ({ children }) => {
     const [unreadNotifications, setUnreadNotifications] = useState([]);
     const [isNotificationDrawerOpen, setisNotificationDrawerOpen] =
         useState(false);
+   
+
 
     //create put request function to mark notification as read
     //will need notification uniqueid as param
@@ -75,7 +78,6 @@ export const AdminProvider = ({ children }) => {
                 },
             });
             setIndividualUser(response.data);
-           
         } catch (error) {
             console.error('Error fetching user:', error);
         }
@@ -106,7 +108,6 @@ export const AdminProvider = ({ children }) => {
             }
 
             const updatedUser = await response.json();
-           
         } catch (error) {
             console.error('Error updating user to admin:', error);
         }
@@ -162,15 +163,11 @@ export const AdminProvider = ({ children }) => {
                 },
             );
 
-         
-
             await axios.delete(`http://${baseUrl}/api/user/${userEmail}`, {
                 headers: {
                     Authorization: `Bearer ${accessTokenforBackend}`,
                 },
             });
-
-           
         } catch (error) {
             console.error('Error deleting user:', error);
         }
@@ -271,7 +268,6 @@ export const AdminProvider = ({ children }) => {
             );
 
             const data = response.data;
-          
 
             const activeNotifications = Object.values(data)
                 .flat()
@@ -354,12 +350,28 @@ export const AdminProvider = ({ children }) => {
             );
 
             // Update state with filtered notifications
-         
 
             console.log('User is now certified!');
         } catch (error) {
             console.error('Error issuing certification', error);
         }
+    };
+
+    const scrollToSection = (id) => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
+
+    const handleReviewClick = (navigate, userEmail, id) => {
+        navigate(`/admin/practitioner-management/${userEmail}#${id}`);
+        setisNotificationDrawerOpen(false);
+    };
+
+    const handleUpdateClick = (navigate, sectionName) => {
+        navigate(`/certification#${sectionName}`);
+        setisNotificationDrawerOpen(false);
     };
 
     return (
@@ -391,6 +403,9 @@ export const AdminProvider = ({ children }) => {
                 setisNotificationDrawerOpen,
                 sendAdminNotification,
                 issueCertification,
+                scrollToSection,
+                handleReviewClick,
+                handleUpdateClick
             }}
         >
             {children}

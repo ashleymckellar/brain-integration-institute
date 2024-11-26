@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/no-unescaped-entities */
 import { useContext, useEffect } from 'react';
@@ -8,8 +9,9 @@ import banner from '../assets/icons/PractitionerBackground.png';
 import { Footer } from '../components/Footer.jsx';
 import { slide as Menu } from 'react-burger-menu';
 import { format } from 'date-fns';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import redNotificationIcon from '../assets/icons/red-notification-icon.svg';
+import ReviewButton from '../components/ReviewButton.jsx';
 
 export const Admin = () => {
     const {
@@ -18,11 +20,9 @@ export const Admin = () => {
         setisNotificationDrawerOpen,
         fetchAdminNotifications,
         markNotificationAsRead,
-        users
+        users,
+        handleReviewClick,
     } = useContext(AdminContext);
-
-  
-    const navigate = useNavigate();
 
     const groupedNotifications = unreadNotifications.reduce(
         (acc, notification) => {
@@ -31,8 +31,6 @@ export const Admin = () => {
         },
         {},
     );
-
-  
 
     const formatDate = (timestamp) => {
         return format(new Date(timestamp), 'MM/dd/yy');
@@ -102,10 +100,7 @@ export const Admin = () => {
         setisNotificationDrawerOpen((prev) => !prev);
     };
 
-    const handleReviewClick = (userEmail) => {
-        navigate(`/admin/practitioner-management/${userEmail}`);
-        setisNotificationDrawerOpen(false);
-    };
+
 
     return (
         <div>
@@ -280,16 +275,15 @@ export const Admin = () => {
                                             <div className="flex flex-col mt-4">
                                                 <p>{notification.message}</p>
                                                 <div className="flex justify-between items-center mt-4">
-                                                    <button
-                                                        className="border border-black rounded-lg px-4 py-2"
-                                                        onClick={() =>
-                                                            handleReviewClick(
-                                                                notification.userEmail,
-                                                            )
+                                                    <ReviewButton
+                                                        userEmail={
+                                                            notification.userEmail
                                                         }
-                                                    >
-                                                        Review Now
-                                                    </button>
+                                                        sectionId={
+                                                            notification.category
+                                                        }
+                                                    />
+
                                                     <p className="text-sm text-gray-500 mt-2">
                                                         {formatDate(
                                                             notification.timestamp,

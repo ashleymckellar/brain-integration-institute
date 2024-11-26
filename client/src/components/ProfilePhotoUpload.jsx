@@ -39,7 +39,7 @@ export const ProfilePhotoUpload = () => {
         };
 
         fetchData();
-    }, [user, getUserMetaData, setUserMetaData]);
+    }, []);
 
     const handleProfilePictureUpload = async () => {
         try {

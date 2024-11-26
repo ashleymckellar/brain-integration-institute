@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import { useEffect, useContext, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import { AdminContext } from '../contexts';
 import ViewFileModal from './ViewFileModal';
@@ -41,6 +41,7 @@ const UserSpecificAdminView = () => {
         updateUserToAdmin,
         getAllUsers,
         issueCertification,
+        scrollToSection
     } = useContext(AdminContext);
 
     const { userEmail } = useParams();
@@ -95,6 +96,19 @@ const UserSpecificAdminView = () => {
     useEffect(() => {
         console.log('Updated imagesByDocType:', imagesByDocType);
     }, [imagesByDocType]);
+
+    useEffect(() => {
+        // Extract the hash from the URL (if available)
+        const hash = location.hash;
+
+        // Scroll to the element with the corresponding id (if the hash exists)
+        if (hash) {
+            const element = document.getElementById(hash.replace('#', '')); // Remove the '#' symbol
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+    }, [location]);
 
     const fetchSignedUrl = async (publicId, fileType) => {
         try {
@@ -347,39 +361,46 @@ const UserSpecificAdminView = () => {
                             status: individualUser.certListUploadStatus
                                 .videoPresentation,
                             icon: video,
+                            id: 'videoPresentation'
                         },
                         {
                             name: 'Brain Integration Training',
                             status: individualUser.certListUploadStatus
                                 .brainIntegrationTraining,
                             icon: presentation,
+                            id: 'brainIntegrationTraining'
                         },
                         {
                             name: 'CPR Certification',
                             status: individualUser.certListUploadStatus.cprCert,
                             icon: heartPulse,
+                            id: 'cprCert'
                         },
                         {
                             name: 'Clinical Hours',
                             status: individualUser.certListUploadStatus
                                 .clinicalHours,
                             icon: clipboard,
+                            id: 'clinicalHours'
                         },
                         {
                             name: 'First Aid Training',
                             status: individualUser.certListUploadStatus
                                 .firstAidTraining,
                             icon: briefcase,
+                            id: 'firstAidTraining'
                         },
                         {
                             name: 'Insurance',
                             status: individualUser.certListUploadStatus
                                 .insurance,
                             icon: shield,
+                            id: 'insurance'
                         },
-                    ].map((doc, index) => (
+                    ].map((doc, idx) => (
                         <div
-                            key={index}
+                            key={idx}
+                            id={doc.id}
                             className="flex flex-col sm:flex-row border border-charcoal rounded-xl p-6 sm:p-10 m-4 sm:m-6 items-start justify-start w-full gap-4 sm:gap-6"
                         >
                             <input
