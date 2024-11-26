@@ -1,20 +1,22 @@
-
-
 import { useContext, useState, useEffect } from 'react';
 import { PractitionerCard } from '../components/PractitionerCard';
-import { PractitionerContext } from '../contexts';
+import { UserContext } from '../contexts';
+import { AdminContext } from '../contexts'
 import banner from '../assets/icons/PractitionerBackground.png';
 import paleBanner from '../assets/icons/PaleGreenPractitionerBackground.png';
 
 export const Practitioner = () => {
-    const { practitioners } = useContext(PractitionerContext);
+    const { allProfiles, fetchAllProfiles } = useContext(UserContext);
+    const {
+        getAllUsers,
+        users,
+      
+    } = useContext(AdminContext);
 
     const [searchQuery, setSearchQuery] = useState({
         name: '',
-        title: '',
         location: '',
     });
-
     const [renderedPractitioners, setRenderedPractitioners] = useState([]);
 
     const searchHandler = (event) => {
@@ -26,43 +28,67 @@ export const Practitioner = () => {
     };
 
     useEffect(() => {
-        const { name, title, location } = searchQuery;
+        fetchAllProfiles()
+    }, [])
 
-        const displayedPractitioners = practitioners.filter((practitioner) => {
-            const firstName = practitioner.name.firstName.toLowerCase();
-            const lastName = practitioner.name.lastName.toLowerCase();
-            const practitionerTitle = practitioner.title.toLowerCase();
-            const practitionerLocation = practitioner.location.toLowerCase();
+    useEffect(() => {
+        getAllUsers();
+        console.log(users)
+      }, [])
 
-            return (
-                (name === '' ||
-                    firstName.includes(name) ||
-                    lastName.includes(name)) &&
-                (title === '' || practitionerTitle.includes(title)) &&
-                (location === '' || practitionerLocation.includes(location))
-            );
-        });
+      useEffect(() => {
+        console.log('Updated users:', users);
+    }, [users]);
+  
 
-        setRenderedPractitioners(displayedPractitioners);
-    }, [practitioners, searchQuery]);
+    useEffect(() => {
+        const mergeProfilesWithUsers = () => {
+            // Map profiles and merge user data
+            const mergedProfiles = allProfiles.map((profile) => {
+                const associatedUser = users.find((user) => user._id === profile.userId);
+                return {
+                    ...profile,
+                    practitionerImage: associatedUser?.userProfilePicture || '', // Merge userProfilePicture
+                };
+            });
+    
+            const { name, location } = searchQuery;
+    
+            const displayedPractitioners = mergedProfiles.filter((profile) => {
+                const firstName = profile.firstName.toLowerCase();
+                const lastName = profile.lastName.toLowerCase();
+                const practitionerLocation = profile.city?.toLowerCase() || '';
+    
+                return (
+                    (name === '' ||
+                        firstName.includes(name) ||
+                        lastName.includes(name)) &&
+                    (location === '' || practitionerLocation.includes(location))
+                );
+            });
+    
+            setRenderedPractitioners(displayedPractitioners);
+        };
+    
+        mergeProfilesWithUsers();
+    }, [allProfiles, users, searchQuery]);
+    
+    
 
     const practitionerList = renderedPractitioners.map((person) => (
         <PractitionerCard
-            key={`${person.name.firstName}-${person.name.lastName}`} // Add a unique key
-            firstName={person.name.firstName}
-            lastName={person.name.lastName}
-            title={person.title}
-            location={person.location}
-            imgURL={person.imgURL}
-            phone={person.phone}
+            key={person.id || `${person.firstName}-${person.lastName}`}
+            firstName={person.firstName}
+            lastName={person.lastName}
+            location={person.city}
+            phone={person.phoneNumber}
             email={person.email}
-            website={person.website}
+            image={person.practitionerImage} 
         />
     ));
 
     return (
         <>
-      
             <div
                 className="w-full h-48 sm:h-64 md:h-80 lg:h-96 relative bg-white"
                 style={{
@@ -82,25 +108,19 @@ export const Practitioner = () => {
                 <h2 className="text-2xl text-gray-800 font-semibold mb-4 text-center">Refine Results</h2>
                 <div className="flex flex-col sm:flex-row sm:justify-between gap-4 mb-4">
                     <input
-                        className="w-full sm:w-1/3 px-4 py-2 rounded-full border border-gray-400 text-gray-600 text-lg placeholder-gray-500"
-                        name="title"
-                        onChange={searchHandler}
-                        placeholder="Specialty..."
-                    />
-                    <input
-                        className="w-full sm:w-1/3 px-4 py-2 rounded-full border border-gray-400 text-gray-600 text-lg placeholder-gray-500"
+                        className="w-full sm:w-1/2 px-4 py-2 rounded-full border border-gray-400 text-gray-600 text-lg placeholder-gray-500"
                         name="name"
                         onChange={searchHandler}
                         placeholder="Name..."
                     />
                     <input
-                        className="w-full sm:w-1/3 px-4 py-2 rounded-full border border-gray-400 text-gray-600 text-lg placeholder-gray-500"
+                        className="w-full sm:w-1/2 px-4 py-2 rounded-full border border-gray-400 text-gray-600 text-lg placeholder-gray-500"
                         name="location"
                         onChange={searchHandler}
                         placeholder="Zip Code, City or State..."
                     />
                 </div>
-                {(searchQuery.name || searchQuery.title || searchQuery.location) && (
+                {(searchQuery.name || searchQuery.location) && (
                     <div className="text-center text-lg font-medium text-gray-700">
                         Results: {renderedPractitioners.length}
                     </div>
@@ -108,9 +128,14 @@ export const Practitioner = () => {
             </div>
 
             <div className="flex flex-wrap gap-4 justify-center w-11/12 sm:w-10/12 md:w-3/4 lg:w-2/3 xl:w-1/2 mx-auto my-8">
-                {practitionerList}
+                {practitionerList.length > 0 ? (
+                    practitionerList
+                ) : (
+                    <div className="text-center text-lg font-medium text-gray-700">
+                        No practitioners match your search criteria.
+                    </div>
+                )}
             </div>
         </>
     );
 };
-

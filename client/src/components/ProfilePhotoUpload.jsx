@@ -3,6 +3,7 @@ import ProfileEditIcon from '../assets/icons/profileEditIcon.png';
 import { CloudinaryContext } from '../contexts';
 import { UserContext } from '../contexts';
 import { useAuth0 } from '@auth0/auth0-react';
+import Skeleton from 'react-loading-skeleton';
 
 export const ProfilePhotoUpload = () => {
     const {
@@ -19,7 +20,6 @@ export const ProfilePhotoUpload = () => {
     useEffect(() => {
         const fetchData = async () => {
             if (user) {
-               
                 const token = localStorage.getItem('token');
                 try {
                     const fetchedUserMetaData = await getUserMetaData(token);
@@ -27,9 +27,7 @@ export const ProfilePhotoUpload = () => {
 
                     // Update profile picture URL if it exists in user metadata
                     if (fetchedUserMetaData?.userProfilePicture) {
-                        setProfilePictureUrl(
-                            fetchedUserMetaData.userProfilePicture,
-                        );
+                        setProfilePictureUrl(fetchedUserMetaData.userProfilePicture);
                     }
                 } catch (error) {
                     console.error(
@@ -41,7 +39,7 @@ export const ProfilePhotoUpload = () => {
         };
 
         fetchData();
-    }, []);
+    }, [user, getUserMetaData, setUserMetaData]);
 
     const handleProfilePictureUpload = async () => {
         try {
@@ -63,11 +61,15 @@ export const ProfilePhotoUpload = () => {
         <div className="flex flex-col items-start">
             {isAuthenticated ? (
                 <div className="relative">
-                    <img
-                        className="h-[200px] w-[200px] rounded-full"
-                        src={profilePictureUrl}
-                        alt="avatar"
-                    />
+                    {profilePictureUrl ? (
+                        <img
+                            className="h-[200px] w-[200px] rounded-full"
+                            src={profilePictureUrl}
+                            alt="avatar"
+                        />
+                    ) : (
+                        <Skeleton circle={true} height={200} width={200} /> 
+                    )}
                     <button onClick={handleProfilePictureUpload}>
                         <img
                             className="h-[32px] w-[32px] absolute bottom-2 right-2 bg-white p-1 rounded-full shadow-md"

@@ -4,9 +4,9 @@ export const PractitionerCard = (props) => {
     const {
         firstName,
         lastName,
-        title,
+       
         location,
-        imgURL,
+        image,
         phone,
         email,
         website,
@@ -18,15 +18,13 @@ export const PractitionerCard = (props) => {
                 <img
                     className="w-[150px] h-[150px] sm:w-[200px] sm:h-[200px] rounded-full object-cover"
                     alt={`${firstName} ${lastName}`}
-                    src={imgURL}
+                    src={image}
                 />
                 <div className="flex flex-col w-full sm:w-auto gap-2">
                     <div className="text-black text-2xl font-bold tracking-[-0.48px] leading-normal">
                         {firstName} {lastName}
                     </div>
-                    <div className="text-black text-base font-normal tracking-[-0.32px] leading-normal">
-                        {title}
-                    </div>
+                    
                     <div className="text-black text-base font-normal tracking-[-0.32px] leading-normal">
                         {location}
                     </div>
