@@ -41,7 +41,7 @@ const UserSpecificAdminView = () => {
         updateUserToAdmin,
         getAllUsers,
         issueCertification,
-        scrollToSection
+        scrollToSection,
     } = useContext(AdminContext);
 
     const { userEmail } = useParams();
@@ -275,17 +275,25 @@ const UserSpecificAdminView = () => {
                                 <p className="font-bold text-xl sm:text-2xl">
                                     {profileData.firstName || <Skeleton />}{' '}
                                     {profileData.lastName || <Skeleton />}
+                                    {/* {profileData.suffix || <Skeleton />}
+                                    {profileData.title || <Skeleton />} */}
                                 </p>
                                 <p className="text-sm sm:text-lg">
                                     {profileData.city} {profileData.state}{' '}
-                                    {profileData.zip}
+                                    {profileData.country} {profileData.zip}
                                 </p>
                                 <p className="text-sm sm:text-lg font-bold text-blue">
                                     {profileData.phoneNumber}
                                 </p>
-                                <p className="text-sm sm:text-lg font-bold text-blue">
-                                    {profileData.email}
-                                </p>
+                                <a
+                                    href={profileData.website}
+                                    className="text-sm sm:text-lg font-bold text-blue"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    {profileData.website}
+                                </a>
+
                                 {individualUser.isCertified && (
                                     <div className="flex justify-left w-[150px] items-left border border-white rounded-xl bg-white pt-1 shadow-md gap-4">
                                         <img
@@ -361,41 +369,41 @@ const UserSpecificAdminView = () => {
                             status: individualUser.certListUploadStatus
                                 .videoPresentation,
                             icon: video,
-                            id: 'videoPresentation'
+                            id: 'videoPresentation',
                         },
                         {
                             name: 'Brain Integration Training',
                             status: individualUser.certListUploadStatus
                                 .brainIntegrationTraining,
                             icon: presentation,
-                            id: 'brainIntegrationTraining'
+                            id: 'brainIntegrationTraining',
                         },
                         {
                             name: 'CPR Certification',
                             status: individualUser.certListUploadStatus.cprCert,
                             icon: heartPulse,
-                            id: 'cprCert'
+                            id: 'cprCert',
                         },
                         {
                             name: 'Clinical Hours',
                             status: individualUser.certListUploadStatus
                                 .clinicalHours,
                             icon: clipboard,
-                            id: 'clinicalHours'
+                            id: 'clinicalHours',
                         },
                         {
                             name: 'First Aid Training',
                             status: individualUser.certListUploadStatus
                                 .firstAidTraining,
                             icon: briefcase,
-                            id: 'firstAidTraining'
+                            id: 'firstAidTraining',
                         },
                         {
                             name: 'Insurance',
                             status: individualUser.certListUploadStatus
                                 .insurance,
                             icon: shield,
-                            id: 'insurance'
+                            id: 'insurance',
                         },
                     ].map((doc, idx) => (
                         <div

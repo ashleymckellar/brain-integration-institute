@@ -11,8 +11,9 @@ export const UserProvider = ({ children }) => {
         firstName: '',
         lastName: '',
         suffix: '',
+        title: '',
         phoneNumber: '',
-        email: '',
+        website: '',
         addressLine1: '',
         addressLine2: '',
         city: '',
@@ -48,18 +49,27 @@ export const UserProvider = ({ children }) => {
     };
 
     const createProfileData = async () => {
-        
+        console.log('making post req to /api/profile/create-profile')
 
         try {
+            const accessToken = await getAccessTokenSilently();
+            console.log(accessToken)
+
+            const updatedInputs = {
+                ...inputs,
+                email: user.email, 
+            };
+    
             const response = await fetch(
+              
                 `http://${baseUrl}/api/profile/create-profile`,
                 {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        Authorization: `Bearer ${await getAccessTokenSilently()}`,
+                        Authorization: `Bearer ${accessToken}`,
                     },
-                    body: JSON.stringify(inputs),
+                    body: JSON.stringify(updatedInputs),
                 },
             );
 
@@ -82,6 +92,8 @@ export const UserProvider = ({ children }) => {
         }
     };
 
+
+    console.log(inputs)
     //
     const editProfileData = async (updatedData) => {
         console.log('Updated data being sent:', updatedData);

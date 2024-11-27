@@ -17,10 +17,17 @@ const ProfileSchema = new Schema({
     suffix: {
         type: String,
     },
+    title: {
+        type: String,
+    },
     phoneNumber: {
         type: String,
     },
-    email: {
+    userEmail: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+    },
+    website: {
         type: String,
     },
     addressLine1: {

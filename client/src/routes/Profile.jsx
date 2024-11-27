@@ -95,7 +95,7 @@ export const Profile = withAuthenticationRequired(() => {
                                         Phone: {profileData.phoneNumber}
                                     </p>
                                     <p className="font-medium">
-                                        Email: {profileData.email}
+                                        Website: {profileData.website}
                                     </p>
                                 </div>
 

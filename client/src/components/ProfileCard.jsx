@@ -16,10 +16,10 @@ export const ProfileCard = () => {
                 />
                 <div className="flex flex-col w-full text-left">
                     <div className="text-2xl font-semibold text-gray-800">
-                        {profileData.firstName} {profileData.lastName}
+                        {profileData.firstName} {profileData.lastName} {profileData.suffix} {profileData.title}
                     </div>
                     <div className="text-base text-gray-600 mt-1">
-                        {profileData.city}, {profileData.state}
+                        {profileData.city}, {profileData.state} {profileData.country}
                     </div>
                     <div className="flex flex-col gap-2 mt-4 text-gray-600">
                         <div className="flex items-center">
@@ -28,8 +28,17 @@ export const ProfileCard = () => {
                             </span>
                             <span>{profileData.phoneNumber}</span>
                         </div>
-                        <div className="font-medium text-gray-800">
-                            {profileData.email}
+                        <div className="flex items-center">
+                            <span className="font-medium text-gray-800 mr-2">
+                                Website:
+                            </span>
+                            <span>{profileData.website}</span>
+                        </div>
+                        <div className="flex items-center">
+                            <span className="font-medium text-gray-800 mr-2">
+                                Bio:
+                            </span>
+                            <span>{profileData.bio}</span>
                         </div>
                     </div>
                 </div>
