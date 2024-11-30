@@ -4,6 +4,7 @@ import { UserContext } from '../contexts';
 import { AdminContext } from '../contexts'
 import banner from '../assets/icons/PractitionerBackground.png';
 import paleBanner from '../assets/icons/PaleGreenPractitionerBackground.png';
+import { Navbar } from '../components/header/Navbar';
 
 export const Practitioner = () => {
     const { allProfiles, fetchAllProfiles } = useContext(UserContext);
@@ -92,6 +93,7 @@ export const Practitioner = () => {
 
     return (
         <>
+        <Navbar />
             <div
                 className="w-full h-48 sm:h-64 md:h-80 lg:h-96 relative bg-white"
                 style={{

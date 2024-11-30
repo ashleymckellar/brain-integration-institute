@@ -15,12 +15,12 @@ import { Admin } from '../routes/Admin';
 import { ContactUs } from '../routes/ContactUs';
 import { RonBio } from '../routes/RonBio';
 import { TerriBio } from '../routes/TerriBio';
-import { JulissaBio } from '../routes/JulissaBio'
+import { JulissaBio } from '../routes/JulissaBio';
 import { SteveBio } from '../routes/SteveBio';
-import { TamiBio } from '../routes/TamiBio'
-import { Terms } from '../routes/Terms'
+import { TamiBio } from '../routes/TamiBio';
+import { Terms } from '../routes/Terms';
 import AddAdmins from '../routes/AddAdmins';
-import { Notifications } from '../routes/Notifications'
+import { Notifications } from '../routes/Notifications';
 import PractitionerManagement from '../routes/PractitionerManagement';
 import AdminUploadManagement from '../routes/AdminUploadManagement';
 // import MessagingHub from '../routes/MessagingHub';
@@ -45,10 +45,7 @@ const router = createBrowserRouter([
                 path: '/certification',
                 element: <Certification />,
             },
-            {
-                path: '/practitioner',
-                element: <Practitioner />,
-            },
+
             {
                 path: '/success',
                 element: <PaymentSuccessPage />,
@@ -81,7 +78,6 @@ const router = createBrowserRouter([
                         path: 'admin-uploads',
                         element: <AdminUploadManagement />,
                     },
-                
                 ],
             },
         ],
@@ -118,8 +114,12 @@ const router = createBrowserRouter([
     },
     {
         path: '/terms',
-        element: <Terms />
-    }
+        element: <Terms />,
+    },
+    {
+        path: '/practitioner',
+        element: <Practitioner />,
+    },
 ]);
 
 //changed back to Home component.  Auth0 should handle authentication, but we can add secondary way to authenticate/register using this Auth route.

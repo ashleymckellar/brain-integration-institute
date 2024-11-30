@@ -33,6 +33,8 @@ export default {
                 'green-is-good': "#38761d",
                 'background-tan': "#F5F5F0",
                 'gradient-start': '#1DFF8E',
+                'background-peach': '#e6d5c5',
+                'footer-peach': '#f6e6d6',
                 'gradient-end': 'rgba(29, 255, 210, 0.11)',
             },
             backgroundImage: {

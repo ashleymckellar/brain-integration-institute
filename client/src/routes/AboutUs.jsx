@@ -18,7 +18,7 @@ export const AboutUs = () => {
     return (
         <>
             <Navbar />
-            <div className="relative w-full mt-10 mb-10">
+            <div className="relative w-full">
                 <img
                     src={wheat}
                     className="w-[2500px] h-[700px]"
@@ -28,7 +28,7 @@ export const AboutUs = () => {
                     className="absolute inset-0 flex flex-col justify-center items-center text-center gap-4 p-4 sm:p-6 md:p-8 lg:p-10 
         bg-white bg-opacity-10 backdrop-blur-lg rounded-2xl 
         max-w-[90%] sm:max-w-[70%] md:max-w-[60%] lg:max-w-[35%] 
-        h-auto lg:h-[600px] md:h-[300px] sm:h-[200px] mt-10 sm:mt-20 md:mt-28 lg:mt-10 mx-auto"
+        h-auto lg:h-[600px] md:h-[300px] sm:h-[200px]   mx-auto"
                 >
                     <h2 className="font-fira text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-white leading-tight sm:leading-snug">
                         We are the Brain Integration Institute

@@ -128,6 +128,7 @@ export const Navbar = () => {
             >
                 Find Practitioner
             </Link>
+            {isAuthenticated && (
             <Link
                 to="/certification"
                 onClick={handleLinkClick}
@@ -135,6 +136,7 @@ export const Navbar = () => {
             >
                 Certification
             </Link>
+            )}
             {isAdmin && (
                 <div className="dropdown-container">
                     <button
@@ -225,12 +227,12 @@ export const Navbar = () => {
                 </button>
             )}
         </div>
-    );
+    )
 
     return (
-        <header className="bg-white flex flex-col w-full">
-            <div className="flex items-center justify-between px-4 py-2">
-                <img src={BrainIntegrationSeal} alt="Logo" className="h-25" />
+        <header className=" flex flex-col w-full bg-white">
+            <div className="flex items-center justify-between px-4 ">
+                <img src={BrainIntegrationSeal} alt="Logo" className="h-25 px-20 py-10" />
                 {isLargeScreen ? (
                     <nav className="flex items-center space-x-6">
                         {renderLinks()}
@@ -275,5 +277,5 @@ export const Navbar = () => {
                 />
             </BurgerMenu>)}
         </header>
-    );
-};
+    )
+}
