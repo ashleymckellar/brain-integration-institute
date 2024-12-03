@@ -5,6 +5,7 @@ import paleBanner from '../assets/icons/PaleGreenPractitionerBackground.png';
 import emailjs from '@emailjs/browser';
 import ContactFormModal from '../components/ContactFormModal';
 import { Navbar } from '../components/header/Navbar'
+import { Footer } from '../components/Footer'
 
 export const ContactUs = () => {
     const [formData, setFormData] = useState({
@@ -228,6 +229,7 @@ export const ContactUs = () => {
                     )}
                 </div>
             </div>
+            <Footer />
         </>
     );
 };

@@ -46,6 +46,8 @@ function UserList() {
         ProgressBar8,
     ];
 
+  
+
     useEffect(() => {
         const fetchUsers = async () => {
             getAllUsers();
@@ -57,6 +59,7 @@ function UserList() {
         fetchProfileData(individualUser);
     }, [individualUser]);
 
+ 
     const handleChange = (e) => {
        
         const { name, value } = e.target;
@@ -102,8 +105,8 @@ function UserList() {
     };
 
     return (
-        <div>
-            <div className="flex items-center border border-none rounded-xl w-[660px] bg-gray mb-10">
+        <div className="px-4 sm:px-6 lg:px-10">
+            <div className="flex items-center border border-none rounded-xl bg-gray mb-6 w-full sm:w-3/4 lg:w-[660px]">
                 <input
                     type="text"
                     id="search"
@@ -115,18 +118,29 @@ function UserList() {
                 />
                 <img src={Pracsearch} alt={'magnifying glass'} />
             </div>
-            <div className="flex items-center w-full">
-                <button onClick={handleDeleteUserClick} className="mr-auto">
-                    <img
-                        src={Trashcan}
-                        alt="Trash can"
-                        className="pb-10 pl-10"
-                    />
-                </button>
+            <div className="flex items-center justify-between mb-6">
+            <button 
+        onClick={handleDeleteUserClick} 
+        disabled={usersToDelete.length === 0} 
+        className={`flex items-center px-4 py-2 rounded-md ${
+            usersToDelete.length === 0 
+                ? 'bg-gray-400 cursor-not-allowed' 
+                : 'bg-red-500 hover:bg-red-600 text-white' 
+        }`}
+    >
+        <img
+            src={Trashcan}
+            alt="Trash can"
+            className="w-5 h-5 mr-2" 
+        />
+        
+    </button>
                 {confirmationText && (
-                    <h3 className="font-bold text-xl text-red mx-auto ml-4 pb-10">
+                    <div className='text-center'>
+                    <h3 className="font-bold text-sm sm:text-base text-red-500">
                         {confirmationText}
                     </h3>
+                    </div>
                 )}
             </div>
             {deleteUserModalOpen && (
@@ -136,7 +150,7 @@ function UserList() {
                     handleDeleteProfileClick={handleDeleteProfileClick}
                 ></DeleteUserModal>
             )}
-            <ul>
+              <ul className="space-y-4">
                 {users.map((user) => (
                     <div
                         className="flex border border-black rounded p-10 mb-10 items-center"

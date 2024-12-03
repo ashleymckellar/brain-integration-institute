@@ -299,7 +299,9 @@ const UserSpecificAdminView = () => {
                                     rel="noopener noreferrer"
                                 >
                                     {profileData.website}
+
                                 </a>
+                                {/* <p>{profileData.bio}</p> */}
 
                                 {individualUser.isCertified && (
                                     <div className="flex justify-left w-[150px] items-left border border-white rounded-xl bg-white pt-1 shadow-md gap-4">

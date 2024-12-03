@@ -100,7 +100,7 @@ export const Profile = withAuthenticationRequired(() => {
                                 </div>
 
                                 {profileData.bio && (
-                                    <p className="mt-4 px-4 text-sm text-gray-600 italic text-center">
+                                    <p className="mt-4 px-4 text-sm text-gray-600 text-center">
                                         {profileData.bio}
                                     </p>
                                 )}
@@ -126,13 +126,13 @@ export const Profile = withAuthenticationRequired(() => {
                                         My Profile
                                     </h2>
                                     <h3 className="font-fira text-black text-xl text-opacity-60">
-                                        Set your account settings below.
+                                        Set your account settings
                                         <br></br>
                                         <br></br>This information will be shown
                                         on your public practitioner page.
                                     </h3>
                                 </div>
-                                <div className="flex justify-end pb-20 gap-10">
+                                <div className="flex justify-center pb-20 gap-10">
                                     <img src={unlock} />
                                     <button
                                         onClick={handleEditClick}

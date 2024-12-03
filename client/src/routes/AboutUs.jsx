@@ -18,18 +18,13 @@ export const AboutUs = () => {
     return (
         <>
             <Navbar />
-            <div className="relative w-full">
-                <img
-                    src={wheat}
-                    className="w-[2500px] h-[700px]"
-                    alt="Nature Background"
-                />
-                <div
-                    className="absolute inset-0 flex flex-col justify-center items-center text-center gap-4 p-4 sm:p-6 md:p-8 lg:p-10 
-        bg-white bg-opacity-10 backdrop-blur-lg rounded-2xl 
-        max-w-[90%] sm:max-w-[70%] md:max-w-[60%] lg:max-w-[35%] 
-        h-auto lg:h-[600px] md:h-[300px] sm:h-[200px]   mx-auto"
+            <div
+                    className="h-[70vh] bg-cover bg-center bg-fixed flex flex-col"
+                    style={{
+                        backgroundImage: `url(${wheat})`,
+                    }}
                 >
+                 <div className="  flex flex-col justify-center items-center text-center gap-4 p-30 pt-10 ml-30 bg-white bg-opacity-10 backdrop-blur-lg rounded-2xl max-w-[35%] mx-auto h-[400px] mt-40">
                     <h2 className="font-fira text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-white leading-tight sm:leading-snug">
                         We are the Brain Integration Institute
                     </h2>
@@ -41,6 +36,8 @@ export const AboutUs = () => {
                     </p>
                 </div>
             </div>
+           
+         
 
             <div className="flex flex-col gap-10 text-center justify-center  bg-background-tan pt-10">
                 <div className="flex justify-center px-4 sm:px-0 lg:px-10">

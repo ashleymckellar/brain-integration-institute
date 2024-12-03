@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/no-unescaped-entities */
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Link, Outlet } from 'react-router-dom';
 import { AdminContext } from '../contexts.js';
 import paleBanner from '../assets/icons/PaleGreenPractitionerBackground.png';
@@ -47,8 +47,20 @@ export const Admin = () => {
 
     const getDisplayName = (key) => docTypeMapping[key] || key;
 
+    const [isLargeScreen, setIsLargeScreen] = useState(
+        window.innerWidth >= 768,
+    );
+
     useEffect(() => {
         fetchAdminNotifications();
+    }, []);
+
+    useEffect(() => {
+        const handleResize = () => setIsLargeScreen(window.innerWidth >= 768);
+        window.addEventListener('resize', handleResize);
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
     }, []);
     const dashboardItems = [
         {
@@ -377,6 +389,7 @@ export const Admin = () => {
 
                 {/* Main Content Area */}
                 <div className="flex flex-col flex-1 pl-10">
+                    {isLargeScreen && (
                     <div className="flex gap-6 flex-wrap justify-start">
                         {/* Main dashboard items with badges */}
                         {dashboardItems.map((item) => (
@@ -392,7 +405,7 @@ export const Admin = () => {
                                 )}
                             </div>
                         ))}
-                    </div>
+                    </div>)}
 
                     <div className="flex flex-col justify-center items-center w-full pt-10 ">
                         <Outlet />

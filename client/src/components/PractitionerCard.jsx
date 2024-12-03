@@ -42,7 +42,7 @@ export const PractitionerCard = (props) => {
                                     target="_blank"
                                     rel="noopener noreferrer"
                                 >
-                                    Website
+                                    {website}
                                 </a>
                             </div>
                         )}

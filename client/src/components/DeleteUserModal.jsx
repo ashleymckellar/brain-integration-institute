@@ -41,12 +41,14 @@ export default function DeleteUserModal({
                 >
                     X
                 </button>
-                <div className="flex flex-col justify-center items-center gap-10 p-10">
+                <div className="flex flex-col justify-center items-center gap-10 p-10 text-center">
                     <h3
                         id="delete-modal-title"
                         className="text-xl font-semibold"
                     >
-                        Are you sure you want to delete the selected user(s)?  This will delete their public profile, any uploaded files, and disable their log in to the site.  
+                        Are you sure you want to delete the selected user(s)?  
+                        <br></br>
+                        <br></br>This will delete their public profile, any uploaded files, and disable their log in to the site.  
                     </h3>
                     <h2 className="text-lg font-semibold">
                         This action cannot be undone.

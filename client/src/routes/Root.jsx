@@ -14,7 +14,7 @@ export const Root = () => {
             <div>
                 <Navbar />
                 <Home />
-                <Footer />
+                {/* <Footer /> */}
             </div>
         );
     }

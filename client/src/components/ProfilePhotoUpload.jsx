@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useState, useContext, useEffect } from 'react';
 import ProfileEditIcon from '../assets/icons/profileEditIcon.png';
 import { CloudinaryContext } from '../contexts';
@@ -5,7 +6,7 @@ import { UserContext } from '../contexts';
 import { useAuth0 } from '@auth0/auth0-react';
 import Skeleton from 'react-loading-skeleton';
 
-export const ProfilePhotoUpload = () => {
+export const ProfilePhotoUpload = ({ size = 400 }) => {
     const {
         uploadProfilePicture,
         getUserMetaData,
@@ -58,17 +59,22 @@ export const ProfilePhotoUpload = () => {
     };
 
     return (
-        <div className="flex flex-col items-start">
+        <div className="flex flex-col items-center">
             {isAuthenticated ? (
                 <div className="relative">
                     {profilePictureUrl ? (
                         <img
-                            className="h-[200px] w-[200px] rounded-full"
+                            className="rounded-full"
                             src={profilePictureUrl}
                             alt="avatar"
+                            style={{  width: size }}
                         />
                     ) : (
-                        <Skeleton circle={true} height={200} width={200} /> 
+                        <Skeleton
+                            circle={true}
+                            height={size}
+                            width={size}
+                        />
                     )}
                     <button onClick={handleProfilePictureUpload}>
                         <img

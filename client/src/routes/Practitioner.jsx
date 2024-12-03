@@ -1,24 +1,21 @@
-import { useContext, useState, useEffect } from 'react';
+
+
+import { useState, useEffect } from 'react';
 import { PractitionerCard } from '../components/PractitionerCard';
-import { UserContext } from '../contexts';
-import { AdminContext } from '../contexts'
 import banner from '../assets/icons/PractitionerBackground.png';
 import paleBanner from '../assets/icons/PaleGreenPractitionerBackground.png';
 import { Navbar } from '../components/header/Navbar';
+import { Footer } from '../components/Footer';
 
 export const Practitioner = () => {
-    const { allProfiles, fetchAllProfiles } = useContext(UserContext);
-    const {
-        getAllUsers,
-        users,
-      
-    } = useContext(AdminContext);
-
     const [searchQuery, setSearchQuery] = useState({
         name: '',
         location: '',
     });
+    const [allPractitioners, setAllPractitioners] = useState([]);
     const [renderedPractitioners, setRenderedPractitioners] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
 
     const searchHandler = (event) => {
         const { name, value } = event.target;
@@ -28,72 +25,67 @@ export const Practitioner = () => {
         }));
     };
 
-    useEffect(() => {
-        fetchAllProfiles()
-    }, [])
-
-    useEffect(() => {
-        getAllUsers();
-        console.log(users)
-      }, [])
-
-      useEffect(() => {
-        console.log('Updated users:', users);
-    }, [users]);
-  
-
-    useEffect(() => {
-        const mergeProfilesWithUsers = () => {
-            // Map profiles and merge user data
-            const mergedProfiles = allProfiles.map((profile) => {
-                const associatedUser = users.find((user) => user._id === profile.userId);
-                return {
-                    ...profile,
-                    practitionerImage: associatedUser?.userProfilePicture || '', 
-                    isCertified: associatedUser?.isCertified || false, 
-                };
+    const fetchPublicProfiles = async ()=> {
+ 
+        try {
+            setLoading(true);
+            const response = await fetch('/public-profiles', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
             });
-    
-            const { name, location } = searchQuery;
-    
-            const displayedPractitioners = mergedProfiles.filter((profile) => {
-                const firstName = profile.firstName.toLowerCase();
-                const lastName = profile.lastName.toLowerCase();
-                const practitionerLocation = profile.city?.toLowerCase() || '';
-    
-                return (
-                    (name === '' ||
-                        firstName.includes(name) ||
-                        lastName.includes(name)) &&
-                    (location === '' || practitionerLocation.includes(location)) &&
-                    profile.isCertified
-                    
-                );
-            });
-    
-            setRenderedPractitioners(displayedPractitioners);
-        };
-    
-        mergeProfilesWithUsers();
-    }, [allProfiles, users, searchQuery]);
-    
-    
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch public profiles');
+            }
+
+            const data = await response.json();
+            setAllPractitioners(data);
+        } catch (error) {
+            console.error('Error fetching public profiles:', error);
+            setError('Failed to fetch practitioners. Please try again later.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchPublicProfiles();
+    }, []);
+
+    useEffect(() => {
+        // Filter profiles based on the search query
+        const { name, location } = searchQuery;
+        const filtered = allPractitioners.filter((profile) => {
+            const firstName = profile.firstName.toLowerCase();
+            const lastName = profile.lastName.toLowerCase();
+            const practitionerLocation = profile.city?.toLowerCase() || '';
+            return (
+                (name === '' || firstName.includes(name) || lastName.includes(name)) &&
+                (location === '' || practitionerLocation.includes(location))
+            );
+        });
+
+        setRenderedPractitioners(filtered);
+    }, [searchQuery, allPractitioners]);
 
     const practitionerList = renderedPractitioners.map((person) => (
         <PractitionerCard
             key={person.id || `${person.firstName}-${person.lastName}`}
             firstName={person.firstName}
             lastName={person.lastName}
-            location={person.city}
+            location={`${person.city} ${person.state}`}
             phone={person.phoneNumber}
             email={person.email}
-            image={person.practitionerImage} 
+            image={person.practitionerImage}
+            website={person.website}
         />
     ));
 
     return (
         <>
-        <Navbar />
+            <Navbar />
             <div
                 className="w-full h-48 sm:h-64 md:h-80 lg:h-96 relative bg-white"
                 style={{
@@ -133,7 +125,15 @@ export const Practitioner = () => {
             </div>
 
             <div className="flex flex-wrap gap-4 justify-center w-11/12 sm:w-10/12 md:w-3/4 lg:w-2/3 xl:w-1/2 mx-auto my-8">
-                {practitionerList.length > 0 ? (
+                {loading ? (
+                    <div className="text-center text-lg font-medium text-gray-700">
+                        Loading...
+                    </div>
+                ) : error ? (
+                    <div className="text-center text-lg font-medium text-red-500">
+                        {error}
+                    </div>
+                ) : practitionerList.length > 0 ? (
                     practitionerList
                 ) : (
                     <div className="text-center text-lg font-medium text-gray-700">
@@ -141,6 +141,8 @@ export const Practitioner = () => {
                     </div>
                 )}
             </div>
+            <Footer />
         </>
     );
 };
+
