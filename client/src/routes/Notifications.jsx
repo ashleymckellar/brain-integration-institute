@@ -8,12 +8,14 @@ import successfile from '../assets/icons/successfile.png';
 import { UserContext } from '../contexts';
 import { useAuth0 } from '@auth0/auth0-react';
 import UpdateNowButton from '../components/UpdateNowButton';
+import DownloadCertButton from '../components/DownloadCertButton'
 
 export const Notifications = ({ isNotificationDrawerOpen }) => {
     const {
         markNotificationAsRead,
         fetchNotifications,
         filteredNotifications,
+        handleCertificateDownloadClick
     } = useContext(UserContext);
     const { user } = useAuth0();
 
@@ -213,6 +215,31 @@ export const Notifications = ({ isNotificationDrawerOpen }) => {
                                                             />
                                                         </div>
                                                     )}
+                                                </div>
+                                            );
+                                        case 'certificationComplete':
+                                            return (
+                                                <div
+                                                    key={index}
+                                                    className="border border-black rounded-xl p-6 bg-white flex flex-col relative"
+                                                >
+                                                    <p
+                                                        className="absolute top-2 right-6 cursor-pointer"
+                                                        onClick={() =>
+                                                            onXClick(
+                                                                notification.uniqueid,
+                                                            )
+                                                        }
+                                                    >
+                                                        X
+                                                    </p>
+                                                    <p>
+                                                        Congratulations, you are
+                                                        officially Brain
+                                                        Integration certified!
+                                                    
+                                                    </p>
+                                                    <DownloadCertButton />
                                                 </div>
                                             );
                                         default:

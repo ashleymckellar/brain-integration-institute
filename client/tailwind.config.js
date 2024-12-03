@@ -39,7 +39,10 @@ export default {
             },
             backgroundImage: {
                 'gradient-custom-green': 'linear-gradient(90deg, #1DFF8E 0%, rgba(29, 255, 210, 0.11) 100%)',
-                'gradient-custom-orange': 'linear-gradient(90deg, hsla(51, 89%, 61%, 1) 0%, hsla(25, 83%, 57%, 1) 100%);'
+                'gradient-custom-orange': 'linear-gradient(90deg, hsla(51, 89%, 61%, 1) 0%, hsla(25, 83%, 57%, 1) 100%);',
+                'gradient-custom-blue': 'radial-gradient(86.92% 93.8% at 84.04% 58.33%, #FFF 2.64%, #BEC4E0 100%)'
+
+
               },
             dropShadow: {
                 md: '0 4px 4px rgba(0, 0, 0, 0.25)',

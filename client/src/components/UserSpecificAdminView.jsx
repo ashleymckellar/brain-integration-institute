@@ -42,6 +42,7 @@ const UserSpecificAdminView = () => {
         getAllUsers,
         issueCertification,
         scrollToSection,
+        sendAdminNotification 
     } = useContext(AdminContext);
 
     const { userEmail } = useParams();
@@ -161,6 +162,12 @@ const UserSpecificAdminView = () => {
     //     await updateUserToAdmin(email);
     //
     // };
+
+    const certifyUser = async (email)  => {
+        await issueCertification(email)
+        //if successful - sendAdminNotification(userEmail, notificationType, message)
+
+    }
 
     useEffect(() => {
         fetchProfileData(individualUser);

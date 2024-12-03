@@ -7,7 +7,8 @@ const {
     getImagesFromCloudinary,
     getCertificateFromCloudinary,
     createCertificate,
-    getThumbnailImages
+    getThumbnailImages,
+    getCompletionCertificate
 } = require('../services/document.js');
 const Certificate = require('../models/certificate.js');
 const documentRouter = ex.Router();
@@ -31,6 +32,20 @@ documentRouter.get('/certificate', validateAuthToken, async (req, res) => {
         console.error(error);
         res.status(500).json({
             error: 'Failed to fetch certificates from Cloudinary',
+        });
+    }
+});
+
+documentRouter.get('/completion-certificate', validateAuthToken, async (req, res) => {
+    const userName = 'Jane Doe';
+    try { //getCertificateFromCloudinary
+        const certificateURL = await getCompletionCertificate(userName);
+        console.log('Generated Certificate URL:', certificateURL);
+        return certificateURL;
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+             error: 'Error generating certificate'
         });
     }
 });

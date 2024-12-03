@@ -4,7 +4,8 @@
 import { UserContext } from '../contexts';
 import { useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
-import axios from 'axios'
+import axios from 'axios';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 
 export const UserProvider = ({ children }) => {
     const initialValues = {
@@ -29,13 +30,12 @@ export const UserProvider = ({ children }) => {
     const [allProfiles, setAllProfiles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [activeNotifications, setActiveNotifications] = useState([])
+    const [activeNotifications, setActiveNotifications] = useState([]);
     const [isNotificationDrawerOpen, setisNotificationDrawerOpen] =
-    useState(false);
-    const baseUrl = import.meta.env.VITE_API_BASE_URL
+        useState(false);
+    const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
     const handleInputChange = (e) => {
-       
         const { name, value } = e.target;
         setInputs((prevInputs) => ({
             ...prevInputs,
@@ -44,24 +44,22 @@ export const UserProvider = ({ children }) => {
     };
 
     const resetInputs = () => {
-        
         setInputs(initialValues);
     };
 
     const createProfileData = async () => {
-        console.log('making post req to /api/profile/create-profile')
+        console.log('making post req to /api/profile/create-profile');
 
         try {
             const accessToken = await getAccessTokenSilently();
-            console.log(accessToken)
+            console.log(accessToken);
 
             const updatedInputs = {
                 ...inputs,
-                email: user.email, 
+                email: user.email,
             };
-    
+
             const response = await fetch(
-              
                 `http://${baseUrl}/api/profile/create-profile`,
                 {
                     method: 'POST',
@@ -80,7 +78,6 @@ export const UserProvider = ({ children }) => {
             }
             const data = await response.json();
 
-          
             if (!data.success) throw new Error(data.error);
 
             // Reset inputs after successful submission
@@ -92,8 +89,7 @@ export const UserProvider = ({ children }) => {
         }
     };
 
-
-    console.log(inputs)
+    console.log(inputs);
     //
     const editProfileData = async (updatedData) => {
         console.log('Updated data being sent:', updatedData);
@@ -122,7 +118,7 @@ export const UserProvider = ({ children }) => {
                 );
             }
             const result = await response.json();
-            
+
             if (result.success) {
                 console.log('Profile updated successfully');
             } else {
@@ -153,40 +149,38 @@ export const UserProvider = ({ children }) => {
 
                 const data = await response.json();
                 setProfileData(data);
-             
             } catch (error) {
                 console.error('Error fetching profile data:', error);
                 setError(error.message);
             }
         }
-    }
+    };
 
     const fetchNotifications = async () => {
         if (user?.email) {
             try {
                 setLoading(true);
-                const response = await fetch(`/api/notifications/${user.email}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${await getAccessTokenSilently()}`,
+                const response = await fetch(
+                    `/api/notifications/${user.email}`,
+                    {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${await getAccessTokenSilently()}`,
+                        },
                     },
-                });
-    
+                );
+
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
-    
+
                 const data = await response.json();
-               
-    
-             
+
                 const unreadNotifications = Object.values(data)
-                    .flat() 
+                    .flat()
                     .filter((notification) => !notification.hasBeenRead);
-    
-               
-    
+
                 setActiveNotifications(unreadNotifications);
             } catch (error) {
                 console.error('Error fetching notifications:', error);
@@ -200,28 +194,39 @@ export const UserProvider = ({ children }) => {
     const markNotificationAsRead = async (id) => {
         try {
             const accessToken = await getAccessTokenSilently();
-          
-    
+
             const response = await axios.put(
                 `/api/notifications/${id}/has-been-read`,
-                {hasBeenRead: true},
+                { hasBeenRead: true },
                 {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
                     },
                 },
             );
-    
+
             // Update state with filtered notifications
             setActiveNotifications((prev) =>
-                prev.filter((notification) => notification.uniqueid !== id)
+                prev.filter((notification) => notification.uniqueid !== id),
             );
-    
+
             console.log('Notification marked as read:', id);
         } catch (error) {
             console.error('Error marking notification as read:', error);
         }
     };
+
+    // const handleReviewClick = (navigate, userEmail, id) => {
+    //     navigate(`/admin/practitioner-management/${userEmail}#${id}`);
+    //     setisNotificationDrawerOpen(false);
+    // };
+
+    const handleCertificateDownloadClick = (navigate) =>{
+    navigate('/profile')
+    setisNotificationDrawerOpen(false)  
+}
+
+    // }  will nav user to profile to download certification once certification is approved and they get the notification.
 
     const filteredNotifications = activeNotifications.reduce(
         (acc, notification) => {
@@ -243,33 +248,29 @@ export const UserProvider = ({ children }) => {
         },
         [],
     );
-    
 
-        const fetchAllProfiles = async () => {
-            try {
-                setLoading(true);
-                const response = await fetch(`/api/profile`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${await getAccessTokenSilently()}`,
-                    },
-                });
+    const fetchAllProfiles = async () => {
+        try {
+            setLoading(true);
+            const response = await fetch(`/api/profile`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${await getAccessTokenSilently()}`,
+                },
+            });
 
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-
-                const data = await response.json();
-                setAllProfiles(data)
-               
-            } catch (error) {
-                console.error('Error fetching profile data:', error);
-                setError(error.message);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
             }
-        };
-        
-    
+
+            const data = await response.json();
+            setAllProfiles(data);
+        } catch (error) {
+            console.error('Error fetching profile data:', error);
+            setError(error.message);
+        }
+    };
 
     // Pass the values from the custom hook to the context provider
     return (
@@ -298,14 +299,11 @@ export const UserProvider = ({ children }) => {
                 markNotificationAsRead,
                 isNotificationDrawerOpen,
                 setisNotificationDrawerOpen,
-                filteredNotifications
+                filteredNotifications,
+                handleCertificateDownloadClick
             }}
         >
             {children}
         </UserContext.Provider>
     );
 };
-
-
-
-

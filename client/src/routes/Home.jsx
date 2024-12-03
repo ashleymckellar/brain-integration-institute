@@ -206,6 +206,18 @@ import { useAuth0 } from '@auth0/auth0-react';
 import wheat from '../assets/images/wheat-fields-4439896_1920.jpg';
 import { Footer } from '../components/Footer.jsx';
 import transparentBrain from '../assets/images/transparent-brain.png';
+import smilingWoman from '../assets/images/smilingwoman.png';
+import happyBoy from '../assets/images/happyboy.png';
+import graduateBoy from '../assets/images/graduateboy.png';
+import quotationMarks from '../assets/icons/quotationMarks.png';
+import readingWoman from '../assets/images/readingwoman.png';
+import curlsGirl from '../assets/images/curlsgirl.png';
+import polskaMan from '../assets/images/polskaman.png';
+import bowtieBoy from '../assets/images/bowtieboy.png';
+import motorcycleMan from '../assets/images/motorcycleman.png';
+import beachMan from '../assets/images/beachman.png';
+import glassesGirl from '../assets/images/glassesgirl.png';
+import blondeBoy from '../assets/images/blondeboy.png';
 
 export const Home = () => {
     const { loginWithRedirect } = useAuth0();
@@ -261,6 +273,8 @@ export const Home = () => {
                             memory, unable to stay on task, etc. Brain
                             integration can also serve as a doorway to reducing
                             the symptoms of various mental health challenges.
+                            <br></br>
+                            <br></br>
                             Brain integration uses light touch, reflexes,
                             movements, affirmations, and acupressure points to
                             help the brain and the body work together to
@@ -269,14 +283,89 @@ export const Home = () => {
                             in their lives.
                         </p>
                     </div>
-                    <div className="lg:w-1/3 flex justify-center lg:justify-end">
+                    <div className="flex justify-center lg:justify-end">
                         <img
                             src={transparentBrain}
                             alt="brain image"
-                            className="w-[637px] h-[469px]"
+                            className="w-[800px] h-[469px]"
                         />
                     </div>
                 </section>
+                <section>
+                    <div className="flex gap-10 mt-10 px-20">
+                        <div className="flex flex-col justify-center items-start border border-white rounded-md w-[423px] h-[644px] bg-gradient-custom-blue gap-10">
+                            <img
+                                src={quotationMarks}
+                                alt="quotation marks"
+                                className="pt-[50px] flex justify-center]"
+                            />
+                            <p className="px-[60px] text-xl">
+                                I went from reading on a first grade level to on
+                                grade level after one session.
+                            </p>
+                            <img src={quotationMarks} />
+                            <div className="flex justify-center">
+                                <img
+                                    src={happyBoy}
+                                    alt="Happy Boy"
+                                    className="w-[200px] h-[300px] border-black rounded-full"
+                                />
+                            </div>
+                            {/* <button className="border border-black rounded-xl m-10 p-2 bg-white">
+                                Read More
+                            </button> */}
+                        </div>
+                        <div className="flex flex-col justify-center items-center border border-white rounded-md bg-gradient-custom-blue w-[423px] h-[644px] gap-10">
+                            <img src={quotationMarks} />
+                            <p className="px-[30px] text-xl">
+                                My parents don’t worry about me getting left
+                                behind anymore.
+                            </p>
+                            <img src={quotationMarks} />
+                            <div className="flex justify-center">
+                                <img
+                                    src={graduateBoy}
+                                    alt="Graduate Boy"
+                                    className="w-[200px] h-[300px] border-black rounded-full"
+                                />
+                            </div>
+                            {/* <button className="border border-black rounded-xl m-10 p-2 bg-white">
+                                Read More
+                            </button> */}
+                        </div>
+                        <div className="flex flex-col justify-center items-center border border-white rounded-md bg-gradient-custom-blue w-[423px] h-[644px]">
+                            <img src={quotationMarks} />
+                            <p className="px-[30px] text-xl font-fira font-italic">
+                                My anxiety doesn’t control me anymore.
+                            </p>
+                            <img src={quotationMarks} />
+                            <div className="flex justify-center">
+                                <img
+                                    src={smilingWoman}
+                                    alt="Smiling Woman"
+                                    className="w-[250px] h-[400px] border-black rounded-full"
+                                />
+                            </div>
+                            {/* <button className="border border-black rounded-xl m-10 p-2 bg-white">
+                                Read More
+                            </button> */}
+                        </div>
+                    </div>
+                </section>
+                {/* <section>
+                    <div className="flex">
+                        <img src={blondeBoy} alt="blonde boy" />
+                        <img src={beachMan} alt="beach man" />
+                        <img src={motorcycleMan} alt="motorcycle man" />
+                        <img src={glassesGirl} alt="glasses girl" />
+                    </div>
+                    <div className="flex justify-center pt-[200px]">
+                        <h1 className="text-5xl px-[500px] text-center">
+                            Real Stories, Real Success - Click to Explore Their
+                            Journeys!
+                        </h1>
+                    </div>
+                </section> */}
 
                 <section className="flex flex-col gap-6 pt-10">
                     <h1 className="font-fira text-2xl sm:text-3xl lg:text-4xl text-center">
@@ -324,7 +413,7 @@ export const Home = () => {
                     </button>
                 </div>
             </div>
-        <Footer />
+            <Footer />
         </div>
     );
 };

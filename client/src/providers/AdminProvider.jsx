@@ -28,8 +28,6 @@ export const AdminProvider = ({ children }) => {
     const [unreadNotifications, setUnreadNotifications] = useState([]);
     const [isNotificationDrawerOpen, setisNotificationDrawerOpen] =
         useState(false);
-   
-
 
     //create put request function to mark notification as read
     //will need notification uniqueid as param
@@ -311,11 +309,10 @@ export const AdminProvider = ({ children }) => {
 
     const sendAdminNotification = async ({
         userEmail,
-        category,
+
         message,
-        admin,
+
         notificationType,
-        notificationStatus,
     }) => {
         const accessToken = await getAccessTokenSilently();
         await fetch('/api/notifications', {
@@ -326,16 +323,16 @@ export const AdminProvider = ({ children }) => {
             },
             body: JSON.stringify({
                 userEmail,
-                category,
+
                 message,
-                admin,
+
                 notificationType,
-                notificationStatus,
             }),
         });
     };
 
     const issueCertification = async (email) => {
+        //add notification sent to user here
         try {
             const accessToken = await getAccessTokenSilently();
 
@@ -352,6 +349,12 @@ export const AdminProvider = ({ children }) => {
             // Update state with filtered notifications
 
             console.log('User is now certified!');
+            await sendAdminNotification({
+                userEmail: individualUser.userEmail,
+                notificationType: 'certificationComplete',
+                message:
+                    'Congratulations! You are officially certified. Click here to download your certificate.',
+            });
         } catch (error) {
             console.error('Error issuing certification', error);
         }
@@ -405,7 +408,7 @@ export const AdminProvider = ({ children }) => {
                 issueCertification,
                 scrollToSection,
                 handleReviewClick,
-                handleUpdateClick
+                handleUpdateClick,
             }}
         >
             {children}

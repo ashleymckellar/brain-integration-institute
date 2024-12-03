@@ -74,7 +74,7 @@ export const Navbar = () => {
     const handleNotificationsClick = async () => {
         try {
             setIsNotificationDrawerOpen((prev) => !prev);
-            setBurgerMenuOpen(false); // Close burger menu if open
+            setBurgerMenuOpen(false);
             await fetchNotifications();
         } catch (error) {
             console.error('Error fetching notifications:', error);

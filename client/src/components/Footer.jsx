@@ -9,9 +9,9 @@ import mail from '../assets/icons/mail.png';
 export const Footer = () => {
     return (
         <>
-            <div className="flex flex-col lg:flex-row justify-between p-5 lg:p-20 bg-white">
+            <div className="flex flex-col lg:flex-row justify-around p-5 lg:py-20 bg-white">
                 {/* Logo Section */}
-                <div className="flex justify-center lg:justify-start mb-10 lg:mb-0 py-10 px-10">
+                <div className="flex justify-center lg:justify-start mb-10 lg:mb-0 px-10">
                     <img
                         src={brainSeal}
                         alt="Brain Integration Institute"
@@ -22,7 +22,7 @@ export const Footer = () => {
                 </div>
 
                 {/* Links Section - Center justify on small screens */}
-                <div className="flex flex-col lg:flex-row gap-5 lg:gap-10 mb-10 lg:mb-0 justify-center lg:justify-start w-full">
+                <div className="flex flex-col lg:flex-row gap-5 lg:gap-10 mb-10 lg:mb-0 justify-center lg:justify-center gap-10 w-full">
                     <div className="links flex flex-col gap-5 text-center lg:text-left">
                         <Link className="link font-fira font-bold" to="/">
                             Home
@@ -58,7 +58,7 @@ export const Footer = () => {
                 </div>
 
                 {/* Contact Info Section */}
-                <div className="contact-info flex flex-col text-center gap-5 mb-10 pt-10 lg:mb-0">
+                <div className="contact-info flex flex-col text-center gap-5 mb-10 items-start lg:mb-0">
                     <h3 className="font-fira text-xl font-bold">Contact Us</h3>
                     <div className="flex gap-5 text-center justify-center">
                         <img src={map} alt="map pin" />
