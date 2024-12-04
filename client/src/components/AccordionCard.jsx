@@ -62,6 +62,7 @@ const AccordionCard = ({ certStatus }) => {
         setCertListUploadStatus,
         updateUserDocumentStatus,
         onUploadSuccess,
+    
     } = useContext(CloudinaryContext);
 
     const { isAuthenticated, user, getAccessTokenSilently } = useAuth0();

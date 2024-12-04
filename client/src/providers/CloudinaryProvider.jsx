@@ -50,6 +50,8 @@ export const CloudinaryProvider = ({ children }) => {
     const apiSecret = import.meta.env.VITE_CLOUDINARY_API_SECRET;
     const apiKey = import.meta.VITE_CLOUDINARY_API_KEY;
 
+    
+
     //gets file metadata
     const getFiles = async () => {
         try {
@@ -355,7 +357,11 @@ export const CloudinaryProvider = ({ children }) => {
                         onUploadSuccess(section);
                         // const newProgress = progress + 1;
 
-                        if (!uploadedSections.includes(section)&& progress < 8) {
+
+                        //if section is not included in uploaded sections array, ie, it doesn't have any files uploaded in that section yet
+                        //then update progress +1
+                        //if it already does have files uploaded, don't increase progress
+                        if (!uploadedSections.includes(section) && progress < 8) {
                             const newProgress = progress + 1;
                           
                                 setProgress(newProgress);
@@ -530,22 +536,38 @@ export const CloudinaryProvider = ({ children }) => {
                     },
                 },
             );
-
+    
             if (response.ok) {
                 const newStatus = 'waiting for upload';
                 const updatedStatus = {
                     ...certListUploadStatus,
                     [sectionName]: newStatus,
                 };
-
-                await updateUserDocumentStatus(sectionName, newStatus);
-                setFileMetaData((prevMetaData) =>
-                    prevMetaData.filter((file) => file.publicId !== publicId),
-                );
+    
+                // Remove file from metadata and files state
+                const updatedFileMetaData = fileMetaData.filter((file) => file.publicId !== publicId);
+                setFileMetaData(updatedFileMetaData); // update state with the new metadata
                 setFiles((prevFiles) =>
                     prevFiles.filter((file) => file.publicId !== publicId),
                 );
                 setCertListUploadStatus(updatedStatus);
+    
+                // Check if there are still any files in the section
+                const remainingFilesInSection = updatedFileMetaData.filter(
+                    (metadata) =>  metadata.sectionName === sectionName && metadata.filename !== undefined
+                );
+                
+                console.log(remainingFilesInSection, 'remaining files in section')
+                if (remainingFilesInSection.length === 0 && progress > 0) {
+                    // No files left, decrement progress and unmark section as uploaded
+                    const newProgress = progress - 1; // Prevent progress from going below 0
+                    setProgress(newProgress);
+                    setUploadedSections((prevSections) =>
+                        prevSections.filter((uploadedSection) => uploadedSection !== sectionName)
+                    );
+                    await updateUserProgress(newProgress);
+                }
+    
                 setDeleteModalOpen(false);
             } else {
                 console.error('Failed to delete file.');
@@ -554,6 +576,7 @@ export const CloudinaryProvider = ({ children }) => {
             console.error('Error deleting file:', error);
         }
     };
+    
 
     const uploadCompletionCertificate = (file) => {
         if (user) {
