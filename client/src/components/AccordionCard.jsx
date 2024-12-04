@@ -134,13 +134,11 @@ const AccordionCard = ({ certStatus }) => {
                 setShowPayment(true);
 
                 try {
-                    await updateUserProgress(progress + 1);
+                    if (progress < 8) {
+                        const newProgress = progress + 1;
 
-                    setProgress((prevProgress) => {
-                        const newProgress = Math.min(prevProgress + 1, 8);
-
-                        return newProgress;
-                    });
+                        setProgress(newProgress);
+                    }
                 } catch (error) {
                     console.error('Error updating progress:', error);
                 }
@@ -321,6 +319,10 @@ const AccordionCard = ({ certStatus }) => {
         fileMetaData.filter((metadata) => {
             return metadata.sectionName === 'clinicalHours';
         });
+
+    // useEffect(() => {
+    //     console.log(clinicalMetaData);
+    // }, [clinicalMetaData]);
 
     const firstAidMetaData =
         fileMetaData &&
@@ -760,7 +762,7 @@ const AccordionCard = ({ certStatus }) => {
                                                 </DeleteModal>
                                             )}
                                         </div>
-                                        <div className="flex flex-col items-center w-1/3 pt-20">
+                                        {/* <div className="flex flex-col items-center w-1/3 pt-20">
                                             <DeleteTooltip
                                                 text="Maximum number of uploads.  Please delete files to upload new ones"
                                                 disabled={
@@ -793,6 +795,19 @@ const AccordionCard = ({ certStatus }) => {
                                                     />
                                                 </button>
                                             </DeleteTooltip>
+                                        </div> */}
+                                        <div className="flex justify-center items-center">
+                                            <button>
+                                                <img
+                                                    src={UploadBtn}
+                                                    onClick={() =>
+                                                        handleUploadClick(
+                                                            'clinicalHours',
+                                                        )
+                                                    }
+                                                    alt="Upload Clinical Hours"
+                                                />
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -918,25 +933,8 @@ const AccordionCard = ({ certStatus }) => {
                                         )}
                                     </div>
                                     <div className="flex flex-col items-center w-1/3 pt-20">
-                                        <DeleteTooltip
-                                            text="Delete current files to upload new ones"
-                                            disabled={
-                                                firstAidMetaData &&
-                                                firstAidMetaData.length > 1
-                                            }
-                                        >
-                                            <button
-                                                disabled={
-                                                    firstAidMetaData &&
-                                                    firstAidMetaData.length > 1
-                                                }
-                                                className={`${
-                                                    firstAidMetaData &&
-                                                    firstAidMetaData.length > 1
-                                                        ? 'opacity-50 cursor-not-allowed'
-                                                        : ''
-                                                }`}
-                                            >
+                                        <div className="flex justify-center items-center">
+                                            <button>
                                                 <img
                                                     src={UploadBtn}
                                                     onClick={() =>
@@ -944,10 +942,10 @@ const AccordionCard = ({ certStatus }) => {
                                                             'firstAidTraining',
                                                         )
                                                     }
-                                                    alt="Upload FirstAid"
+                                                    alt="Upload First Aid Training"
                                                 />
                                             </button>
-                                        </DeleteTooltip>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -1083,25 +1081,8 @@ const AccordionCard = ({ certStatus }) => {
                                         )}
                                     </div>
                                     <div className="flex flex-col items-center w-1/3 pt-20">
-                                        <DeleteTooltip
-                                            text="Delete current files to upload new ones"
-                                            disabled={
-                                                cPRMetaData &&
-                                                cPRMetaData.length > 1
-                                            }
-                                        >
-                                            <button
-                                                disabled={
-                                                    cPRMetaData &&
-                                                    cPRMetaData.length > 1
-                                                }
-                                                className={`${
-                                                    cPRMetaData &&
-                                                    cPRMetaData.length > 1
-                                                        ? 'opacity-50 cursor-not-allowed'
-                                                        : ''
-                                                }`}
-                                            >
+                                        <div className="flex justify-center items-center">
+                                            <button>
                                                 <img
                                                     src={UploadBtn}
                                                     onClick={() =>
@@ -1109,10 +1090,10 @@ const AccordionCard = ({ certStatus }) => {
                                                             'cprCert',
                                                         )
                                                     }
-                                                    alt="Upload CPR"
+                                                    alt="Upload CPR Certification"
                                                 />
                                             </button>
-                                        </DeleteTooltip>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -1263,25 +1244,8 @@ const AccordionCard = ({ certStatus }) => {
                                         )}
                                     </div>
                                     <div className="flex flex-col items-center w-1/3 pt-20">
-                                        <DeleteTooltip
-                                            text="Delete current file to upload new one"
-                                            disabled={
-                                                videoMetaData &&
-                                                videoMetaData.length > 0
-                                            }
-                                        >
-                                            <button
-                                                disabled={
-                                                    videoMetaData &&
-                                                    videoMetaData.length > 0
-                                                }
-                                                className={`${
-                                                    videoMetaData &&
-                                                    videoMetaData.length > 0
-                                                        ? 'opacity-50 cursor-not-allowed'
-                                                        : ''
-                                                }`}
-                                            >
+                                    <div className="flex justify-center items-center">
+                                            <button>
                                                 <img
                                                     src={UploadBtn}
                                                     onClick={() =>
@@ -1289,10 +1253,10 @@ const AccordionCard = ({ certStatus }) => {
                                                             'videoPresentation',
                                                         )
                                                     }
-                                                    alt="Upload Video"
+                                                    alt="Upload Video Presentation"
                                                 />
                                             </button>
-                                        </DeleteTooltip>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -1623,7 +1587,9 @@ const AccordionCard = ({ certStatus }) => {
                             </div>
                         </StudyGuide>
                         <Assessment title={'Assessment'} id="assessment">
-                            <div className="flex flex-col p-4 md:pl-6 md:pr-6 border rounded-lg border-t-0 border-solid border-black rounded-tr-none rounded-tl-none mb-5 text-xl">  Coming soon.  Please check back.
+                            <div className="flex flex-col p-4 md:pl-6 md:pr-6 border rounded-lg border-t-0 border-solid border-black rounded-tr-none rounded-tl-none mb-5 text-xl">
+                                {' '}
+                                Coming soon. Please check back.
                                 {/* <h1 className="font-fira text-dark-green font-bold text-lg md:text-xl pt-6 md:pt-10">
                                     Complete 500 hours of relevant brain
                                     integration training.

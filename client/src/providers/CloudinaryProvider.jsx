@@ -35,6 +35,7 @@ export const CloudinaryProvider = ({ children }) => {
     const [certificates, setCertificates] = useState([]);
     const [imagesByDocType, setImagesByDocType] = useState([]);
     const [expandedSection, setExpandedSection] = useState(null);
+    const [uploadedSections, setUploadedSections] = useState([]); 
     // const [sectionFiles, setSectionFiles] = useState({});
     const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -195,7 +196,6 @@ export const CloudinaryProvider = ({ children }) => {
                 console.log('Updating user progress:', {
                     userUploadProgress: newProgress,
                 });
-              
 
                 const response = await fetch(
                     `http://${baseUrl}/api/user/${user.email}/progress`,
@@ -228,7 +228,6 @@ export const CloudinaryProvider = ({ children }) => {
     };
 
     const updateUserStudyGuide = async (email) => {
-       
         if (!email) {
             console.error('Email is required to update the study guide.');
             return;
@@ -325,7 +324,7 @@ export const CloudinaryProvider = ({ children }) => {
 
     const sendAdminNotification = async (user, selectedDocumentType) => {
         const accessToken = await getAccessTokenSilently();
-        
+
         // const stripe = await stripePromise();
         const response = await fetch('/api/admin-notifications', {
             method: 'POST',
@@ -334,9 +333,9 @@ export const CloudinaryProvider = ({ children }) => {
                 Authorization: `Bearer ${accessToken}`,
             },
             body: JSON.stringify({
-                notificationType: "docStatusUpdate",
+                notificationType: 'docStatusUpdate',
                 userEmail: user,
-                category: selectedDocumentType
+                category: selectedDocumentType,
             }),
         });
     };
@@ -350,17 +349,22 @@ export const CloudinaryProvider = ({ children }) => {
                     asset_folder: `users/${user.nickname}/${section}`,
                 },
                 async (error, result) => {
-                    if (error) {
-                        console.error('Upload error:', error);
-                        return;
-                    }
+                  
                     if (!error && result && result.event === 'success') {
                         console.log('Upload successful:', result.info);
                         onUploadSuccess(section);
-                        const newProgress = Math.max(progress + 1, 8);
+                        // const newProgress = progress + 1;
 
-                        setProgress(newProgress);
-                        await updateUserProgress(newProgress);
+                        if (!uploadedSections.includes(section)&& progress < 8) {
+                            const newProgress = progress + 1;
+                          
+                                setProgress(newProgress);
+                                setUploadedSections((prevSections) => [...prevSections, section]);
+                                await updateUserProgress(newProgress);
+                    }
+                            
+                        }
+                     
 
                         const fileMetadata = {
                             publicId: result.info.public_id,
@@ -413,7 +417,7 @@ export const CloudinaryProvider = ({ children }) => {
                             );
                         }
                     }
-                },
+                
             );
 
             myWidget.open();
@@ -436,11 +440,15 @@ export const CloudinaryProvider = ({ children }) => {
         setCertListUploadStatus(updatedStatus);
         try {
             // Update the user's document status
-            await updateUserDocumentStatus(documentType, newStatus, 'docStatusUpdate');
-    
+            await updateUserDocumentStatus(
+                documentType,
+                newStatus,
+                'docStatusUpdate',
+            );
+
             // Send admin notification
             await sendAdminNotification(user.email, documentType);
-    
+
             console.log('Updated certListUploadStatus:', updatedStatus);
             console.log('Calling updateUserProgress with value:', 1);
         } catch (error) {
@@ -524,13 +532,12 @@ export const CloudinaryProvider = ({ children }) => {
             );
 
             if (response.ok) {
-               
                 const newStatus = 'waiting for upload';
                 const updatedStatus = {
                     ...certListUploadStatus,
                     [sectionName]: newStatus,
                 };
-              
+
                 await updateUserDocumentStatus(sectionName, newStatus);
                 setFileMetaData((prevMetaData) =>
                     prevMetaData.filter((file) => file.publicId !== publicId),
@@ -618,11 +625,9 @@ export const CloudinaryProvider = ({ children }) => {
     //get certificate file from cloudinary
 
     const getCertificate = async () => {
-      
         try {
-          
             const accessToken = await getAccessTokenSilently();
-         
+
             console.log(
                 'Sending GET request to:',
                 `http://${baseUrl}/api/images/certificate`,
