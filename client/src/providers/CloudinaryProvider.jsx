@@ -536,6 +536,21 @@ export const CloudinaryProvider = ({ children }) => {
                     },
                 },
             );
+
+            // const newStatus = 'pending approval';
+            // const updatedStatus = {
+            //     ...certListUploadStatus,
+            //     [documentType]: newStatus,
+            // };
+    
+            // setCertListUploadStatus(updatedStatus);
+            // try {
+            //     // Update the user's document status
+            //     await updateUserDocumentStatus(
+            //         documentType,
+            //         newStatus,
+            //         'docStatusUpdate',
+            //     );
     
             if (response.ok) {
                 const newStatus = 'waiting for upload';
@@ -543,6 +558,13 @@ export const CloudinaryProvider = ({ children }) => {
                     ...certListUploadStatus,
                     [sectionName]: newStatus,
                 };
+
+                await updateUserDocumentStatus(
+                    sectionName,
+                    newStatus,
+                    'docStatusUpdate',
+                );
+    
     
                 // Remove file from metadata and files state
                 const updatedFileMetaData = fileMetaData.filter((file) => file.publicId !== publicId);
@@ -551,7 +573,9 @@ export const CloudinaryProvider = ({ children }) => {
                     prevFiles.filter((file) => file.publicId !== publicId),
                 );
                 setCertListUploadStatus(updatedStatus);
-    
+                
+                // Update the user's document status
+               
                 // Check if there are still any files in the section
                 const remainingFilesInSection = updatedFileMetaData.filter(
                     (metadata) =>  metadata.sectionName === sectionName && metadata.filename !== undefined

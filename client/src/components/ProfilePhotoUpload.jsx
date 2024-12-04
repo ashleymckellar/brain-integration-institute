@@ -6,7 +6,7 @@ import { UserContext } from '../contexts';
 import { useAuth0 } from '@auth0/auth0-react';
 import Skeleton from 'react-loading-skeleton';
 
-export const ProfilePhotoUpload = ({ size = 400 }) => {
+export const ProfilePhotoUpload = ({ size = 200 }) => {
     const {
         uploadProfilePicture,
         getUserMetaData,

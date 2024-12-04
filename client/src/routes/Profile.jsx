@@ -47,7 +47,7 @@ export const Profile = withAuthenticationRequired(() => {
             {/* Tabs Section */}
             <div className="flex justify-center mt-10">
                 <div className="flex flex-wrap justify-between gap-4 w-full max-w-4xl border-2 p-2 border-gray-300 rounded-lg bg-white shadow-md">
-                    {['profile', 'password', 'professional'].map((section) => (
+                    {['profile', 'password', 'professional', 'post-Certification Hub'].map((section) => (
                         <button
                             key={section}
                             onClick={() => handleTabClick(section)}
@@ -190,6 +190,16 @@ export const Profile = withAuthenticationRequired(() => {
                             No professional information available
                         </p>
                     )}
+                </div>
+            )}
+                     {sectionName === 'post-Certification Hub' && (
+                // Password Section
+                <div className="flex flex-col items-center text-center gap-6 p-6 max-w-lg mx-auto bg-white shadow-md rounded-lg">
+                    <h2 className="font-fira text-2xl">Post Certification Hub</h2>
+                    <p className="text-gray-600">
+                      All the post-cert goodies here
+                    </p>
+                 
                 </div>
             )}
         </div>
