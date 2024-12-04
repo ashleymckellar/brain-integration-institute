@@ -57,17 +57,21 @@ const AddAdmins = () => {
             getAllUsers();
         };
         fetchUsers();
-    }, [getAllUsers]);
+    }, []);
 
+
+           //const jsxArray = dataItems.filter(item => item.isActive).map(item => (
     return (
         <div className="flex justify-center w-full py-10">
-            <div className="flex flex-col gap-10 items-center max-w-4xl w-full  p-6 rounded-xl shadow-lg bg-white">
+            <div className="flex flex-col gap-10 items-center max-w-4xl w-50  p-6 rounded-xl shadow-lg bg-white">
                 <h2 className="text-2xl font-semibold text-center mb-6">Manage Admins</h2>
 
                 {/* Users List */}
+
+         
                 <div className="w-full">
                     <ul>
-                        {users.map((user) => (
+                        {users.filter(user => user.isAdmin).map((user) => (
                             <div
                                 className="flex items-center justify-between border border-charcoal p-6 mb-6 rounded-lg shadow-sm hover:shadow-md"
                                 key={user.userEmail}
@@ -75,12 +79,11 @@ const AddAdmins = () => {
                                 <li className="flex items-center justify-between w-full">
                                     <div className="flex items-center">
                                         <span className="font-bold text-lg text-black">
-                                            {user.firstName && user.lastName
-                                                ? `${user.firstName} ${user.lastName}`
-                                                : user.userEmail}
+                                        {user.userEmail}
                                         </span>
                                     </div>
                                 </li>
+                            
                                 {auth0User.sub !== user.sub ? (
                                     <button
                                         className={`p-3 rounded-xl text-white font-semibold transition-all duration-200 ${
