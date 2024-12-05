@@ -77,7 +77,8 @@ notificationsRouter.post('/', async (req, res) => {
                     'assessmentUpdate',
                     'docExpirationReminder',
                     'docStatusUpdate',
-                    'certificationComplete'
+                    'certificationComplete',
+                    'adminUpdate'
                 ],
             },
         }).sort({ timestamp: -1 });

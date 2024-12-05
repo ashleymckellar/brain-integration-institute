@@ -83,7 +83,9 @@ export const AdminProvider = ({ children }) => {
 
     const changeAdminStatus = async (email, adminStatus) => {
         const accessToken = await getAccessTokenSilently();
+    
         try {
+            // Send the PUT request to update the admin status
             const response = await fetch(
                 `http://${baseUrl}/api/user/${email}/is-admin`,
                 {
@@ -97,6 +99,8 @@ export const AdminProvider = ({ children }) => {
                     }),
                 },
             );
+    
+            // Check if the response is okay
             if (!response.ok) {
                 const errorData = await response.json();
                 console.error('Failed to update admin status:', errorData);
@@ -104,12 +108,21 @@ export const AdminProvider = ({ children }) => {
                     errorData.error || 'Failed to update admin status',
                 );
             }
-
-            const updatedUser = await response.json();
+    
+            // If adminStatus is true, send the promotion notification
+            if (adminStatus) {
+                await sendAdminNotification(email, "You've been promoted to admin.");
+            } else {
+                console.log('Admin access revoked. No notification sent.');
+            }
         } catch (error) {
-            console.error('Error updating user to admin:', error);
+            console.error('Error updating admin status:', error);
+            throw error;
         }
     };
+    
+
+    
 
     const deleteUser = async (userEmail) => {
         try {

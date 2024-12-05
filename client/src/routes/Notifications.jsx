@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react/prop-types */
 
@@ -9,6 +10,7 @@ import { UserContext } from '../contexts';
 import { useAuth0 } from '@auth0/auth0-react';
 import UpdateNowButton from '../components/UpdateNowButton';
 import DownloadCertButton from '../components/DownloadCertButton'
+import ViewAdminDashboardButton from '../components/ViewAdminDashboardButton';
 
 export const Notifications = ({ isNotificationDrawerOpen }) => {
     const {
@@ -240,6 +242,30 @@ export const Notifications = ({ isNotificationDrawerOpen }) => {
                                                     
                                                     </p>
                                                     <DownloadCertButton />
+                                                </div>
+                                            );
+                                            case 'adminUpdate':
+                                            return (
+                                                <div
+                                                    key={index}
+                                                    className="border border-black rounded-xl p-6 bg-white flex flex-col relative"
+                                                >
+                                                    <p
+                                                        className="absolute top-2 right-6 cursor-pointer"
+                                                        onClick={() =>
+                                                            onXClick(
+                                                                notification.uniqueid,
+                                                            )
+                                                        }
+                                                    >
+                                                        X
+                                                    </p>
+                                                    <p className='py-5 text-center'>
+                                                        You have been promoted to admin.  
+                                                    
+                                                    </p>
+                                                    <ViewAdminDashboardButton />
+                                                   
                                                 </div>
                                             );
                                         default:

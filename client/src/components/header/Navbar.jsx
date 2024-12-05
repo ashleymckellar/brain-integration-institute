@@ -53,6 +53,8 @@ export const Navbar = () => {
         }
     };
 
+    console.log(activeNotifications, 'active not')
+
     const filteredNotifications = activeNotifications.reduce(
         (acc, notification) => {
             const existing = acc.find(
@@ -76,6 +78,7 @@ export const Navbar = () => {
             setIsNotificationDrawerOpen((prev) => !prev);
             setBurgerMenuOpen(false);
             await fetchNotifications();
+            console.log('notifications click')
         } catch (error) {
             console.error('Error fetching notifications:', error);
         }

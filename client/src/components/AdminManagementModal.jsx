@@ -3,7 +3,7 @@
 /* eslint-disable react/prop-types */
 import { useEffect } from 'react';
 
-export const ContactFormModal = ({ open, handleCloseModal, children }) => {
+export const AdminManagementModal = ({ open, handleCloseModal, children }) => {
     useEffect(() => {
         if (open) {
             document.body.classList.add('overflow-hidden');
@@ -30,9 +30,14 @@ export const ContactFormModal = ({ open, handleCloseModal, children }) => {
                 } w-[90%] h-[25%] sm:w-[80%] md:w-[60%] lg:w-[40%] max-w-lg md:max-w-xl lg:max-w-2xl`}
             >
                 <div className="text-center flex flex-col items-center gap-4 mb-8 mt-10 sm:mb-6 sm:mt-20 md:mb-8 ">
-                    <h3 className="text-xl sm:text-2xl md:text-3xl text-gray-500 font-bold">
-                        Message sent successfully
-                    </h3>
+                  
+                    {/* {isCurrentAdmin ? (
+                           <h3 className="text-xl sm:text-2xl md:text-3xl text-gray-500 font-bold">User admin access revoked</h3>
+                    ) : ( <h3 className="text-xl sm:text-2xl md:text-3xl text-gray-500 font-bold">User promoted to admin</h3>
+
+                    )
+                } */}
+         
                 </div>
                 {children}
             </div>
@@ -40,5 +45,5 @@ export const ContactFormModal = ({ open, handleCloseModal, children }) => {
     );
 };
 
-export default ContactFormModal;
+export default AdminManagementModal;
 

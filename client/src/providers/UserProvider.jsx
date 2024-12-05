@@ -231,6 +231,12 @@ export const UserProvider = ({ children }) => {
     const handleCertificateDownloadClick = (navigate) =>{
     navigate('/profile')
     setisNotificationDrawerOpen(false)  
+
+    
+}
+
+const handleAdminPromoteClick = (navigate) => {
+     navigate('/admin/practitioner-management')
 }
 
     // }  will nav user to profile to download certification once certification is approved and they get the notification.
@@ -308,7 +314,8 @@ export const UserProvider = ({ children }) => {
                 setisNotificationDrawerOpen,
                 filteredNotifications,
                 handleCertificateDownloadClick, 
-                handleReviewClick
+                handleReviewClick,
+                handleAdminPromoteClick
             }}
         >
             {children}

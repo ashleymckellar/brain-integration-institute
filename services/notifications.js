@@ -20,7 +20,7 @@ const getAllNotificationsByUser = async (userEmail) => {
            
             const additionalNotifications = await NotificationsModel.find({
                 userEmail,
-                notificationType: { $in: ['assessmentUpdate', 'docExpirationReminder', 'docStatusUpdate', 'certificationComplete'] },
+                notificationType: { $in: ['assessmentUpdate', 'docExpirationReminder', 'docStatusUpdate', 'certificationComplete', 'adminUpdate'] },
             }).sort({ timestamp: -1 }); // Sort notifications by timestamp (newest first)
 
            

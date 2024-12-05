@@ -75,7 +75,7 @@ adminNotificationsRouter.post('/', async (req, res) => {
               <p>To review the document, <a href="${appUrl}">click here</a>.</p></p>`;
         } else {
             adminSubject = 'New Notification';
-            userHtmlContent = `<p>Notification: ${message}</p>`;
+            userHtmlContent = `<p>${message}</p>`;
         }
         
         await sendMail(sharedAdminEmail, adminSubject, message, userHtmlContent);
