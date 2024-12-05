@@ -6,7 +6,7 @@ import { AdminContext, UserContext } from '../contexts';
 export default function ViewFileModal({
     open,
     onClose,
-    selectedDocumentName,
+  
     imagesByDocType,
     individualUser,
     onChange,
@@ -86,14 +86,16 @@ export default function ViewFileModal({
 
         let message;
 if (newDocStatus === 'approved') {
-    message = ` has been approved.`;
+    const documentName = docTypeMapping[selectedDocumentType];
+    message = `${documentName} document has been approved.`;
 } else if (newDocStatus === 'declined') {
     if (!reasonForDenial || reasonForDenial.trim() === '') {
         console.error('Reason for denial is required but not provided.');
         alert('Please provide a reason for denial.');
         return; // Exit early to prevent sending an incomplete notification
     }
-    message = `Declined. Reason for denial: ${reasonForDenial}`;
+    const documentName = docTypeMapping[selectedDocumentType];
+    message = `${documentName} document has been declined. Reason for denial: ${reasonForDenial}`;
 }
 
         if (message) {
@@ -124,6 +126,15 @@ if (newDocStatus === 'approved') {
         onClose(); // Close the modal or reset the form
     };
 
+
+    const docTypeMapping = {
+        'brainIntegrationTraining': 'Brain integration training',
+        'videoPresentation': 'Video presentation',
+        'cprCert': 'CPR certification',
+        'clinicalHours': 'Clinical hours',
+        'firstAidTraining': 'First aid training',
+        'insurance': 'Insurance',
+    };
     return (
         <div
             onClick={onClose}
@@ -133,7 +144,7 @@ if (newDocStatus === 'approved') {
         >
             <div
                 onClick={(e) => e.stopPropagation()}
-                className={`bg-white rounded-md shadow-lg p-6 transition-all ${
+                className={`bg-white rounded-md shadow-lg p-6  h-50 transition-all ${
                     open ? 'scale-100 opacity-100' : 'scale-90 opacity-0'
                 }`}
             >
@@ -144,15 +155,19 @@ if (newDocStatus === 'approved') {
                     X
                 </button>
                 <div className="text-center w-full flex flex-col items-center gap-2 mb-10">
-                    <h3 className="text-lg text-gray-500 font-bold">
-                        View file for: {selectedDocumentName}
-                    </h3>
                     {imagesByDocType.length > 0 ? (
-                        <img
-                            src={imagesByDocType[0].url}
+                        imagesByDocType.map((doc, idx) => (
+                            <div  key={idx} className='flex flex-col border border-charcoal rounded-xl p-5'>
+                            <img
+                           
+                            id={doc.id}
+                    
+                            src={doc.url}
                             alt="Document file"
-                            className="w-[700px] h-[600px]"
+                            className="w-[400px] h-[300px]"
                         />
+                        </div>
+                        ))
                     ) : (
                         <p>No image available</p>
                     )}

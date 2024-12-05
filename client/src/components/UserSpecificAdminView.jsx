@@ -54,7 +54,9 @@ const UserSpecificAdminView = () => {
     const navigate = useNavigate();
     const [filesToDelete, setFilesToDelete] = useState([]);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-    const [publicId, setPublicId] = useState('');
+    const [publicIds, setPublicIds] = useState([]);
+
+    console.log(publicIds, 'public ids')
 
     const docTypeMapping = {
         'Brain Integration Training': 'brainIntegrationTraining',
@@ -151,7 +153,7 @@ const UserSpecificAdminView = () => {
             }
             const image = await response.json();
             setImagesByDocType(image);
-            setPublicId(image[0].public_id);
+          
         } catch (error) {
             console.error('Error fetching images:', error);
         }

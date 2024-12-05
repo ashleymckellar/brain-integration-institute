@@ -1,14 +1,31 @@
 /* eslint-disable react/prop-types */
 import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AdminContext } from '../contexts';
+import { AdminContext, UserContext } from '../contexts';
 
-const ReviewButton = ({ userEmail, sectionId }) => {
+const ReviewButton = ({ userEmail, sectionId, uniqueid, fetchNotifications }) => {
     const { handleReviewClick } = useContext(AdminContext);
+    const { markNotificationAsRead } = useContext(UserContext)
     const navigate = useNavigate();
 
-    const onClick = () => {
-        handleReviewClick(navigate, userEmail, sectionId);
+    const onClick = async () => {
+        try {
+            // Mark notification as read
+            await markNotificationAsRead(uniqueid);
+
+            // Refresh notifications list if provided
+            if (fetchNotifications) {
+                fetchNotifications();
+            }
+
+            // Proceed with the review action
+            handleReviewClick(navigate, userEmail, sectionId);
+        } catch (error) {
+            console.error(
+                `Error marking notification ${uniqueid} as read:`,
+                error,
+            );
+        }
     };
 
     return (

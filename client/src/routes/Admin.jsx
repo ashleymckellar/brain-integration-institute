@@ -96,6 +96,9 @@ export const Admin = () => {
         },
     ];
 
+    
+    
+
     const onClose = async (uniqueid) => {
         try {
             await markNotificationAsRead(uniqueid);

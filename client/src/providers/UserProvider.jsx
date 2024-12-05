@@ -191,6 +191,13 @@ export const UserProvider = ({ children }) => {
         }
     };
 
+    const handleReviewClick = async (navigate, userEmail, id) => {
+        navigate(`/admin/practitioner-management/${userEmail}#${id}`);
+        setisNotificationDrawerOpen(false);
+           await markNotificationAsRead(id);
+        fetchNotifications();
+    };
+
     const markNotificationAsRead = async (id) => {
         try {
             const accessToken = await getAccessTokenSilently();
@@ -300,7 +307,8 @@ export const UserProvider = ({ children }) => {
                 isNotificationDrawerOpen,
                 setisNotificationDrawerOpen,
                 filteredNotifications,
-                handleCertificateDownloadClick
+                handleCertificateDownloadClick, 
+                handleReviewClick
             }}
         >
             {children}
