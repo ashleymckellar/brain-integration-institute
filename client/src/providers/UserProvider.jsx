@@ -26,7 +26,9 @@ export const UserProvider = ({ children }) => {
 
     const [inputs, setInputs] = useState(initialValues);
     const { getAccessTokenSilently, user } = useAuth0();
-    const [profileData, setProfileData] = useState(null);
+    const [profileData, setProfileData] = useState(null); //state for authenticated user's profile
+    const [singleProfile, setSingleProfile] = useState({}) //state for any profile, based on the card that's clicked, not 
+    //necessarily the person who's logged in
     const [allProfiles, setAllProfiles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -89,7 +91,7 @@ export const UserProvider = ({ children }) => {
         }
     };
 
-    console.log(inputs);
+    // console.log(inputs);
     //
     const editProfileData = async (updatedData) => {
         console.log('Updated data being sent:', updatedData);
@@ -154,6 +156,33 @@ export const UserProvider = ({ children }) => {
                 setError(error.message);
             }
         }
+    };
+
+    const fetchSingleProfile = async (email) => {
+        
+            try {
+                setLoading(true);
+                const response = await fetch(`/api/profile/${email}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${await getAccessTokenSilently()}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const data = await response.json();
+                console.log(data, 'single profile data')
+                setSingleProfile(data);
+                console.log(singleProfile, 'state updated')
+            } catch (error) {
+                console.error('Error fetching profile data:', error);
+                setError(error.message);
+            }
+        
     };
 
     const fetchNotifications = async () => {
@@ -315,7 +344,10 @@ const handleAdminPromoteClick = (navigate) => {
                 filteredNotifications,
                 handleCertificateDownloadClick, 
                 handleReviewClick,
-                handleAdminPromoteClick
+                handleAdminPromoteClick,
+                fetchSingleProfile,
+                singleProfile,
+                setSingleProfile
             }}
         >
             {children}

@@ -102,7 +102,7 @@ export const Practitioner = () => {
                 </div>
             </div>
             <div className="w-11/12 sm:w-10/12 md:w-3/4 lg:w-2/3 xl:w-1/2 mx-auto mt-6">
-                <h2 className="text-2xl text-gray-800 font-semibold mb-4 text-center">Refine Results</h2>
+                <h2 className="text-2xl font-semibold mb-4 text-center">Refine Results</h2>
                 <div className="flex flex-col sm:flex-row sm:justify-between gap-4 mb-4">
                     <input
                         className="w-full sm:w-1/2 px-4 py-2 rounded-full border border-gray-400 text-gray-600 text-lg placeholder-gray-500"

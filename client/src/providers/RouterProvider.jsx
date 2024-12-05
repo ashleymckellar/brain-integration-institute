@@ -21,6 +21,7 @@ import { TamiBio } from '../routes/TamiBio';
 import { Terms } from '../routes/Terms';
 import AddAdmins from '../routes/AddAdmins';
 import { Notifications } from '../routes/Notifications';
+import { PractitionerDetails } from '../components/PractitionerDetails'
 import PractitionerManagement from '../routes/PractitionerManagement';
 import AdminUploadManagement from '../routes/AdminUploadManagement';
 // import MessagingHub from '../routes/MessagingHub';
@@ -88,6 +89,11 @@ const router = createBrowserRouter([
     },
     { path: '/about', element: <AboutUs /> },
     { path: '/', element: <Home /> },
+
+    {
+        path: '/practitioner/:email',
+        element: <PractitionerDetails />, 
+    },
     {
         path: '/contact-us',
         element: <ContactUs />,
