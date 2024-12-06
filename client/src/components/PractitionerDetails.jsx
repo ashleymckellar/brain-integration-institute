@@ -5,12 +5,12 @@ import { Footer } from '../components/Footer';
 // import rectangleRon from '../assets/images/rectangle-ron.png';
 import map from '../assets/icons/map-pin.png';
 import phone from '../assets/icons/phone.png';
-import mail from '../assets/icons/mail.png';
+// import mail from '../assets/icons/mail.png';
 import { UserContext } from '../contexts';
 
 export const PractitionerDetails = () => {
     const { email } = useParams();
-    const { fetchSingleProfile, setSingleProfile, singleProfile } =
+    const { fetchSingleProfile, singleProfile } =
         useContext(UserContext);
 
     useEffect(() => {

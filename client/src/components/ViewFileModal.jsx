@@ -2,11 +2,12 @@
 import { useEffect, useState, useContext } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { AdminContext, UserContext } from '../contexts';
+// import { Document, Page, PDFViewer } from 'react-pdf';
 
 export default function ViewFileModal({
     open,
     onClose,
-  
+
     imagesByDocType,
     individualUser,
     onChange,
@@ -16,8 +17,8 @@ export default function ViewFileModal({
 }) {
     const { getAccessTokenSilently, user } = useAuth0();
     const [reasonForDenial, setReasonForDenial] = useState('');
-    const { sendAdminNotification } = useContext(AdminContext)
-    const { fetchNotifications } = useContext(UserContext)
+    const { sendAdminNotification } = useContext(AdminContext);
+    const { fetchNotifications } = useContext(UserContext);
     const baseUrl = import.meta.env.VITE_API_BASE_URL;
     useEffect(() => {
         if (open) {
@@ -34,8 +35,6 @@ export default function ViewFileModal({
     const handleStatusChange = (e) => {
         onChange(e);
     };
-
-
 
     const handleReasonChange = (e) => {
         setReasonForDenial(e.target.value);
@@ -59,7 +58,6 @@ export default function ViewFileModal({
                         documentType: selectedDocumentType,
                         newStatus: newDocStatus,
                         notificationType: 'docStatusUpdate',
-                   
                     }),
                 },
             );
@@ -67,15 +65,18 @@ export default function ViewFileModal({
             if (response.ok) {
                 const data = await response.json();
                 console.log('Successfully updated:', data);
-    
+
                 // Refresh user data and notifications
                 getAllUsers();
                 fetchNotifications();
-    
+
                 alert('Document status updated successfully!');
             } else {
                 const errorData = await response.json();
-                console.error('Error updating document status:', errorData.message);
+                console.error(
+                    'Error updating document status:',
+                    errorData.message,
+                );
                 alert(`Error: ${errorData.message}`);
             }
         } catch (error) {
@@ -85,18 +86,20 @@ export default function ViewFileModal({
         }
 
         let message;
-if (newDocStatus === 'approved') {
-    const documentName = docTypeMapping[selectedDocumentType];
-    message = `${documentName} document has been approved.`;
-} else if (newDocStatus === 'declined') {
-    if (!reasonForDenial || reasonForDenial.trim() === '') {
-        console.error('Reason for denial is required but not provided.');
-        alert('Please provide a reason for denial.');
-        return; // Exit early to prevent sending an incomplete notification
-    }
-    const documentName = docTypeMapping[selectedDocumentType];
-    message = `${documentName} document has been declined. Reason for denial: ${reasonForDenial}`;
-}
+        if (newDocStatus === 'approved') {
+            const documentName = docTypeMapping[selectedDocumentType];
+            message = `${documentName} document has been approved.`;
+        } else if (newDocStatus === 'declined') {
+            if (!reasonForDenial || reasonForDenial.trim() === '') {
+                console.error(
+                    'Reason for denial is required but not provided.',
+                );
+                alert('Please provide a reason for denial.');
+                return; // Exit early to prevent sending an incomplete notification
+            }
+            const documentName = docTypeMapping[selectedDocumentType];
+            message = `${documentName} document has been declined. Reason for denial: ${reasonForDenial}`;
+        }
 
         if (message) {
             console.log('Sending notification with:', {
@@ -113,28 +116,34 @@ if (newDocStatus === 'approved') {
                     message,
                     admin: user.email, // Adjust as needed for the authenticated admin's email
                     notificationType: 'docStatusUpdate',
-                    notificationStatus: newDocStatus
-                    
+                    notificationStatus: newDocStatus,
                 });
             } catch (error) {
                 console.error('Failed to send notification:', error);
                 alert('Notification could not be sent.');
             }
         }
-    
+
         setReasonForDenial(''); // Clear the reason for denial
         onClose(); // Close the modal or reset the form
     };
 
-
     const docTypeMapping = {
-        'brainIntegrationTraining': 'Brain integration training',
-        'videoPresentation': 'Video presentation',
-        'cprCert': 'CPR certification',
-        'clinicalHours': 'Clinical hours',
-        'firstAidTraining': 'First aid training',
-        'insurance': 'Insurance',
+        brainIntegrationTraining: 'Brain integration training',
+        videoPresentation: 'Video presentation',
+        cprCert: 'CPR certification',
+        clinicalHours: 'Clinical hours',
+        firstAidTraining: 'First aid training',
+        insurance: 'Insurance',
     };
+
+    const [numPages, setNumPages] = useState(null);
+
+    const onDocumentLoadSuccess = ({ numPages }) => {
+        setNumPages(numPages);
+    };
+
+    console.log(imagesByDocType, 'images by doc type');
     return (
         <div
             onClick={onClose}
@@ -157,16 +166,50 @@ if (newDocStatus === 'approved') {
                 <div className="text-center w-full flex flex-col items-center gap-2 mb-10">
                     {imagesByDocType.length > 0 ? (
                         imagesByDocType.map((doc, idx) => (
-                            <div  key={idx} className='flex flex-col border border-charcoal rounded-xl p-5'>
-                            <img
-                           
-                            id={doc.id}
-                    
-                            src={doc.url}
-                            alt="Document file"
-                            className="w-[400px] h-[300px]"
-                        />
-                        </div>
+                            <div
+                                key={idx}
+                                className="flex flex-col border border-charcoal rounded-xl p-5"
+                            >
+                                {doc.format === 'pdf' ? (
+                                    <div className="w-[500px] h-[400px] overflow-auto border">
+                                        <object
+                                            data={doc.url}
+                                            type="application/pdf"
+                                            width="100%"
+                                            height="800px"
+                                        >
+                                            <p>
+                                                Your browser does not support
+                                                PDFs.
+                                                <a href={doc.url}>
+                                                    Download the PDF
+                                                </a>
+                                            </p>
+                                        </object>
+                                    </div>
+                                ) 
+                                : doc.format === "mp4" ? (
+                                    <div className="w-[600px] h-[400px] overflow-auto border">
+                                        <video
+                                            src={doc.url}
+                                            controls
+                                            width="100%"
+                                            height="100%"
+                                        >
+                                            <p>Your browser does not support the video element. 
+                                                <a href={doc.url} target="_blank" rel="noopener noreferrer">Download the video</a>
+                                            </p>
+                                        </video>
+                                    </div>
+                                ): (
+                                    <img
+                                        id={doc.id}
+                                        src={doc.url}
+                                        alt="Document file"
+                                        className="w-[600px] h-[500px] object-contain"
+                                    />
+                                )}
+                            </div>
                         ))
                     ) : (
                         <p>No image available</p>
@@ -202,7 +245,7 @@ if (newDocStatus === 'approved') {
                                 placeholder="Reason for denial (if applicable)"
                                 className="border border-black rounded-xl p-5 mt-10 w-[300px]"
                             ></textarea>
-                            <button className="border border-black rounded-xl px-5 py-2 bg-green-is-good text-white" >
+                            <button className="border border-black rounded-xl px-5 py-2 bg-green-is-good text-white">
                                 Submit
                             </button>
                         </div>

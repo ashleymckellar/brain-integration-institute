@@ -71,9 +71,32 @@ fileRouter.delete('/:publicId', async (req, res) => {
     const publicId = req.params.publicId;
 
     try {
-        
-        const result = await cloudinary.uploader.destroy(publicId);
+        // Optionally, retrieve file metadata or use a rule to infer file type
+        const fileMetadata = await File.findOne({ publicId: publicId });
+        console.log(fileMetadata)
+
+        // Determine the resource type based on the file extension or metadata
+        let resourceType = 'auto'; // Default to 'auto', which detects the file type automatically
+        if (fileMetadata) {
+            const fileExtension = fileMetadata.url.split('.').pop().toLowerCase();
+            console.log(fileExtension, 'file extension')
+
+            if (fileExtension === 'mp4' || fileExtension === 'mov' || fileExtension === 'avi') {
+                resourceType = 'video';
+            } else if (fileExtension === 'jpg' || fileExtension === 'png' || fileExtension === 'gif') {
+                resourceType = 'image';
+            } else if (fileExtension === 'pdf') {
+                resourceType = 'raw'; // For PDFs, we can treat them as raw files if needed
+            }
+        }
+
+        console.log(resourceType, 'resource type')
+
+       
+        const result = await cloudinary.uploader.destroy(publicId, {  resource_type: resourceType } );
+
         console.log(result, 'cloudinary delete');
+
         if (result.result === 'ok') {
             await File.findOneAndDelete({ publicId: publicId });
             res.status(200).json({ message: 'File deleted successfully' });
@@ -85,6 +108,7 @@ fileRouter.delete('/:publicId', async (req, res) => {
         res.status(500).json({ message: 'Error deleting file', error });
     }
 });
+
 
 fileRouter.get('/test-delete/:publicId', async (req, res) => {
     const publicId = req.params.publicId;

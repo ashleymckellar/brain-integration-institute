@@ -70,8 +70,8 @@ adminNotificationsRouter.post('/', async (req, res) => {
         let userHtmlContent = '';
         if (notificationType === 'docStatusUpdate') {
             adminSubject = 'Document Status Update';
-            const appUrl = 'https://brain-integration-institute.onrender.com/'
-            userHtmlContent = `<p>${authenticatedUser.userEmail} has uploaded a document for your review.   Message: ${message}  
+            const appUrl = `https://brain-integration-institute.onrender.com/admin/practitioner-management/${authenticatedUser.userEmail}`
+            userHtmlContent = `<p>${authenticatedUser.userEmail} has uploaded a document for your review.   
               <p>To review the document, <a href="${appUrl}">click here</a>.</p></p>`;
         } else {
             adminSubject = 'New Notification';

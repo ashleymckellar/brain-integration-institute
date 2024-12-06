@@ -2,6 +2,7 @@ const mg = require('mongoose');
 const Schema = mg.Schema;
 
 const ApprovalModel = require('./notifications');
+const AssessmentModel = require('./assessment')
 
 const UploadStatus = {
     WAITINGFORUPLOAD: 'waiting for upload',
@@ -141,6 +142,8 @@ const UserSchema = new mg.Schema({
         type: Boolean,
         default: false,
     },
+
+    assessments: [{ type: Schema.Types.ObjectId, ref: 'AssessmentModel' }],
     // Stripe will switch the boolean on the User's subscription to generate their link with a button on the Administrator's
     // dashboard that can switch the link's 'Active' status from 'false' to "true" with an automatic switch if they do not make their payment within
     // a pre-determined timeframe.

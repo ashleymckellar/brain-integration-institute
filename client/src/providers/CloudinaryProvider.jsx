@@ -37,6 +37,7 @@ export const CloudinaryProvider = ({ children }) => {
     const [expandedSection, setExpandedSection] = useState(null);
     const [uploadedSections, setUploadedSections] = useState([]); 
     // const [sectionFiles, setSectionFiles] = useState({});
+     const [processedUploads, setProcessedUploads] = useState([]);
     const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
     const uwConfig = {
@@ -343,6 +344,7 @@ export const CloudinaryProvider = ({ children }) => {
     };
 
     const initializeCloudinaryWidget = (section) => {
+         
         if (user) {
             const myWidget = window.cloudinary.createUploadWidget(
                 {
@@ -351,27 +353,19 @@ export const CloudinaryProvider = ({ children }) => {
                     asset_folder: `users/${user.nickname}/${section}`,
                 },
                 async (error, result) => {
-                  
+                    // Handle only the success event
                     if (!error && result && result.event === 'success') {
                         console.log('Upload successful:', result.info);
                         onUploadSuccess(section);
-                        // const newProgress = progress + 1;
-
-
-                        //if section is not included in uploaded sections array, ie, it doesn't have any files uploaded in that section yet
-                        //then update progress +1
-                        //if it already does have files uploaded, don't increase progress
-                        if (!uploadedSections.includes(section) && progress < 8) {
-                            const newProgress = progress + 1;
-                          
-                                setProgress(newProgress);
-                                setUploadedSections((prevSections) => [...prevSections, section]);
-                                await updateUserProgress(newProgress);
-                    }
-                            
+    
+                        // Prevent duplicate POST requests for the same file
+                        if (processedUploads.includes(result.info.public_id)) {
+                            console.log('Duplicate event ignored:', result.info.public_id);
+                            return;
                         }
-                     
-
+                        
+                        setProcessedUploads((prev) => [...prev, result.info.public_id]);
+    
                         const fileMetadata = {
                             publicId: result.info.public_id,
                             url: result.info.secure_url,
@@ -380,14 +374,23 @@ export const CloudinaryProvider = ({ children }) => {
                             sectionName: section,
                             isApproved: false,
                         };
-
+    
                         setPublicId(result.info.public_id);
                         setFilename(result.info.original_filename);
                         setFileMetaData((prevMetaData) => [
                             ...prevMetaData,
                             fileMetadata,
                         ]);
-
+    
+                        // Update progress if applicable
+                        if (!uploadedSections.includes(section) && progress < 8) {
+                            const newProgress = progress + 1;
+    
+                            setProgress(newProgress);
+                            setUploadedSections((prevSections) => [...prevSections, section]);
+                            await updateUserProgress(newProgress);
+                        }
+    
                         // Send metadata to the server
                         try {
                             const accessToken = await getAccessTokenSilently();
@@ -402,30 +405,24 @@ export const CloudinaryProvider = ({ children }) => {
                                     body: JSON.stringify(fileMetadata),
                                 },
                             );
-
+    
                             if (response.ok) {
                                 console.log(
                                     'File metadata successfully sent to the server.',
                                 );
-                                setFiles((prevFiles) => [
-                                    ...prevFiles,
-                                    fileMetadata,
-                                ]);
+                                setFiles((prevFiles) => [...prevFiles, fileMetadata]);
                             } else {
                                 console.error(
                                     'Failed to send file metadata to the server.',
                                 );
                             }
                         } catch (error) {
-                            console.error(
-                                'Error sending file metadata:',
-                                error,
-                            );
+                            console.error('Error sending file metadata:', error);
                         }
                     }
-                
+                },
             );
-
+    
             myWidget.open();
         }
     };
@@ -525,6 +522,7 @@ export const CloudinaryProvider = ({ children }) => {
     };
 
     const deleteFile = async (publicId, sectionName) => {
+        console.log(publicId, 'publicId')
         try {
             const accessToken = await getAccessTokenSilently();
             const response = await fetch(

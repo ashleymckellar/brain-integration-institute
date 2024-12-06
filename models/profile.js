@@ -61,5 +61,5 @@ const ProfileSchema = new Schema({
 const ProfileModel = mg.model('Profile', ProfileSchema);
 
 module.exports = {
-    ProfileModel,
+    ProfileModel
 };
