@@ -67,10 +67,13 @@ fileRouter.post('/', async (req, res) => {
     }
 });
 
+
+
 fileRouter.delete('/:publicId', async (req, res) => {
     const publicId = req.params.publicId;
 
     try {
+
         // Optionally, retrieve file metadata or use a rule to infer file type
         const fileMetadata = await File.findOne({ publicId: publicId });
         console.log(fileMetadata)
@@ -94,6 +97,7 @@ fileRouter.delete('/:publicId', async (req, res) => {
 
        
         const result = await cloudinary.uploader.destroy(publicId, {  resource_type: resourceType } );
+
 
         console.log(result, 'cloudinary delete');
 

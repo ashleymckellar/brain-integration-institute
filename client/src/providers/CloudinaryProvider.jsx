@@ -27,8 +27,8 @@ export const CloudinaryProvider = ({ children }) => {
     const [email, setEmail] = useState('');
     const [userMetaData, setUserMetaData] = useState({});
 
-    const [uploading, setUploading] = useState(false);
-    const [uploadError, setUploadError] = useState(null);
+    // const [uploading, setUploading] = useState(false);
+    // const [uploadError, setUploadError] = useState(null);
     const [imageUrl, setImageUrl] = useState(user?.userProfilePicture || '');
     const [profilePhotoUploaded, setProfilePhotoUploaded] = useState(false);
     const [certListUploadStatus, setCertListUploadStatus] = useState({});
@@ -72,7 +72,7 @@ export const CloudinaryProvider = ({ children }) => {
             // Fetch files from the API
             const email = user.email;
             const response = await axios.get(
-                `http://${baseUrl}/api/files/${email}`,
+                `${baseUrl}/api/files/${email}`,
                 {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
@@ -104,7 +104,7 @@ export const CloudinaryProvider = ({ children }) => {
             const accessToken = await getAccessTokenSilently();
 
             const response = await axios.get(
-                `http://${baseUrl}/api/images/${nickname}`,
+                `${baseUrl}/api/images/${user.nickname}`,
                 {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
@@ -133,7 +133,7 @@ export const CloudinaryProvider = ({ children }) => {
             const accessToken = await getAccessTokenSilently();
 
             const response = await axios.get(
-                `http://${baseUrl}/api/user/${user.email}`,
+                `${baseUrl}/api/user/${user.email}`,
                 {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
@@ -191,17 +191,19 @@ export const CloudinaryProvider = ({ children }) => {
     //this function is being called inside getStudyGuide in accordioncard
 
     const updateUserProgress = async (newProgress) => {
-        console.log('updateUserProgress called with:', newProgress);
+      
         //this works
         if (user) {
             try {
                 const accessToken = await getAccessTokenSilently();
+
                 console.log('Updating user progress:', {
                     userUploadProgress: newProgress,
                 });
 
+
                 const response = await fetch(
-                    `http://${baseUrl}/api/user/${user.email}/progress`,
+                    `${baseUrl}/api/user/${user.email}/progress`,
                     {
                         method: 'PUT',
                         headers: {
@@ -214,6 +216,8 @@ export const CloudinaryProvider = ({ children }) => {
                     },
                 );
 
+              
+
                 if (!response.ok) {
                     const errorData = await response.json();
                     console.error('Failed to update user progress:', errorData);
@@ -221,7 +225,7 @@ export const CloudinaryProvider = ({ children }) => {
                 }
 
                 const data = await response.json();
-                console.log('User progress updated on the server:', data);
+              
             } catch (error) {
                 console.error('Error updating user progress:', error);
             }
@@ -230,7 +234,10 @@ export const CloudinaryProvider = ({ children }) => {
         }
     };
 
+
+
     const updateUserStudyGuide = async (email) => {
+
         if (!email) {
             console.error('Email is required to update the study guide.');
             return;
@@ -238,9 +245,11 @@ export const CloudinaryProvider = ({ children }) => {
 
         try {
             const accessToken = await getAccessTokenSilently();
+           
+          
 
             const response = await fetch(
-                `http://${baseUrl}/api/user/${email}/study-guide`,
+                `${baseUrl}/api/user/${email}/study-guide`,
                 {
                     method: 'PUT',
                     headers: {
@@ -251,7 +260,7 @@ export const CloudinaryProvider = ({ children }) => {
                 },
             );
 
-            console.log('Response Status:', response.status);
+       
 
             if (!response.ok) {
                 const errorData = await response.json();
@@ -260,7 +269,7 @@ export const CloudinaryProvider = ({ children }) => {
             }
 
             const data = await response.json();
-            console.log('User study guide updated on the server:', data);
+          
             setStudyGuideAccess(true);
             const newProgress = Math.min(progress + 1, 8);
             if (newProgress > progress) {
@@ -289,7 +298,7 @@ export const CloudinaryProvider = ({ children }) => {
             try {
                 const accessToken = await getAccessTokenSilently();
                 const response = await fetch(
-                    `http://${baseUrl}/api/user/${user.email}/document-status`,
+                    `${baseUrl}/api/user/${user.email}/document-status`,
                     {
                         method: 'PATCH',
                         headers: {
@@ -395,7 +404,7 @@ export const CloudinaryProvider = ({ children }) => {
                         try {
                             const accessToken = await getAccessTokenSilently();
                             const response = await fetch(
-                                `http://${baseUrl}/api/files`,
+                                `${baseUrl}/api/files`,
                                 {
                                     method: 'POST',
                                     headers: {
@@ -407,10 +416,12 @@ export const CloudinaryProvider = ({ children }) => {
                             );
     
                             if (response.ok) {
+
                                 console.log(
                                     'File metadata successfully sent to the server.',
                                 );
                                 setFiles((prevFiles) => [...prevFiles, fileMetadata]);
+
                             } else {
                                 console.error(
                                     'Failed to send file metadata to the server.',
@@ -473,8 +484,8 @@ export const CloudinaryProvider = ({ children }) => {
                         return;
                     }
                     if (result.event === 'success') {
-                        console.log('Upload successful:', result.info);
-
+                     
+                        
                         const userMetaData = {
                             userProfilePicture: result.info.secure_url,
                         };
@@ -485,7 +496,7 @@ export const CloudinaryProvider = ({ children }) => {
                         try {
                             const accessToken = await getAccessTokenSilently();
                             const response = await fetch(
-                                `http://${baseUrl}/api/user/${user.email}/profile-picture`,
+                                `${baseUrl}/api/user/${user.email}/profile-picture`,
                                 {
                                     method: 'PUT',
                                     headers: {
@@ -526,7 +537,7 @@ export const CloudinaryProvider = ({ children }) => {
         try {
             const accessToken = await getAccessTokenSilently();
             const response = await fetch(
-                `http://${baseUrl}/api/files/${publicId}`,
+                `${baseUrl}/api/files/${publicId}`,
                 {
                     method: 'DELETE',
                     headers: {
@@ -632,7 +643,7 @@ export const CloudinaryProvider = ({ children }) => {
                         try {
                             const accessToken = await getAccessTokenSilently();
                             const response = await fetch(
-                                `http://${baseUrl}/api/images/certificate`,
+                                `${baseUrl}/api/images/certificate`,
                                 {
                                     method: 'POST',
                                     headers: {
@@ -678,7 +689,7 @@ export const CloudinaryProvider = ({ children }) => {
                 `http://${baseUrl}/api/images/certificate`,
             );
             const response = await axios.get(
-                `http://${baseUrl}/api/images/certificate`,
+                `${baseUrl}/api/images/certificate`,
                 {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
@@ -695,7 +706,7 @@ export const CloudinaryProvider = ({ children }) => {
         try {
             const accessToken = await getAccessTokenSilently();
             const response = await fetch(
-                `http://${baseUrl}/api/images/certificate/${publicId}`,
+                `${baseUrl}/api/images/certificate/${publicId}`,
                 {
                     method: 'DELETE',
                     headers: {
