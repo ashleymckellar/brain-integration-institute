@@ -7,7 +7,6 @@ import { AdminContext, UserContext } from '../contexts';
 export default function ViewFileModal({
     open,
     onClose,
-
     imagesByDocType,
     individualUser,
     onChange,
@@ -137,11 +136,11 @@ export default function ViewFileModal({
         insurance: 'Insurance',
     };
 
-    const [numPages, setNumPages] = useState(null);
+    // const [numPages, setNumPages] = useState(null);
 
-    const onDocumentLoadSuccess = ({ numPages }) => {
-        setNumPages(numPages);
-    };
+    // const onDocumentLoadSuccess = ({ numPages }) => {
+    //     setNumPages(numPages);
+    // };
 
     console.log(imagesByDocType, 'images by doc type');
     return (
