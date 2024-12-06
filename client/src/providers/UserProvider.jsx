@@ -39,7 +39,7 @@ export const UserProvider = ({ children }) => {
     const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
     const handleInputChange = (e) => {
-=
+
         const { name, value } = e.target;
         setInputs((prevInputs) => ({
             ...prevInputs,

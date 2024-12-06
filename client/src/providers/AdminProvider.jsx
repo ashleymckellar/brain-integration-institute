@@ -162,7 +162,7 @@ export const AdminProvider = ({ children }) => {
             const userId = user.user_id;
 
             await axios.delete(
-                `${baseUrl}/api/admin/delete-user/${userId}`,
+                `http://${baseUrl}/api/admin/delete-user/${userId}`,
                 {
                     headers: {
                         'Content-Type': 'application/json',
@@ -178,6 +178,7 @@ export const AdminProvider = ({ children }) => {
             await axios.delete(`http://${baseUrl}/api/user/${userEmail}`, {
 
                 headers: {
+                    'Content-Type': 'application/json',
                     Authorization: `Bearer ${accessTokenforBackend}`,
                 },
             });
