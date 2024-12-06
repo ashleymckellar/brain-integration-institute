@@ -4,6 +4,7 @@ import { AdminContext } from '../contexts';
 import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useState } from 'react';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 
 export const AdminProvider = ({ children }) => {
     const {
@@ -24,6 +25,12 @@ export const AdminProvider = ({ children }) => {
     const [fileModalOpen, setFileModalOpen] = useState(false);
     const [selectedDocumentName, setSelectedDocumentName] = useState('');
     const baseUrl = import.meta.env.VITE_API_BASE_URL;
+    const [unreadNotifications, setUnreadNotifications] = useState([]);
+    const [isNotificationDrawerOpen, setisNotificationDrawerOpen] =
+        useState(false);
+
+    //create put request function to mark notification as read
+    //will need notification uniqueid as param
 
     const getManagementToken = async () => {
         const response = await axios.post(
@@ -69,7 +76,6 @@ export const AdminProvider = ({ children }) => {
                 },
             });
             setIndividualUser(response.data);
-            console.log(individualUser)
         } catch (error) {
             console.error('Error fetching user:', error);
         }
@@ -77,7 +83,9 @@ export const AdminProvider = ({ children }) => {
 
     const changeAdminStatus = async (email, adminStatus) => {
         const accessToken = await getAccessTokenSilently();
+    
         try {
+            // Send the PUT request to update the admin status
             const response = await fetch(
                 `${baseUrl}/api/user/${email}/is-admin`,
                 {
@@ -91,6 +99,8 @@ export const AdminProvider = ({ children }) => {
                     }),
                 },
             );
+    
+            // Check if the response is okay
             if (!response.ok) {
                 const errorData = await response.json();
                 console.error('Failed to update admin status:', errorData);
@@ -98,13 +108,21 @@ export const AdminProvider = ({ children }) => {
                     errorData.error || 'Failed to update admin status',
                 );
             }
-
-            const updatedUser = await response.json();
-            console.log('Admin status updated:', updatedUser);
+    
+            // If adminStatus is true, send the promotion notification
+            if (adminStatus) {
+                await sendAdminNotification(email, "You've been promoted to admin.");
+            } else {
+                console.log('Admin access revoked. No notification sent.');
+            }
         } catch (error) {
-            console.error('Error updating user to admin:', error);
+            console.error('Error updating admin status:', error);
+            throw error;
         }
     };
+    
+
+    
 
     const deleteUser = async (userEmail) => {
         try {
@@ -122,7 +140,7 @@ export const AdminProvider = ({ children }) => {
                 {
                     headers: {
                         'Content-Type': 'application/json',
-                        Authorization: `Bearer ${accessTokenforBackend}`, 
+                        Authorization: `Bearer ${accessTokenforBackend}`,
                     },
                 },
             );
@@ -156,15 +174,13 @@ export const AdminProvider = ({ children }) => {
                 },
             );
 
-            console.log(`User with email ${userEmail} deleted successfully`);
 
-            await axios.delete(`${baseUrl}/api/user/${userEmail}`, {
+            await axios.delete(`http://${baseUrl}/api/user/${userEmail}`, {
+
                 headers: {
                     Authorization: `Bearer ${accessTokenforBackend}`,
                 },
             });
-
-            console.log(`User with email ${userEmail} deleted successfully`);
         } catch (error) {
             console.error('Error deleting user:', error);
         }
@@ -250,6 +266,132 @@ export const AdminProvider = ({ children }) => {
             console.error('User is not defined');
         }
     };
+
+    const fetchAdminNotifications = async () => {
+        try {
+            setLoading(true);
+            const response = await axios.get(
+                `http://${baseUrl}/api/admin-notifications`,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${await getAccessTokenSilently()}`,
+                    },
+                },
+            );
+
+            const data = response.data;
+
+            const activeNotifications = Object.values(data)
+                .flat()
+                .filter((notification) => !notification.hasBeenRead);
+
+            console.log('Unread Notifications:', unreadNotifications);
+
+            setUnreadNotifications(activeNotifications);
+        } catch (error) {
+            console.error('Error fetching notifications:', error);
+            setError(error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const markNotificationAsRead = async (id) => {
+        try {
+            const accessToken = await getAccessTokenSilently();
+
+            const response = await axios.put(
+                `/api/admin-notifications/${id}/has-been-read`,
+                { hasBeenRead: true },
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                },
+            );
+
+            // Update state with filtered notifications
+            setUnreadNotifications((prev) =>
+                prev.filter((notification) => notification.uniqueid !== id),
+            );
+
+            console.log('Notification marked as read:', id);
+        } catch (error) {
+            console.error('Error marking notification as read:', error);
+        }
+    };
+
+    const sendAdminNotification = async ({
+        userEmail,
+
+        message,
+
+        notificationType,
+    }) => {
+        const accessToken = await getAccessTokenSilently();
+        await fetch('/api/notifications', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${accessToken}`,
+            },
+            body: JSON.stringify({
+                userEmail,
+
+                message,
+
+                notificationType,
+            }),
+        });
+    };
+
+    const issueCertification = async (email) => {
+        //add notification sent to user here
+        try {
+            const accessToken = await getAccessTokenSilently();
+
+            const response = await axios.put(
+                `/api/user/${email}/is-certified`,
+                { isCertified: true },
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                },
+            );
+
+            // Update state with filtered notifications
+
+            console.log('User is now certified!');
+            await sendAdminNotification({
+                userEmail: individualUser.userEmail,
+                notificationType: 'certificationComplete',
+                message:
+                    'Congratulations! You are officially certified. Click here to download your certificate.',
+            });
+        } catch (error) {
+            console.error('Error issuing certification', error);
+        }
+    };
+
+    const scrollToSection = (id) => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
+
+    const handleReviewClick = (navigate, userEmail, id) => {
+        navigate(`/admin/practitioner-management/${userEmail}#${id}`);
+        setisNotificationDrawerOpen(false);
+    };
+
+    const handleUpdateClick = (navigate, sectionName) => {
+        navigate(`/certification#${sectionName}`);
+        setisNotificationDrawerOpen(false);
+    };
+
     return (
         <AdminContext.Provider
             value={{
@@ -272,6 +414,16 @@ export const AdminProvider = ({ children }) => {
                 setSelectedDocumentName,
                 updateDocumentStatusbyAdmin,
                 deleteUser,
+                fetchAdminNotifications,
+                unreadNotifications,
+                markNotificationAsRead,
+                isNotificationDrawerOpen,
+                setisNotificationDrawerOpen,
+                sendAdminNotification,
+                issueCertification,
+                scrollToSection,
+                handleReviewClick,
+                handleUpdateClick,
             }}
         >
             {children}

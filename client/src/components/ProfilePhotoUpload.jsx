@@ -1,10 +1,12 @@
+/* eslint-disable react/prop-types */
 import { useState, useContext, useEffect } from 'react';
 import ProfileEditIcon from '../assets/icons/profileEditIcon.png';
 import { CloudinaryContext } from '../contexts';
 import { UserContext } from '../contexts';
 import { useAuth0 } from '@auth0/auth0-react';
+import Skeleton from 'react-loading-skeleton';
 
-export const ProfilePhotoUpload = () => {
+export const ProfilePhotoUpload = ({ size = 200 }) => {
     const {
         uploadProfilePicture,
         getUserMetaData,
@@ -19,7 +21,6 @@ export const ProfilePhotoUpload = () => {
     useEffect(() => {
         const fetchData = async () => {
             if (user) {
-                console.log(user);
                 const token = localStorage.getItem('token');
                 try {
                     const fetchedUserMetaData = await getUserMetaData(token);
@@ -27,9 +28,7 @@ export const ProfilePhotoUpload = () => {
 
                     // Update profile picture URL if it exists in user metadata
                     if (fetchedUserMetaData?.userProfilePicture) {
-                        setProfilePictureUrl(
-                            fetchedUserMetaData.userProfilePicture,
-                        );
+                        setProfilePictureUrl(fetchedUserMetaData.userProfilePicture);
                     }
                 } catch (error) {
                     console.error(
@@ -60,14 +59,23 @@ export const ProfilePhotoUpload = () => {
     };
 
     return (
-        <div className="flex flex-col items-start">
+        <div className="flex flex-col items-center">
             {isAuthenticated ? (
                 <div className="relative">
-                    <img
-                        className="h-[200px] w-[200px] rounded-full"
-                        src={profilePictureUrl}
-                        alt="avatar"
-                    />
+                    {profilePictureUrl ? (
+                        <img
+                            className="rounded-full"
+                            src={profilePictureUrl}
+                            alt="avatar"
+                            style={{  width: size }}
+                        />
+                    ) : (
+                        <Skeleton
+                            circle={true}
+                            height={size}
+                            width={size}
+                        />
+                    )}
                     <button onClick={handleProfilePictureUpload}>
                         <img
                             className="h-[32px] w-[32px] absolute bottom-2 right-2 bg-white p-1 rounded-full shadow-md"

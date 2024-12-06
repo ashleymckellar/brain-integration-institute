@@ -1,6 +1,6 @@
 const ex = require('express');
 // const { processFile } = require('../middleware/cdn');
-const { createProfileData, getAllProfileMetaData } = require('../services/profile');
+const { createProfileData, getAllProfileMetaData, deleteProfileData } = require('../services/profile');
 const { ProfileModel } = require('../models/profile');
 const { UserModel } = require('../models/User');
 
@@ -23,7 +23,7 @@ profileRouter.get('/', async (req, res) => {
 //get user specific profile
 profileRouter.get('/:email', async (req, res) => {
     const { email } = req.params;
-   
+
     try {
         const user = await UserModel.findOne({ userEmail: email });
         
@@ -42,6 +42,7 @@ profileRouter.get('/:email', async (req, res) => {
         const profileData = {
             ...profile.toObject(),
             userProfilePicture: profile.userId.userProfilePicture,
+            email: profile.userId.userEmail
         };
         res.status(200).json(profileData);
     } catch (error) {
@@ -51,12 +52,15 @@ profileRouter.get('/:email', async (req, res) => {
 });
 
 profileRouter.post('/create-profile', async (req, res) => {
+    console.log('user object', req.user)
+    console.log('email passed to route', req.user?.email)
     const {
         firstName,
         lastName,
         suffix,
+        title,
         phoneNumber,
-        email,
+        website,
         addressLine1,
         addressLine2,
         city,
@@ -64,12 +68,14 @@ profileRouter.post('/create-profile', async (req, res) => {
         zip,
         country,
         bio,
-        userProfilePicture
+        userProfilePicture,
+        email
     } = req.body;
 
 
     try {
-        // Find the user by their email to get the userId
+
+       
         const user = await UserModel.findOne({ userEmail: email }); 
         if (!user) {
             return res
@@ -77,17 +83,17 @@ profileRouter.post('/create-profile', async (req, res) => {
                 .json({ success: false, message: 'User not found' });
         }
 
-        // Check if the profile already exists for the user
         let profileData = await ProfileModel.findOne({ userId: user._id });
         if (!profileData) {
-            // Create the profile with the userId from the User model
             profileData = new ProfileModel({
-                userId: user._id, 
+                userId: user._id,
                 firstName,
                 lastName,
                 suffix,
+                title,
                 phoneNumber,
-                email,
+                email: user.userEmail, // Redundant, but to demonstrate usage
+                website,
                 addressLine1,
                 addressLine2,
                 city,
@@ -95,7 +101,7 @@ profileRouter.post('/create-profile', async (req, res) => {
                 zip,
                 country,
                 bio,
-                userProfilePicture
+                userProfilePicture,
             });
             await profileData.save();
             return res.status(201).json({
@@ -110,6 +116,9 @@ profileRouter.post('/create-profile', async (req, res) => {
         return res.status(500).json({ success: false, error: 'Server error' });
     }
 });
+
+      
+        
 
 //users can edit their profile pages with the edit form here
 
@@ -149,6 +158,28 @@ profileRouter.put('/:email', async (req, res) => {
     } catch (error) {
         console.error('Error updating profile data:', error);
         return res.status(500).json({ success: false, error: 'Server error' });
+    }
+});
+
+profileRouter.delete('/:id', async (req, res) => {
+    const userId = req.params.id;
+  
+    try {
+        const deletedProfile = await deleteProfileData(userId);
+
+        if (!deletedProfile) {
+            console.log('[Delete Route] Profile not found');
+            return res.status(404).json({ message: 'Profile not found' });
+        }
+        console.log('[Delete Route] Profile deleted successfully');
+        return res
+            .status(200)
+            .json({ message: 'Profile deleted successfully' });
+    } catch (error) {
+        console.error('[Delete Route] Error:', error);
+        return res
+            .status(500)
+            .json({ message: 'An error occurred while deleting the profile' });
     }
 });
 

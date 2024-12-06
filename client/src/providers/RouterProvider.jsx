@@ -14,12 +14,17 @@ import { NotFound } from '../routes/NotFound';
 import { Admin } from '../routes/Admin';
 import { ContactUs } from '../routes/ContactUs';
 import { RonBio } from '../routes/RonBio';
-import { Terms } from '../routes/Terms'
+import { TerriBio } from '../routes/TerriBio';
+import { JulissaBio } from '../routes/JulissaBio';
+import { SteveBio } from '../routes/SteveBio';
+import { TamiBio } from '../routes/TamiBio';
+import { Terms } from '../routes/Terms';
 import AddAdmins from '../routes/AddAdmins';
-import { Notifications } from '../routes/Notifications'
+import { Notifications } from '../routes/Notifications';
+import { PractitionerDetails } from '../components/PractitionerDetails'
 import PractitionerManagement from '../routes/PractitionerManagement';
 import AdminUploadManagement from '../routes/AdminUploadManagement';
-import MessagingHub from '../routes/MessagingHub';
+// import MessagingHub from '../routes/MessagingHub';
 import UserSpecificAdminView from '../components/UserSpecificAdminView';
 
 const router = createBrowserRouter([
@@ -41,18 +46,15 @@ const router = createBrowserRouter([
                 path: '/certification',
                 element: <Certification />,
             },
-            {
-                path: '/practitioner',
-                element: <Practitioner />,
-            },
+
             {
                 path: '/success',
                 element: <PaymentSuccessPage />,
             },
-            {
-                path: '/contact-us',
-                element: <ContactUs />,
-            },
+            // {
+            //     path: '/contact-us',
+            //     element: <ContactUs />,
+            // },
 
             {
                 path: '/notifications',
@@ -67,7 +69,7 @@ const router = createBrowserRouter([
                         element: <PractitionerManagement />,
                         children: [
                             {
-                                path: ':userId',
+                                path: ':userEmail',
                                 element: <UserSpecificAdminView />,
                             },
                         ],
@@ -77,7 +79,6 @@ const router = createBrowserRouter([
                         path: 'admin-uploads',
                         element: <AdminUploadManagement />,
                     },
-                    { path: 'messaging-hub', element: <MessagingHub /> },
                 ],
             },
         ],
@@ -88,6 +89,11 @@ const router = createBrowserRouter([
     },
     { path: '/about', element: <AboutUs /> },
     { path: '/', element: <Home /> },
+
+    {
+        path: '/practitioner/:email',
+        element: <PractitionerDetails />, 
+    },
     {
         path: '/contact-us',
         element: <ContactUs />,
@@ -97,9 +103,29 @@ const router = createBrowserRouter([
         element: <RonBio />,
     },
     {
+        path: '/terri-bio',
+        element: <TerriBio />,
+    },
+    {
+        path: '/julissa-bio',
+        element: <JulissaBio />,
+    },
+    {
+        path: '/steve-bio',
+        element: <SteveBio />,
+    },
+    {
+        path: '/tami-bio',
+        element: <TamiBio />,
+    },
+    {
         path: '/terms',
-        element: <Terms />
-    }
+        element: <Terms />,
+    },
+    {
+        path: '/practitioner',
+        element: <Practitioner />,
+    },
 ]);
 
 //changed back to Home component.  Auth0 should handle authentication, but we can add secondary way to authenticate/register using this Auth route.

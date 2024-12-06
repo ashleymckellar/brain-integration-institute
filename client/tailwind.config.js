@@ -31,12 +31,27 @@ export default {
                 'charcoal': '#7b7b7b7b',
                 'school-bus-yellow': "#f0d171",
                 'green-is-good': "#38761d",
-                'background-tan': "#F5F5F0"
+                'background-tan': "#F5F5F0",
+                'gradient-start': '#1DFF8E',
+                'background-peach': '#e6d5c5',
+                'footer-peach': '#f6e6d6',
+                'gradient-end': 'rgba(29, 255, 210, 0.11)',
             },
+            backgroundImage: {
+                'gradient-custom-green': 'linear-gradient(90deg, #1DFF8E 0%, rgba(29, 255, 210, 0.11) 100%)',
+                'gradient-custom-orange': 'linear-gradient(90deg, hsla(51, 89%, 61%, 1) 0%, hsla(25, 83%, 57%, 1) 100%);',
+                'gradient-custom-blue': 'radial-gradient(86.92% 93.8% at 84.04% 58.33%, #FFF 2.64%, #BEC4E0 100%)'
+
+
+              },
             dropShadow: {
                 md: '0 4px 4px rgba(0, 0, 0, 0.25)',
                 //box-shadow: 0px 4.554px 4.554px 0px rgba(0, 0, 0, 0.25)
             },
+            boxShadow: {
+                'custom-red': '0px 4px 4px 0px #B32C36',
+                'custom-green': '0px 4px 4px 0px #38761d',
+              },
         },
     },
     plugins: [],

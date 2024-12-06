@@ -6,6 +6,7 @@ const {
     getAllUserMetaData,
     deleteUserMetaData,
 } = require('../services/user');
+const { deleteProfileData } = require('../services/profile')
 const { UserModel } = require('../models/User');
 const { ProfileModel } = require('../models/profile');
 
@@ -105,7 +106,7 @@ userRouter.get('/', async (req, res) => {
 userRouter.put('/:email/progress', async (req, res) => {
     const { userUploadProgress } = req.body;
     const { email } = req.params;
-  
+
 
     if (
         userUploadProgress === undefined ||
@@ -122,8 +123,6 @@ userRouter.put('/:email/progress', async (req, res) => {
             { userUploadProgress },
             { new: true, runValidators: true },
         );
-
-     
 
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
@@ -243,6 +242,44 @@ userRouter.put('/:email/is-admin', async (req, res) => {
     }
 });
 
+userRouter.put('/:email/is-certified', async (req, res) => {
+    const { isCertified } = req.body;
+    const { email } = req.params;
+
+    if (typeof isCertified !== 'boolean') {
+        return res.status(400).json({
+            error: 'isCertified is required and must be a boolean',
+        });
+    }
+
+    try {
+        console.log(`Updating certification status for user ${email} to ${isCertified}`);
+
+        const updateFields = isCertified
+        ? { isCertified, certifiedDate: Date.now() }
+        : { isCertified };
+
+        const user = await UserModel.findOneAndUpdate(
+            { userEmail: email },
+            updateFields,
+            { new: true, runValidators: true },
+        );
+
+        if (!user) {
+            console.log(`User with email ${email} not found`);
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        console.log(`User ${email} admin status updated to:`, user.isCertified);
+        res.json(user);
+    } catch (error) {
+        console.error('Error updating admin status:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
+
 //create put route for assessment access
 
 //assessmentAccess will toggle to true
@@ -303,7 +340,7 @@ userRouter.patch('/:email/document-status', async (req, res) => {
         // Save the updated user document
         const updatedUser = await user.save();
 
-        console.log('Updated user:', updatedUser);
+        
 
         res.status(200).send(updatedUser);
     } catch (error) {
@@ -317,7 +354,7 @@ userRouter.patch('/:email/document-status', async (req, res) => {
 //delete user route - can only be accessed by admins
 userRouter.delete('/:email', async (req, res) => {
     const email = req.params.email;
-    console.log(email, 'email');
+    
     try {
         const deletedUser = await UserModel.findOneAndDelete({
             userEmail: email,
@@ -328,6 +365,17 @@ userRouter.delete('/:email', async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
         console.log('[Delete Route] User deleted successfully');
+
+        try {
+            const userId = deletedUser._id; // Assuming `UserModel`'s `_id` corresponds to the `userId` in `ProfileModel`
+            await deleteProfileData(userId);
+            console.log('[Delete Route] Profile data deleted successfully');
+        } catch (profileError) {
+            console.error('[Delete Route] Error deleting profile data:', profileError);
+            return res
+                .status(500)
+                .json({ message: 'User deleted, but an error occurred while deleting profile data' });
+        }
         return res
             .status(200)
             .json({ message: 'User and metadata deleted successfully' });

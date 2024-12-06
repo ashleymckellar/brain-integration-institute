@@ -4,15 +4,19 @@ import dotenv from 'dotenv';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
-  server: {
-    proxy: {
-      '/api': {
-        target: import.meta.env.VITE_API_BASE_URL,
-        changeOrigin: true
-      }
-    }
-  }
-})
 
-console.log('VITE_API_BASE_URL:', import.meta.env.VITE_API_BASE_URL,);
+    plugins: [react()],
+    server: {
+        proxy: {
+            '/api': {
+                target: 'http://localhost:8080',
+                changeOrigin: true,
+            },
+            '/public-profiles': { // Add the public route here
+                target: 'http://localhost:8080',
+                changeOrigin: true,
+            },
+        },
+    },
+});
+

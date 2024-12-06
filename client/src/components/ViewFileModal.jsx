@@ -1,11 +1,12 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
+import { AdminContext, UserContext } from '../contexts';
+// import { Document, Page, PDFViewer } from 'react-pdf';
 
 export default function ViewFileModal({
     open,
     onClose,
-    selectedDocumentName,
     imagesByDocType,
     individualUser,
     onChange,
@@ -13,8 +14,10 @@ export default function ViewFileModal({
     selectedDocumentType,
     getAllUsers,
 }) {
-    const { getAccessTokenSilently } = useAuth0();
+    const { getAccessTokenSilently, user } = useAuth0();
     const [reasonForDenial, setReasonForDenial] = useState('');
+    const { sendAdminNotification } = useContext(AdminContext);
+    const { fetchNotifications } = useContext(UserContext);
     const baseUrl = import.meta.env.VITE_API_BASE_URL;
     useEffect(() => {
         if (open) {
@@ -53,50 +56,94 @@ export default function ViewFileModal({
                     body: JSON.stringify({
                         documentType: selectedDocumentType,
                         newStatus: newDocStatus,
+                        notificationType: 'docStatusUpdate',
                     }),
                 },
             );
 
-            if (!response.ok) {
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Successfully updated:', data);
+
+                // Refresh user data and notifications
+                getAllUsers();
+                fetchNotifications();
+
+                alert('Document status updated successfully!');
+            } else {
                 const errorData = await response.json();
                 console.error(
                     'Error updating document status:',
                     errorData.message,
                 );
                 alert(`Error: ${errorData.message}`);
-            } else {
-                const data = await response.json();
-                console.log('Successfully updated:', data);
-                getAllUsers();
-                alert('Document status updated successfully!');
             }
         } catch (error) {
             console.error('Failed to submit the form:', error);
             alert('Something went wrong. Please try again.');
+            return;
         }
 
-        if (newDocStatus === 'declined') {
-            await fetch(`${baseUrl}/api/approvalmessages`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${accessToken}`,
-                },
-                body: JSON.stringify({
-                    message: reasonForDenial,
-                    category: selectedDocumentType,
-                    userEmail: 'ashley.l.mckellar@gmail.com',
-                    admin: 'ashley.l.mckellar@gmail.com',
+        let message;
+        if (newDocStatus === 'approved') {
+            const documentName = docTypeMapping[selectedDocumentType];
+            message = `${documentName} document has been approved.`;
+        } else if (newDocStatus === 'declined') {
+            if (!reasonForDenial || reasonForDenial.trim() === '') {
+                console.error(
+                    'Reason for denial is required but not provided.',
+                );
+                alert('Please provide a reason for denial.');
+                return; // Exit early to prevent sending an incomplete notification
+            }
+            const documentName = docTypeMapping[selectedDocumentType];
+            message = `${documentName} document has been declined. Reason for denial: ${reasonForDenial}`;
+        }
 
-                    //fix the above so userEmail and admin aren't hard coded
-                }),
+
+        if (message) {
+            console.log('Sending notification with:', {
+                userEmail: individualUser.userEmail,
+                category: selectedDocumentType,
+                message,
+                admin: user.email,
+                notificationType: 'docStatusUpdate',
             });
+            try {
+                await sendAdminNotification({
+                    userEmail: individualUser.userEmail,
+                    category: selectedDocumentType,
+                    message,
+                    admin: user.email, // Adjust as needed for the authenticated admin's email
+                    notificationType: 'docStatusUpdate',
+                    notificationStatus: newDocStatus,
+                });
+            } catch (error) {
+                console.error('Failed to send notification:', error);
+                alert('Notification could not be sent.');
+            }
         }
 
-        setReasonForDenial('');
-        onClose();
+        setReasonForDenial(''); // Clear the reason for denial
+        onClose(); // Close the modal or reset the form
     };
 
+    const docTypeMapping = {
+        brainIntegrationTraining: 'Brain integration training',
+        videoPresentation: 'Video presentation',
+        cprCert: 'CPR certification',
+        clinicalHours: 'Clinical hours',
+        firstAidTraining: 'First aid training',
+        insurance: 'Insurance',
+    };
+
+    // const [numPages, setNumPages] = useState(null);
+
+    // const onDocumentLoadSuccess = ({ numPages }) => {
+    //     setNumPages(numPages);
+    // };
+
+    console.log(imagesByDocType, 'images by doc type');
     return (
         <div
             onClick={onClose}
@@ -106,7 +153,7 @@ export default function ViewFileModal({
         >
             <div
                 onClick={(e) => e.stopPropagation()}
-                className={`bg-white rounded-md shadow-lg p-6 transition-all ${
+                className={`bg-white rounded-md shadow-lg p-6  h-50 transition-all ${
                     open ? 'scale-100 opacity-100' : 'scale-90 opacity-0'
                 }`}
             >
@@ -117,15 +164,53 @@ export default function ViewFileModal({
                     X
                 </button>
                 <div className="text-center w-full flex flex-col items-center gap-2 mb-10">
-                    <h3 className="text-lg text-gray-500 font-bold">
-                        View file for: {selectedDocumentName}
-                    </h3>
                     {imagesByDocType.length > 0 ? (
-                        <img
-                            src={imagesByDocType[0].url}
-                            alt="Document file"
-                            className="w-[700px] h-[600px]"
-                        />
+                        imagesByDocType.map((doc, idx) => (
+                            <div
+                                key={idx}
+                                className="flex flex-col border border-charcoal rounded-xl p-5"
+                            >
+                                {doc.format === 'pdf' ? (
+                                    <div className="w-[500px] h-[400px] overflow-auto border">
+                                        <object
+                                            data={doc.url}
+                                            type="application/pdf"
+                                            width="100%"
+                                            height="800px"
+                                        >
+                                            <p>
+                                                Your browser does not support
+                                                PDFs.
+                                                <a href={doc.url}>
+                                                    Download the PDF
+                                                </a>
+                                            </p>
+                                        </object>
+                                    </div>
+                                ) 
+                                : doc.format === "mp4" ? (
+                                    <div className="w-[600px] h-[400px] overflow-auto border">
+                                        <video
+                                            src={doc.url}
+                                            controls
+                                            width="100%"
+                                            height="100%"
+                                        >
+                                            <p>Your browser does not support the video element. 
+                                                <a href={doc.url} target="_blank" rel="noopener noreferrer">Download the video</a>
+                                            </p>
+                                        </video>
+                                    </div>
+                                ): (
+                                    <img
+                                        id={doc.id}
+                                        src={doc.url}
+                                        alt="Document file"
+                                        className="w-[600px] h-[500px] object-contain"
+                                    />
+                                )}
+                            </div>
+                        ))
                     ) : (
                         <p>No image available</p>
                     )}

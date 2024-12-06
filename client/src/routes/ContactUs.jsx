@@ -1,8 +1,11 @@
+/* eslint-disable no-unused-vars */
 import { useState, useEffect } from 'react';
 import banner from '../assets/icons/PractitionerBackground.png';
 import paleBanner from '../assets/icons/PaleGreenPractitionerBackground.png';
 import emailjs from '@emailjs/browser';
 import ContactFormModal from '../components/ContactFormModal';
+import { Navbar } from '../components/header/Navbar'
+import { Footer } from '../components/Footer'
 
 export const ContactUs = () => {
     const [formData, setFormData] = useState({
@@ -47,6 +50,7 @@ export const ContactUs = () => {
     };
 
     const onBlur = (e) => {
+        const regex = /^[0-9]+$/;
         const { name, value } = e.target;
         if (regex.test(value)) {
             setValidationError('');
@@ -100,7 +104,7 @@ export const ContactUs = () => {
 
     return (
         <>
-            {/* Banner Section */}
+       <Navbar />
             <div
                 className="w-full h-64 sm:h-80 md:h-96 lg:h-112 relative bg-white"
                 style={{
@@ -225,6 +229,7 @@ export const ContactUs = () => {
                     )}
                 </div>
             </div>
+            <Footer />
         </>
     );
 };

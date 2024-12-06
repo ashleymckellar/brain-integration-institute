@@ -11,8 +11,13 @@ const getAllProfileMetaData = async () => {
     return allProfiles
 }
 
+const deleteProfileData = async (userId) => {
+    const profile = await ProfileModel.findOneAndDelete({userId})
+}
+
 
 module.exports = {
     createProfileData,
-    getAllProfileMetaData
+    getAllProfileMetaData,
+    deleteProfileData
 };

@@ -35,7 +35,9 @@ export const CloudinaryProvider = ({ children }) => {
     const [certificates, setCertificates] = useState([]);
     const [imagesByDocType, setImagesByDocType] = useState([]);
     const [expandedSection, setExpandedSection] = useState(null);
-    const [sectionFiles, setSectionFiles] = useState({});
+    const [uploadedSections, setUploadedSections] = useState([]); 
+    // const [sectionFiles, setSectionFiles] = useState({});
+     const [processedUploads, setProcessedUploads] = useState([]);
     const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
     const uwConfig = {
@@ -49,6 +51,8 @@ export const CloudinaryProvider = ({ children }) => {
     const apiSecret = import.meta.env.VITE_CLOUDINARY_API_SECRET;
     const apiKey = import.meta.VITE_CLOUDINARY_API_KEY;
 
+    
+
     //gets file metadata
     const getFiles = async () => {
         try {
@@ -57,14 +61,14 @@ export const CloudinaryProvider = ({ children }) => {
                 console.error('User email is missing');
                 return [];
             }
-    
+
             // Fetch the access token
             const accessToken = await getAccessTokenSilently();
             if (!accessToken) {
                 console.error('Access token is missing');
                 return [];
             }
-    
+
             // Fetch files from the API
             const email = user.email;
             const response = await axios.get(
@@ -73,22 +77,21 @@ export const CloudinaryProvider = ({ children }) => {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
                     },
-                }
+                },
             );
-    
+
             // Handle case where response might be null or not OK
             if (!response || !response.data || !response.data.files) {
                 // console.error('No files found or invalid response');
-                return []; 
+                return [];
             }
-    
+
             return response.data.files;
         } catch (error) {
             console.error('Error fetching files:', error);
             return [];
         }
     };
-    
 
     //gets files from Cloudinary via callback/cors proxy
     const getFilesInFolder = async () => {
@@ -96,7 +99,7 @@ export const CloudinaryProvider = ({ children }) => {
             if (!user || !user.email) {
                 throw new Error('User email is missing');
             }
-            
+
             const nickname = user.email.split('@')[0];
             const accessToken = await getAccessTokenSilently();
 
@@ -110,9 +113,9 @@ export const CloudinaryProvider = ({ children }) => {
             );
             if (!response || !response.data || !response.data.files) {
                 console.error('No files found or invalid response');
-                return []; 
+                return [];
             }
-            console.log(response.data)
+            console.log(response.data);
             return response.data;
         } catch (error) {
             console.error('Error fetching files:', error);
@@ -193,7 +196,11 @@ export const CloudinaryProvider = ({ children }) => {
         if (user) {
             try {
                 const accessToken = await getAccessTokenSilently();
-             
+
+                console.log('Updating user progress:', {
+                    userUploadProgress: newProgress,
+                });
+
 
                 const response = await fetch(
                     `${baseUrl}/api/user/${user.email}/progress`,
@@ -230,7 +237,7 @@ export const CloudinaryProvider = ({ children }) => {
 
 
     const updateUserStudyGuide = async (email) => {
-       
+
         if (!email) {
             console.error('Email is required to update the study guide.');
             return;
@@ -282,7 +289,11 @@ export const CloudinaryProvider = ({ children }) => {
         }
     };
 
-    const updateUserDocumentStatus = async (documentType, newStatus) => {
+    const updateUserDocumentStatus = async (
+        documentType,
+        newStatus,
+        notificationType,
+    ) => {
         if (user) {
             try {
                 const accessToken = await getAccessTokenSilently();
@@ -297,6 +308,7 @@ export const CloudinaryProvider = ({ children }) => {
                         body: JSON.stringify({
                             documentType,
                             newStatus,
+                            notificationType,
                         }),
                     },
                 );
@@ -322,7 +334,26 @@ export const CloudinaryProvider = ({ children }) => {
         }
     };
 
+    const sendAdminNotification = async (user, selectedDocumentType) => {
+        const accessToken = await getAccessTokenSilently();
+
+        // const stripe = await stripePromise();
+        const response = await fetch('/api/admin-notifications', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${accessToken}`,
+            },
+            body: JSON.stringify({
+                notificationType: 'docStatusUpdate',
+                userEmail: user,
+                category: selectedDocumentType,
+            }),
+        });
+    };
+
     const initializeCloudinaryWidget = (section) => {
+         
         if (user) {
             const myWidget = window.cloudinary.createUploadWidget(
                 {
@@ -331,18 +362,19 @@ export const CloudinaryProvider = ({ children }) => {
                     asset_folder: `users/${user.nickname}/${section}`,
                 },
                 async (error, result) => {
-                    if (error) {
-                        console.error('Upload error:', error);
-                        return;
-                    }
+                    // Handle only the success event
                     if (!error && result && result.event === 'success') {
                         console.log('Upload successful:', result.info);
                         onUploadSuccess(section);
-                        const newProgress = Math.max(progress + 1, 8);
-
-                        setProgress(newProgress);
-                        await updateUserProgress(newProgress);
-
+    
+                        // Prevent duplicate POST requests for the same file
+                        if (processedUploads.includes(result.info.public_id)) {
+                            console.log('Duplicate event ignored:', result.info.public_id);
+                            return;
+                        }
+                        
+                        setProcessedUploads((prev) => [...prev, result.info.public_id]);
+    
                         const fileMetadata = {
                             publicId: result.info.public_id,
                             url: result.info.secure_url,
@@ -351,14 +383,23 @@ export const CloudinaryProvider = ({ children }) => {
                             sectionName: section,
                             isApproved: false,
                         };
-
+    
                         setPublicId(result.info.public_id);
                         setFilename(result.info.original_filename);
                         setFileMetaData((prevMetaData) => [
                             ...prevMetaData,
                             fileMetadata,
                         ]);
-
+    
+                        // Update progress if applicable
+                        if (!uploadedSections.includes(section) && progress < 8) {
+                            const newProgress = progress + 1;
+    
+                            setProgress(newProgress);
+                            setUploadedSections((prevSections) => [...prevSections, section]);
+                            await updateUserProgress(newProgress);
+                        }
+    
                         // Send metadata to the server
                         try {
                             const accessToken = await getAccessTokenSilently();
@@ -373,28 +414,26 @@ export const CloudinaryProvider = ({ children }) => {
                                     body: JSON.stringify(fileMetadata),
                                 },
                             );
-
+    
                             if (response.ok) {
-                              
-                                setFiles((prevFiles) => [
-                                    ...prevFiles,
-                                    fileMetadata,
-                                ]);
+
+                                console.log(
+                                    'File metadata successfully sent to the server.',
+                                );
+                                setFiles((prevFiles) => [...prevFiles, fileMetadata]);
+
                             } else {
                                 console.error(
                                     'Failed to send file metadata to the server.',
                                 );
                             }
                         } catch (error) {
-                            console.error(
-                                'Error sending file metadata:',
-                                error,
-                            );
+                            console.error('Error sending file metadata:', error);
                         }
                     }
                 },
             );
-
+    
             myWidget.open();
         }
     };
@@ -413,9 +452,22 @@ export const CloudinaryProvider = ({ children }) => {
         };
 
         setCertListUploadStatus(updatedStatus);
-        await updateUserDocumentStatus(documentType, newStatus);
-        console.log('Updated certListUploadStatus:', updatedStatus);
-        console.log('Calling updateUserProgress with value:', 1);
+        try {
+            // Update the user's document status
+            await updateUserDocumentStatus(
+                documentType,
+                newStatus,
+                'docStatusUpdate',
+            );
+
+            // Send admin notification
+            await sendAdminNotification(user.email, documentType);
+
+            console.log('Updated certListUploadStatus:', updatedStatus);
+            console.log('Calling updateUserProgress with value:', 1);
+        } catch (error) {
+            console.error('Error in onUploadSuccess:', error);
+        }
     };
 
     const uploadProfilePicture = (file) => {
@@ -481,6 +533,7 @@ export const CloudinaryProvider = ({ children }) => {
     };
 
     const deleteFile = async (publicId, sectionName) => {
+        console.log(publicId, 'publicId')
         try {
             const accessToken = await getAccessTokenSilently();
             const response = await fetch(
@@ -493,25 +546,61 @@ export const CloudinaryProvider = ({ children }) => {
                 },
             );
 
+            // const newStatus = 'pending approval';
+            // const updatedStatus = {
+            //     ...certListUploadStatus,
+            //     [documentType]: newStatus,
+            // };
+    
+            // setCertListUploadStatus(updatedStatus);
+            // try {
+            //     // Update the user's document status
+            //     await updateUserDocumentStatus(
+            //         documentType,
+            //         newStatus,
+            //         'docStatusUpdate',
+            //     );
+    
             if (response.ok) {
-                console.log('File and metadata deleted successfully.');
                 const newStatus = 'waiting for upload';
                 const updatedStatus = {
                     ...certListUploadStatus,
                     [sectionName]: newStatus,
                 };
-                console.log(
-                    'Updated status before PUT request:',
-                    updatedStatus,
+
+                await updateUserDocumentStatus(
+                    sectionName,
+                    newStatus,
+                    'docStatusUpdate',
                 );
-                await updateUserDocumentStatus(sectionName, newStatus);
-                setFileMetaData((prevMetaData) =>
-                    prevMetaData.filter((file) => file.publicId !== publicId),
-                );
+    
+    
+                // Remove file from metadata and files state
+                const updatedFileMetaData = fileMetaData.filter((file) => file.publicId !== publicId);
+                setFileMetaData(updatedFileMetaData); // update state with the new metadata
                 setFiles((prevFiles) =>
                     prevFiles.filter((file) => file.publicId !== publicId),
                 );
                 setCertListUploadStatus(updatedStatus);
+                
+                // Update the user's document status
+               
+                // Check if there are still any files in the section
+                const remainingFilesInSection = updatedFileMetaData.filter(
+                    (metadata) =>  metadata.sectionName === sectionName && metadata.filename !== undefined
+                );
+                
+                console.log(remainingFilesInSection, 'remaining files in section')
+                if (remainingFilesInSection.length === 0 && progress > 0) {
+                    // No files left, decrement progress and unmark section as uploaded
+                    const newProgress = progress - 1; // Prevent progress from going below 0
+                    setProgress(newProgress);
+                    setUploadedSections((prevSections) =>
+                        prevSections.filter((uploadedSection) => uploadedSection !== sectionName)
+                    );
+                    await updateUserProgress(newProgress);
+                }
+    
                 setDeleteModalOpen(false);
             } else {
                 console.error('Failed to delete file.');
@@ -520,6 +609,7 @@ export const CloudinaryProvider = ({ children }) => {
             console.error('Error deleting file:', error);
         }
     };
+    
 
     const uploadCompletionCertificate = (file) => {
         if (user) {
@@ -591,12 +681,13 @@ export const CloudinaryProvider = ({ children }) => {
     //get certificate file from cloudinary
 
     const getCertificate = async () => {
-        console.log('certificate route tapped')
         try {
-            console.log('Attempting to retrieve access token...');
             const accessToken = await getAccessTokenSilently();
-            console.log('Access token retrieved:', accessToken);
-            console.log('Sending GET request to:', `http://${baseUrl}/api/images/certificate`);
+
+            console.log(
+                'Sending GET request to:',
+                `http://${baseUrl}/api/images/certificate`,
+            );
             const response = await axios.get(
                 `${baseUrl}/api/images/certificate`,
                 {

@@ -10,12 +10,10 @@ const createUserEndpoint = `${baseUrl}/api/user/createuser`;
 /**
  * Automatically attaches Auth0 user access token to outgoing requests
  * @example
- * const { request } = useHttpAuthClient()
- * request('/api/path/to/authorized/resource')
- *  .then(data => {console.log(data)})
+
  *
  *
- * for protected routes that require authentication
+ 
  */
 export const useHttpAuthClient = () => {
     const { getAccessTokenSilently, user } = useAuth0();
@@ -121,7 +119,7 @@ export const useProfileForm = (initialValues) => {
     const { getAccessTokenSilently, user } = useAuth0();
 
     const handleInputChange = (e) => {
-        // console.log('change handled');
+
         const { name, value } = e.target;
         setInputs((prevInputs) => ({
             ...prevInputs,
@@ -130,12 +128,11 @@ export const useProfileForm = (initialValues) => {
     };
 
     const resetInputs = () => {
-        // console.log('inputs reset!');
         setInputs(initialValues);
     };
 
     const createProfileData = async () => {
-        // console.log('Inputs being sent:', inputs);
+
 
         try {
             const response = await fetch(
@@ -157,7 +154,6 @@ export const useProfileForm = (initialValues) => {
             }
             const data = await response.json();
 
-            // console.log('Response from backend:', data);
             if (!data.success) throw new Error(data.error);
 
             // Reset inputs after successful submission
@@ -196,9 +192,33 @@ const useProfileData = (user) => {
                     },
                 });
 
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
+
+        const fetchProfileData = async () => {
+            if (user && user.email) {
+               
+                try {
+                    setLoading(true); 
+                    const response = await fetch(`/api/profile/${user.email}`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${await getAccessTokenSilently()}`,
+                        },
+                    });
+        
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+        
+                    const data = await response.json();
+                    setProfileData(data); 
+                  
+                } catch (error) {
+                    console.error('Error fetching profile data:', error);
+                    setError(error.message); 
+                } finally {
+                    setLoading(false); 
+
 
                 const data = await response.json();
                 setProfileData(data);

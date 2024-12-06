@@ -9,7 +9,7 @@ import { Outlet, useParams } from 'react-router-dom';
 
 const PractitionerManagement = () => {
     const { getAllUsers } = useContext(AdminContext);
-    const { userId } = useParams();
+    const { userEmail } = useParams();
 
     useEffect(() => {
         getAllUsers();
@@ -19,7 +19,7 @@ const PractitionerManagement = () => {
         <div className="flex flex-col justify-center items-center gap-10 w-full min-h-screen px-4 sm:px-6 md:px-8">
             <div className="flex-grow pb-8 w-full max-w-7xl">
                 {/* Adjust layout to switch between UserList and Outlet on small screens */}
-                {userId ? (
+                {userEmail ? (
                     <Outlet />
                 ) : (
                     <UserList />

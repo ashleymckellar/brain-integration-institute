@@ -7,22 +7,33 @@ import { PractitionerProvider } from './providers/PractitionerContext';
 import { CloudinaryProvider } from './providers/CloudinaryProvider';
 import { UserProvider } from './providers/UserProvider';
 import { AdminProvider } from './providers/AdminProvider';
+import { ParallaxProvider } from 'react-scroll-parallax';
 import './assets/global.css';
+import { SkeletonTheme } from 'react-loading-skeleton';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
         <AuthProvider>
-            <UserProvider>
-                <AdminProvider>
-                    <CloudinaryProvider>
-                        <PractitionerProvider>
-                            <FileProvider>
-                                <RouteProvider />
-                            </FileProvider>
-                        </PractitionerProvider>
-                    </CloudinaryProvider>
-                </AdminProvider>
-            </UserProvider>
+            <SkeletonTheme
+                baseColor="#ECECEC"
+                highlightColor="#eeeee4
+
+"
+            >
+                <UserProvider>
+                    <AdminProvider>
+                        <ParallaxProvider>
+                            <CloudinaryProvider>
+                                <PractitionerProvider>
+                                    <FileProvider>
+                                        <RouteProvider />
+                                    </FileProvider>
+                                </PractitionerProvider>
+                            </CloudinaryProvider>
+                        </ParallaxProvider>
+                    </AdminProvider>
+                </UserProvider>
+            </SkeletonTheme>
         </AuthProvider>
     </React.StrictMode>,
 );

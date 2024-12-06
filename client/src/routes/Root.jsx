@@ -12,9 +12,9 @@ export const Root = () => {
     if (!user) {
         return (
             <div>
-                <Navbar />;
+                <Navbar />
                 <Home />
-                <Footer />
+                {/* <Footer /> */}
             </div>
         );
     }

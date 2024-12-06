@@ -7,7 +7,8 @@ const {
     getImagesFromCloudinary,
     getCertificateFromCloudinary,
     createCertificate,
-    getThumbnailImages
+    getThumbnailImages,
+    getCompletionCertificate
 } = require('../services/document.js');
 const Certificate = require('../models/certificate.js');
 const documentRouter = ex.Router();
@@ -21,10 +22,10 @@ cloudinary.config({
 //route to fetch admin uploaded certificate template
 
 documentRouter.get('/certificate', validateAuthToken, async (req, res) => {
-    console.log('Certificate route accessed'); 
+  
     try { //getCertificateFromCloudinary
         const certificates = await getCertificateFromCloudinary('certificate');
-        console.log('Fetched certificates from certificate folder', certificates);
+       ;
         console.log('Calling function:', getCertificateFromCloudinary.toString());
         res.json(certificates);
     } catch (error) {
@@ -35,14 +36,30 @@ documentRouter.get('/certificate', validateAuthToken, async (req, res) => {
     }
 });
 
+documentRouter.get('/completion-certificate', validateAuthToken, async (req, res) => {
+    const userName = 'Jane Doe';
+    try { //getCertificateFromCloudinary
+        const certificateURL = await getCompletionCertificate(userName);
+        console.log('Generated Certificate URL:', certificateURL);
+        return certificateURL;
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+             error: 'Error generating certificate'
+        });
+    }
+});
+
 //this route no longer needed because cloudinary docs are all nested in a document type in the route below
 documentRouter.get('/:nickname', validateAuthToken, async (req, res) => {
     const nickname = req.params.nickname;
-    const folder = `users/${nickname}`;
-  
+
+    const folder = `users/${nickname}/`;
+   
+
     try {
         const images = await getImagesFromCloudinary(folder);
-        console.log('fetching images');
+       
         res.json(images);
     } catch (error) {
         console.error(error);
@@ -61,11 +78,11 @@ documentRouter.get('/:userEmail/:documentType', validateAuthToken, async (req, r
     const nickname = userEmail.split('@')[0];
     
     const folder = `users/${nickname}/${documentType}`;
-    console.log('Fetching images from folder:', folder);
+   
     
     try {
         const images = await getImagesFromCloudinary(folder);
-        console.log('Fetching images');
+       
         res.json(images);
     } catch (error) {
         console.error(error);
@@ -75,20 +92,7 @@ documentRouter.get('/:userEmail/:documentType', validateAuthToken, async (req, r
     }
 });
 
-// documentRouter.get('/certificate', validateAuthToken, async (req, res) => {
-//     console.log('Certificate route accessed'); 
-//     try { //getCertificateFromCloudinary
-//         const certificates = await getCertificateFromCloudinary('certificate');
-//         console.log('Fetched certificates from certificate folder', certificates);
-//         console.log('Calling function:', getCertificateFromCloudinary.toString());
-//         res.json(certificates);
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).json({
-//             error: 'Failed to fetch certificates from Cloudinary',
-//         });
-//     }
-// });
+
 
 
 //upload new certificate/metadata
@@ -116,7 +120,7 @@ documentRouter.post('/certificate', validateAuthToken, async (req, res) => {
 documentRouter.delete('/certificate/:publicId', async (req, res) => {
     const publicId = req.params.publicId;
     try {
-        console.log('Attempting to delete file with publicId:', publicId);
+       
         const result = await cloudinary.uploader.destroy(publicId);
         console.log(result, 'cloudinary delete');
         if (result.result === 'ok') {

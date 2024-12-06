@@ -5,17 +5,15 @@ const { UserModel } = require('../models/User.js');
 // Update the getAllFilesByOwner function
 const getAllFilesByOwner = async (userSub) => {
     try {
-        // Get the authenticated user's 'sub' from Auth0
-
-        // Find the user by the 'sub' value
-        const user = await UserModel.findOne({ sub: userSub }); // Use the 'sub' field for finding the user
-        console.log(userSub); // This will be the Auth0 sub
+       
+        const user = await UserModel.findOne({ sub: userSub });
+     
 
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
 
-        // Find files associated with the user’s ID
+      
         const files = await File.find({ user: user._id });
         console.log(files, 'Files found for user');
 
@@ -26,9 +24,7 @@ const getAllFilesByOwner = async (userSub) => {
     }
 };
 
-// const getAllFilesByOwner = async (user) => await File.find({
-//     user
-// });
+
 
 /**
  * Create a new file entry in the database
@@ -36,10 +32,10 @@ const getAllFilesByOwner = async (userSub) => {
  */
 const createFile = async (req, res) => {
     try {
-        // Assuming `sub` is passed as part of the authenticated user
-        const userSub = req.auth.payload.sub; // Get the authenticated user's 'sub'
+  
+        const userSub = req.auth.payload.sub;
 
-        // Find the user by the 'sub' value (Auth0 identifier)
+  
         const user = await UserModel.findOne({ sub: userSub });
 
         if (!user) {
@@ -53,9 +49,11 @@ const createFile = async (req, res) => {
             isApproved: req.body.isApproved,
             user: user._id,
             sectionName: req.body.sectionName,
+            uniqueid: req.body.uniqueid, 
+            
         });
 
-        // Save the file document
+   
         await newFile.save();
         res.status(201).json(newFile);
     } catch (error) {

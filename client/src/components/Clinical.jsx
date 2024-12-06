@@ -32,32 +32,31 @@ export default function Clinical(props) {
                                 : 'collapsed-accordion'
                         }
                     >
-                        <div className="flex items-center gap-2 pl-9">
-                            {!isExpanded && clinicalMetaData && clinicalMetaData.length === 0 ? (
-                                <>
-                                    <img src={AccordionRadioUnfilled} />
-                                    <h1 className="font-fira text-xl text-black font-bold tracking-tight pl-12">
-                                        {props.title}
-                                    </h1>
-                                </>
-                            ) : !isExpanded && clinicalMetaData && clinicalMetaData.length > 0 ? (
-                                <>
-                                    <img
-                                        className="h-[45px] w-[50px]"
-                                        src={CheckedRadio}
-                                    />
-                                    <h1 className="font-fira text-xl text-black font-bold tracking-tight">
-                                        {props.title}
-                                    </h1>
-                                </>
-                            ) : (
-                                <>
-                                    <h1 className="font-fira text-xl text-black font-bold tracking-tight">
-                                        {props.title}
-                                    </h1>
-                                </>
-                            )}
-                        </div>
+                       <div className="flex items-center gap-2 pl-9">
+    {/* Parent container for radio button and title */}
+    <div className="flex items-center gap-2 pl-2">
+        {/* Render radio button */}
+        {!isExpanded && clinicalMetaData.length === 0 ? (
+            <img
+                className="h-[45px] w-[50px]"
+                src={AccordionRadioUnfilled}
+                alt="Unchecked radio button"
+            />
+        ) : !isExpanded && clinicalMetaData.length > 0 ? (
+            <img
+                className="h-[45px] w-[50px]"
+                src={CheckedRadio}
+                alt="Checked radio button"
+            />
+        ) : null}
+    </div>
+
+    {/* Title always rendered with consistent padding */}
+    <h1 className="font-fira text-xl text-black font-bold tracking-tight pl-12">
+        {props.title}
+    </h1>
+</div>
+
                         {isExpanded ? (
                             <button className="pr-5" onClick={toggleExpand}>
                                 <img

@@ -114,10 +114,10 @@ adminRouter.post(
     validateAuthToken,
     checkAdminRole,
     async (req, res) => {
-        console.log('admin post route hit');
+       
         const { userId } = req.params;
         const token = await getAuth0Token();
-        console.log('Token:', token);
+        
 
         try {
             await axios.post(
