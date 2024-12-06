@@ -35,9 +35,9 @@ export const CloudinaryProvider = ({ children }) => {
     const [certificates, setCertificates] = useState([]);
     const [imagesByDocType, setImagesByDocType] = useState([]);
     const [expandedSection, setExpandedSection] = useState(null);
-    const [uploadedSections, setUploadedSections] = useState([]); 
+    const [uploadedSections, setUploadedSections] = useState([]);
     // const [sectionFiles, setSectionFiles] = useState({});
-     const [processedUploads, setProcessedUploads] = useState([]);
+    const [processedUploads, setProcessedUploads] = useState([]);
     const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
     const uwConfig = {
@@ -50,8 +50,6 @@ export const CloudinaryProvider = ({ children }) => {
     const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${cloudName}/resources/image/upload`;
     const apiSecret = import.meta.env.VITE_CLOUDINARY_API_SECRET;
     const apiKey = import.meta.VITE_CLOUDINARY_API_KEY;
-
-    
 
     //gets file metadata
     const getFiles = async () => {
@@ -262,18 +260,17 @@ export const CloudinaryProvider = ({ children }) => {
             const data = await response.json();
             console.log('User study guide updated on the server:', data);
             setStudyGuideAccess(true);
-            const newProgress = Math.min(progress + 1, 8);
-            if (newProgress > progress) {
-                try {
-                    await updateUserProgress(newProgress);
-                    console.log('User progress updated to:', newProgress);
-                    setProgress(newProgress); // Update state only after success
-                } catch (error) {
-                    console.error('Error updating user progress:', error);
-                }
-            } else {
-                console.log('Progress is already at maximum:', newProgress);
+            // const newProgress = Math.min(progress + 1, 8);
+            try {
+                if (progress < 8) {
+                    const newProgress = progress + 1;
+
+                    setProgress(newProgress);
+                } // Update state only after success
+            } catch (error) {
+                console.error('Error updating user progress:', error);
             }
+
             //call setProgress here, not in accordion
         } catch (error) {
             console.error('Error updating user study guide:', error);
@@ -344,7 +341,6 @@ export const CloudinaryProvider = ({ children }) => {
     };
 
     const initializeCloudinaryWidget = (section) => {
-         
         if (user) {
             const myWidget = window.cloudinary.createUploadWidget(
                 {
@@ -357,15 +353,21 @@ export const CloudinaryProvider = ({ children }) => {
                     if (!error && result && result.event === 'success') {
                         console.log('Upload successful:', result.info);
                         onUploadSuccess(section);
-    
+
                         // Prevent duplicate POST requests for the same file
                         if (processedUploads.includes(result.info.public_id)) {
-                            console.log('Duplicate event ignored:', result.info.public_id);
+                            console.log(
+                                'Duplicate event ignored:',
+                                result.info.public_id,
+                            );
                             return;
                         }
-                        
-                        setProcessedUploads((prev) => [...prev, result.info.public_id]);
-    
+
+                        setProcessedUploads((prev) => [
+                            ...prev,
+                            result.info.public_id,
+                        ]);
+
                         const fileMetadata = {
                             publicId: result.info.public_id,
                             url: result.info.secure_url,
@@ -374,23 +376,29 @@ export const CloudinaryProvider = ({ children }) => {
                             sectionName: section,
                             isApproved: false,
                         };
-    
+
                         setPublicId(result.info.public_id);
                         setFilename(result.info.original_filename);
                         setFileMetaData((prevMetaData) => [
                             ...prevMetaData,
                             fileMetadata,
                         ]);
-    
+
                         // Update progress if applicable
-                        if (!uploadedSections.includes(section) && progress < 8) {
+                        if (
+                            !uploadedSections.includes(section) &&
+                            progress < 8
+                        ) {
                             const newProgress = progress + 1;
-    
+
                             setProgress(newProgress);
-                            setUploadedSections((prevSections) => [...prevSections, section]);
+                            setUploadedSections((prevSections) => [
+                                ...prevSections,
+                                section,
+                            ]);
                             await updateUserProgress(newProgress);
                         }
-    
+
                         // Send metadata to the server
                         try {
                             const accessToken = await getAccessTokenSilently();
@@ -405,24 +413,30 @@ export const CloudinaryProvider = ({ children }) => {
                                     body: JSON.stringify(fileMetadata),
                                 },
                             );
-    
+
                             if (response.ok) {
                                 console.log(
                                     'File metadata successfully sent to the server.',
                                 );
-                                setFiles((prevFiles) => [...prevFiles, fileMetadata]);
+                                setFiles((prevFiles) => [
+                                    ...prevFiles,
+                                    fileMetadata,
+                                ]);
                             } else {
                                 console.error(
                                     'Failed to send file metadata to the server.',
                                 );
                             }
                         } catch (error) {
-                            console.error('Error sending file metadata:', error);
+                            console.error(
+                                'Error sending file metadata:',
+                                error,
+                            );
                         }
                     }
                 },
             );
-    
+
             myWidget.open();
         }
     };
@@ -522,7 +536,7 @@ export const CloudinaryProvider = ({ children }) => {
     };
 
     const deleteFile = async (publicId, sectionName) => {
-        console.log(publicId, 'publicId')
+        console.log(publicId, 'publicId');
         try {
             const accessToken = await getAccessTokenSilently();
             const response = await fetch(
@@ -540,7 +554,7 @@ export const CloudinaryProvider = ({ children }) => {
             //     ...certListUploadStatus,
             //     [documentType]: newStatus,
             // };
-    
+
             // setCertListUploadStatus(updatedStatus);
             // try {
             //     // Update the user's document status
@@ -549,7 +563,7 @@ export const CloudinaryProvider = ({ children }) => {
             //         newStatus,
             //         'docStatusUpdate',
             //     );
-    
+
             if (response.ok) {
                 const newStatus = 'waiting for upload';
                 const updatedStatus = {
@@ -562,34 +576,43 @@ export const CloudinaryProvider = ({ children }) => {
                     newStatus,
                     'docStatusUpdate',
                 );
-    
-    
+
                 // Remove file from metadata and files state
-                const updatedFileMetaData = fileMetaData.filter((file) => file.publicId !== publicId);
+                const updatedFileMetaData = fileMetaData.filter(
+                    (file) => file.publicId !== publicId,
+                );
                 setFileMetaData(updatedFileMetaData); // update state with the new metadata
                 setFiles((prevFiles) =>
                     prevFiles.filter((file) => file.publicId !== publicId),
                 );
                 setCertListUploadStatus(updatedStatus);
-                
+
                 // Update the user's document status
-               
+
                 // Check if there are still any files in the section
                 const remainingFilesInSection = updatedFileMetaData.filter(
-                    (metadata) =>  metadata.sectionName === sectionName && metadata.filename !== undefined
+                    (metadata) =>
+                        metadata.sectionName === sectionName &&
+                        metadata.filename !== undefined,
                 );
-                
-                console.log(remainingFilesInSection, 'remaining files in section')
+
+                console.log(
+                    remainingFilesInSection,
+                    'remaining files in section',
+                );
                 if (remainingFilesInSection.length === 0 && progress > 0) {
                     // No files left, decrement progress and unmark section as uploaded
                     const newProgress = progress - 1; // Prevent progress from going below 0
                     setProgress(newProgress);
                     setUploadedSections((prevSections) =>
-                        prevSections.filter((uploadedSection) => uploadedSection !== sectionName)
+                        prevSections.filter(
+                            (uploadedSection) =>
+                                uploadedSection !== sectionName,
+                        ),
                     );
                     await updateUserProgress(newProgress);
                 }
-    
+
                 setDeleteModalOpen(false);
             } else {
                 console.error('Failed to delete file.');
@@ -598,7 +621,6 @@ export const CloudinaryProvider = ({ children }) => {
             console.error('Error deleting file:', error);
         }
     };
-    
 
     const uploadCompletionCertificate = (file) => {
         if (user) {
