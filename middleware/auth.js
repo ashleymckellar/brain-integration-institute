@@ -13,10 +13,13 @@ const validateAuthToken = auth({
     tokenSigningAlg: 'RS256',
 });
 
+
 const validateAuthTokenMiddleware = (req, res, next) => {
     
     validateAuthToken(req, res, next);
 };
+
+
 
 /**
  * Enforces the authenticated request that it contains the provided permissions.
@@ -49,6 +52,5 @@ const enableCors = cors({
 module.exports = {
     validateAuthToken,
     allow,
-    enableCors,
-    validateAuthTokenMiddleware
+    enableCors
 }

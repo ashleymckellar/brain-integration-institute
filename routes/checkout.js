@@ -2,6 +2,10 @@ const ex = require('express');
 require('dotenv').config();
 const { validateAuthToken } = require('../middleware/auth.js');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const baseUrl = process.env.VITE_API_BASE_URL;
+const frontendUrl = process.env.VITE_FRONTEND_URL;
+const successUrl = `${process.env.VITE_FRONTEND_URL}/success?assessmentUrl=https://docs.google.com/forms/d/e/1FAIpQLSfdUfQkg5ExRPk8vuhKHCZFQmyZw6WhN3JOVfjDJWROId_JaA/viewform?usp=sf_link`;
+const cancelUrl = `${process.VITE_FRONTEND_URL}/profile`;
 
 const checkoutRouter = ex.Router();
 
@@ -85,8 +89,8 @@ checkoutRouter.post('/create-assessment-checkout-session', async (req, res) => {
         ],
         mode: 'payment',
         success_url:
-            'http://localhost:5173/success?assessmentUrl=https://docs.google.com/forms/d/e/1FAIpQLSfdUfQkg5ExRPk8vuhKHCZFQmyZw6WhN3JOVfjDJWROId_JaA/viewform?usp=sf_link',
-        cancel_url: 'http://localhost:5173/profile',
+            successUrl,
+        cancel_url: cancelUrl,
     });
     res.json({ id: session.id });
 
