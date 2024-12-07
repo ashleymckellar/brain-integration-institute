@@ -1,5 +1,3 @@
-
-
 import { useEffect, useState, useContext } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Link } from 'react-router-dom';
@@ -26,8 +24,6 @@ export const Navbar = () => {
     const [showDropdown, setShowDropdown] = useState(false);
     const [isNotificationDrawerOpen, setIsNotificationDrawerOpen] =
         useState(false);
-        const [resizeKey, setResizeKey] = useState(0);
-        const [isReady, setIsReady] = useState(false);
 
     const handleLogin = async () => {
         await loginWithRedirect({
@@ -98,15 +94,12 @@ export const Navbar = () => {
 
     useEffect(() => {
         const handleResize = () => setIsLargeScreen(window.innerWidth >= 768);
-        handleResize();
-        setIsReady(true); 
         window.addEventListener('resize', handleResize);
         return () => {
             window.removeEventListener('resize', handleResize);
         };
     }, []);
 
-    if (!isReady) return null;
     const renderLinks = () => (
         <div
             className={`flex ${
@@ -238,7 +231,7 @@ export const Navbar = () => {
     )
 
     return (
-         <header key={resizeKey} className=" flex flex-col w-full bg-white">
+        <header className=" flex flex-col w-full bg-white">
             <div className="flex items-center justify-between px-4 ">
                 <img src={BrainIntegrationSeal} alt="Logo" className="h-25 px-20 py-10" />
                 {isLargeScreen ? (
@@ -287,4 +280,3 @@ export const Navbar = () => {
         </header>
     )
 }
-g
