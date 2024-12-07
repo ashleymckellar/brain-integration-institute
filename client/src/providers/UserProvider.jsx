@@ -169,7 +169,7 @@ export const UserProvider = ({ children }) => {
         
             try {
                 setLoading(true);
-                const response = await fetch(`/api/profile/${email}`, {
+                const response = await fetch(`/pracs/public-profiles/${email}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
