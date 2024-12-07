@@ -64,7 +64,7 @@ server.use((req, res, next) => {
 //     }
 // });
 
-server.get('/public-profiles', async (req, res) => {
+server.get('/public/public-profiles', async (req, res) => {
  
 
     try {
