@@ -57,32 +57,7 @@ export const Footer = () => {
                     </div>
                 </div>
 
-                {/* Contact Info Section */}
-                <div className="contact-info flex flex-col text-center gap-5 mb-10 items-start lg:mb-0">
-                    <h3 className="font-fira text-xl font-bold">Contact Us</h3>
-                    <div className="flex gap-5 text-center justify-center">
-                        <img src={map} alt="map pin" />
-                        West Jordan & Midvale, UT
-                    </div>
-                    <div className="flex gap-5 justify-center">
-                        <img src={phone} alt="phone" />
-                        <a
-                            href="tel:1-801-910-3400"
-                            className="text-blue-600 hover:underline"
-                        >
-                            1-801-910-3400
-                        </a>
-                    </div>
-                    <div className="flex gap-5 justify-center">
-                        <img src={mail} alt="email" />
-                        <a
-                            href="mailto:info@brainintegration.institute"
-                            className="text-blue-600 hover:underline"
-                        >
-                            info@brainintegration.institute
-                        </a>
-                    </div>
-                </div>
+             
             </div>
         </>
     );

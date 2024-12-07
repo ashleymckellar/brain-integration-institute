@@ -51,7 +51,7 @@ export const Navbar = () => {
         }
     };
 
-    console.log(activeNotifications, 'active not')
+    console.log(activeNotifications, 'active not');
 
     const filteredNotifications = activeNotifications.reduce(
         (acc, notification) => {
@@ -76,7 +76,7 @@ export const Navbar = () => {
             setIsNotificationDrawerOpen((prev) => !prev);
             setBurgerMenuOpen(false);
             await fetchNotifications();
-            console.log('notifications click')
+            console.log('notifications click');
         } catch (error) {
             console.error('Error fetching notifications:', error);
         }
@@ -130,13 +130,13 @@ export const Navbar = () => {
                 Find Practitioner
             </Link>
             {isAuthenticated && (
-            <Link
-                to="/certification"
-                onClick={handleLinkClick}
-                className="py-2 px-4 hover:bg-green-500 rounded-lg hover:text-white"
-            >
-                Certification
-            </Link>
+                <Link
+                    to="/certification"
+                    onClick={handleLinkClick}
+                    className="py-2 px-4 hover:bg-green-500 rounded-lg hover:text-white"
+                >
+                    Certification
+                </Link>
             )}
             {isAdmin && (
                 <div className="dropdown-container">
@@ -228,12 +228,16 @@ export const Navbar = () => {
                 </button>
             )}
         </div>
-    )
+    );
 
     return (
         <header className=" flex flex-col w-full bg-white">
             <div className="flex items-center justify-between px-4 ">
-                <img src={BrainIntegrationSeal} alt="Logo" className="h-25 px-20 py-10" />
+                <img
+                    src={BrainIntegrationSeal}
+                    alt="Logo"
+                    className="h-25 px-20 py-10"
+                />
                 {isLargeScreen ? (
                     <nav className="flex items-center space-x-6">
                         {renderLinks()}
@@ -254,29 +258,25 @@ export const Navbar = () => {
                 )}
             </div>
 
-        
             {user && (
-            <BurgerMenu
-            customBurgerIcon={ false}
-                right
-                isOpen={isNotificationDrawerOpen}
-                animation="slide"
-                onStateChange={({ isOpen }) =>
-                    setIsNotificationDrawerOpen(isOpen)
-                }
-               
-            >
-                <Notifications
-                    open={isNotificationDrawerOpen}
-                   
-                    isNotificationDrawerOpen={isNotificationDrawerOpen}
-                  
-                  
-                    fetchNotifications={fetchNotifications}
-                    markNotificationAsRead={markNotificationAsRead}
-                    filteredNotifications={filteredNotifications}
-                />
-            </BurgerMenu>)}
+                <BurgerMenu
+                    customBurgerIcon={false}
+                    right
+                    isOpen={isNotificationDrawerOpen}
+                    animation="slide"
+                    onStateChange={({ isOpen }) =>
+                        setIsNotificationDrawerOpen(isOpen)
+                    }
+                >
+                    <Notifications
+                        open={isNotificationDrawerOpen}
+                        isNotificationDrawerOpen={isNotificationDrawerOpen}
+                        fetchNotifications={fetchNotifications}
+                        markNotificationAsRead={markNotificationAsRead}
+                        filteredNotifications={filteredNotifications}
+                    />
+                </BurgerMenu>
+            )}
         </header>
-    )
-}
+    );
+};
