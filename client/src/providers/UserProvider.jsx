@@ -173,7 +173,6 @@ export const UserProvider = ({ children }) => {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
-                        Authorization: `Bearer ${await getAccessTokenSilently()}`,
                     },
                 });
 

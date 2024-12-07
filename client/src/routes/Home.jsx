@@ -2,19 +2,11 @@ import { useAuth0 } from '@auth0/auth0-react';
 import wheat from '../assets/images/wheat-fields-4439896_1920.jpg';
 import { Footer } from '../components/Footer.jsx';
 import transparentBrain from '../assets/images/transparent-brain.png';
-import smilingWoman from '../assets/images/smilingwoman.png';
 import standingWoman from '../assets/images/standing-smiling-woman.png'
 import graduateBoy from '../assets/images/graduateboy.png';
 import quotationMarks from '../assets/icons/quotationMarks.png';
 import girlBackpack from '../assets/images/girl-backpack.png'
-// import readingWoman from '../assets/images/readingwoman.png';
-// import curlsGirl from '../assets/images/curlsgirl.png';
-// import polskaMan from '../assets/images/polskaman.png';
-// import bowtieBoy from '../assets/images/bowtieboy.png';
-// import motorcycleMan from '../assets/images/motorcycleman.png';
-// import beachMan from '../assets/images/beachman.png';
-// import glassesGirl from '../assets/images/glassesgirl.png';
-// import blondeBoy from '../assets/images/blondeboy.png';
+
 
 export const Home = () => {
     const { loginWithRedirect } = useAuth0();
