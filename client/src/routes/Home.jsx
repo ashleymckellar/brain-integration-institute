@@ -3,9 +3,10 @@ import wheat from '../assets/images/wheat-fields-4439896_1920.jpg';
 import { Footer } from '../components/Footer.jsx';
 import transparentBrain from '../assets/images/transparent-brain.png';
 import smilingWoman from '../assets/images/smilingwoman.png';
-import happyBoy from '../assets/images/happyboy.png';
+import standingWoman from '../assets/images/standing-smiling-woman.png'
 import graduateBoy from '../assets/images/graduateboy.png';
 import quotationMarks from '../assets/icons/quotationMarks.png';
+import girlBackpack from '../assets/images/girl-backpack.png'
 // import readingWoman from '../assets/images/readingwoman.png';
 // import curlsGirl from '../assets/images/curlsgirl.png';
 // import polskaMan from '../assets/images/polskaman.png';
@@ -103,11 +104,11 @@ export const Home = () => {
                                     to on grade level after one session.
                                 </p>
                                 <img src={quotationMarks} />
-                                <div className="flex justify-center">
+                                <div className="flex justify-end pl-50">
                                     <img
-                                        src={happyBoy}
+                                        src={girlBackpack}
                                         alt="Happy Boy"
-                                        className="w-[200px] h-[300px] border-black rounded-full"
+                                        className="w-[200px] h-[300px] "
                                     />
                                 </div>
                                 {/* <button className="border border-black rounded-xl m-10 p-2 bg-white">
@@ -140,9 +141,9 @@ export const Home = () => {
                                 <img src={quotationMarks} />
                                 <div className="flex justify-center">
                                     <img
-                                        src={smilingWoman}
+                                        src={standingWoman}
                                         alt="Smiling Woman"
-                                        className="w-[250px] h-[400px] border-black rounded-full"
+                                        className="w-[300px] h-[450px] border-black rounded-full"
                                     />
                                 </div>
                                 {/* <button className="border border-black rounded-xl m-10 p-2 bg-white">
