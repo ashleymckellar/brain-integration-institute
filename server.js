@@ -64,7 +64,7 @@ server.use((req, res, next) => {
 //     }
 // });
 
-server.get('/practitioners/public-profiles', async (req, res) => {
+server.get('/pracs/public-profiles', async (req, res) => {
  
 
     try {
