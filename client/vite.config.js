@@ -11,7 +11,7 @@ export default defineConfig({
                 target: 'http://localhost:8080',
                 changeOrigin: true,
             },
-            '/public-profiles': { // Add the public route here
+            '/public': { // Add the public route here
                 target: 'http://localhost:8080',
                 changeOrigin: true,
             },

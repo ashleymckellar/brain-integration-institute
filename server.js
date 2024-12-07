@@ -30,7 +30,7 @@ server.get('/api/files', (req, res) => {
     res.json({ message: 'CORS enabled!' });
 });
 
-server.get('/public-profiles', async (req, res) => {
+server.get('/public/public-profiles', async (req, res) => {
  
 
     try {
