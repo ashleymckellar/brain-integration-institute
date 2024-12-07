@@ -18,7 +18,7 @@ const createUserEndpoint = `${baseUrl}/api/user/createuser`;
 export const useHttpAuthClient = () => {
     const { getAccessTokenSilently, user } = useAuth0();
     const [metadataCreated, setMetadataCreated] = useState(false);
-    const baseUrl = import.meta.env.VITE_API_BASE_URL
+    const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
     const createUserMetadata = async (user) => {
         if (!user || metadataCreated) return;
@@ -26,21 +26,18 @@ export const useHttpAuthClient = () => {
         const { email, name, picture } = user;
 
         try {
-            const response = await fetch(
-                `${baseUrl}/api/user/createuser`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${await getAccessTokenSilently()}`,
-                    },
-                    body: JSON.stringify({
-                        userEmail: email,
-                        userName: name,
-                        userProfilePicture: picture,
-                    }),
+            const response = await fetch(`${baseUrl}/api/user/createuser`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${await getAccessTokenSilently()}`,
                 },
-            );
+                body: JSON.stringify({
+                    userEmail: email,
+                    userName: name,
+                    userProfilePicture: picture,
+                }),
+            });
 
             const data = await response.json();
 
@@ -119,7 +116,6 @@ export const useProfileForm = (initialValues) => {
     const { getAccessTokenSilently, user } = useAuth0();
 
     const handleInputChange = (e) => {
-
         const { name, value } = e.target;
         setInputs((prevInputs) => ({
             ...prevInputs,
@@ -132,8 +128,6 @@ export const useProfileForm = (initialValues) => {
     };
 
     const createProfileData = async () => {
-
-
         try {
             const response = await fetch(
                 `${baseUrl}/api/profile/create-profile`,
@@ -184,6 +178,7 @@ const useProfileData = (user) => {
         if (user && user.email) {
             try {
                 setLoading(true);
+
                 const response = await fetch(`/api/profile/${user.email}`, {
                     method: 'GET',
                     headers: {
@@ -192,37 +187,12 @@ const useProfileData = (user) => {
                     },
                 });
 
-
-        const fetchProfileData = async () => {
-            if (user && user.email) {
-               
-                try {
-                    setLoading(true); 
-                    const response = await fetch(`/api/profile/${user.email}`, {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            Authorization: `Bearer ${await getAccessTokenSilently()}`,
-                        },
-                    });
-        
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-        
-                    const data = await response.json();
-                    setProfileData(data); 
-                  
-                } catch (error) {
-                    console.error('Error fetching profile data:', error);
-                    setError(error.message); 
-                } finally {
-                    setLoading(false); 
-
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
 
                 const data = await response.json();
                 setProfileData(data);
-                // console.log(profileData);
             } catch (error) {
                 console.error('Error fetching profile data:', error);
                 setError(error.message);
@@ -235,13 +205,9 @@ const useProfileData = (user) => {
         }
     };
 
-        useEffect(() => {
-           
-                fetchProfileData();
-            
-        }, [user]);
-        
-
+    useEffect(() => {
+        fetchProfileData();
+    }, [user]);
 
     return { profileData, loading, error, fetchProfileData, setProfileData };
 };
