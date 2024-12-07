@@ -29,7 +29,7 @@ export const Practitioner = () => {
  
         try {
             setLoading(true);
-            const response = await fetch('/public/public-profiles', {
+            const response = await fetch('/practitioners/public-profiles', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
