@@ -343,11 +343,19 @@ export const Admin = () => {
 
             <div className="flex h-[calc(100vh-256px)] items-between p-4">
                 <div className="min-w-[220px] bg-gray p-6 border border-gray rounded-2xl h-full shadow-lg">
+                    <div className='bg-charcoal min-w-[220px] h-10 pt-2'>
                     <h2 className="font-bold text-xl mb-4 text-center text-black">
                         Admin Menu
                     </h2>
-                    <ul className="space-y-4 text-center">
+                    </div>
+                    <ul className="space-y-4 text-center font-bold">
                         {[
+                          
+                            {
+                                label: 'Admin Notifications',
+                                badge: unreadNotifications.length,
+                                onClick: handleNotificationsClick,
+                            },
                             {
                                 path: 'practitioner-management',
                                 label: 'Practitioner Management',
@@ -356,11 +364,6 @@ export const Admin = () => {
                             {
                                 path: 'admin-uploads',
                                 label: 'Upload Certificate Template/Study Guide',
-                            },
-                            {
-                                label: 'Admin Notifications',
-                                badge: unreadNotifications.length,
-                                onClick: handleNotificationsClick,
                             },
                         ].map((item) => (
                             <li key={item.label} className="relative">
@@ -372,7 +375,7 @@ export const Admin = () => {
                                     >
                                         {item.label}
                                         {item.badge > 0 && (
-                                            <span className="bg-red text-white text-sm font-bold rounded-full h-6 w-6 flex items-center justify-center">
+                                            <span className="bg-blue text-white text-sm font-bold rounded-full h-6 w-6 flex items-center justify-center">
                                                 {item.badge}
                                             </span>
                                         )}
@@ -384,6 +387,7 @@ export const Admin = () => {
                                     >
                                         {item.label}
                                     </Link>
+                                    
                                 )}
                             </li>
                         ))}
