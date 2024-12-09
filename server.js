@@ -30,15 +30,18 @@ server.get('/api/files', (req, res) => {
     res.json({ message: 'CORS enabled!' });
 });
 
-server.get('/public/public-profiles', async (req, res) => {
- 
-
+server.get('/pracs/public-profiles', async (req, res) => {
     try {
         const profiles = await ProfileModel.find();
-        const users = await UserModel.find({}, '_id isCertified userProfilePicture');
+        const users = await UserModel.find(
+            {},
+            '_id isCertified userProfilePicture',
+        );
 
         const mergedProfiles = profiles.map((profile) => {
-            const associatedUser = users.find(user => user._id.toString() === profile.userId.toString());
+            const associatedUser = users.find(
+                (user) => user._id.toString() === profile.userId.toString(),
+            );
             return {
                 ...profile.toObject(),
                 practitionerImage: associatedUser?.userProfilePicture || '',
@@ -46,11 +49,9 @@ server.get('/public/public-profiles', async (req, res) => {
             };
         });
 
-        const certifiedProfiles = mergedProfiles
-            .filter(profile => profile.isCertified)
-   
-             
-            
+        const certifiedProfiles = mergedProfiles.filter(
+            (profile) => profile.isCertified,
+        );
 
         res.json(certifiedProfiles);
     } catch (error) {
@@ -59,6 +60,36 @@ server.get('/public/public-profiles', async (req, res) => {
     }
 });
 
+//public route for getting single profile
+server.get('/pracs/public-profiles/:email', async (req, res) => {
+    const { email } = req.params;
+
+    try {
+        const user = await UserModel.findOne({ userEmail: email });
+        
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        const profile = await ProfileModel.findOne({ userId: user._id }).populate({
+      
+            path: 'userId',
+            select: 'userProfilePicture',
+        });
+       
+        if (!profile) {
+            return res.status(404).json({ message: 'Profile not found' });
+        }
+        const profileData = {
+            ...profile.toObject(),
+            userProfilePicture: profile.userId.userProfilePicture,
+            email: profile.userId.userEmail
+        };
+        res.status(200).json(profileData);
+    } catch (error) {
+        console.error('Error fetching profile data:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
 
 
 
