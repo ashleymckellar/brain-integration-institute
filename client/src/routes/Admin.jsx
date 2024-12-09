@@ -315,7 +315,7 @@ export const Admin = () => {
                     ) : (
                         <div className="flex flex-col gap-5 pt-20">
                             <p className="text-center text-gray-500 text-xl">
-                                You're all caught up!
+                              You're all caught up.
                             </p>
                             <p className="text-center text-gray-500 text-xl">
                                 No unread notifications.{' '}
