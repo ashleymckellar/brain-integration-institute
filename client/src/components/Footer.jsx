@@ -1,10 +1,8 @@
-
-
 import { Link } from 'react-router-dom';
 import brainSeal from '../assets/icons/BrainIntegrationSealCropped.png';
-import map from '../assets/icons/map-pin.png';
-import phone from '../assets/icons/phone.png';
-import mail from '../assets/icons/mail.png';
+// import map from '../assets/icons/map-pin.png';
+// import phone from '../assets/icons/phone.png';
+// import mail from '../assets/icons/mail.png';
 
 export const Footer = () => {
     return (
@@ -17,7 +15,7 @@ export const Footer = () => {
                         alt="Brain Integration Institute"
                         width="134"
                         height="134"
-                        className="w-32 sm:w-40 md:w-48 lg:w-56 xl:w-64" 
+                        className="w-32 sm:w-40 md:w-48 lg:w-56 xl:w-64"
                     />
                 </div>
 
@@ -45,19 +43,12 @@ export const Footer = () => {
                         >
                             Certification
                         </Link>
-                        <Link className="link font-fira font-bold" to="/">
-                            FAQ
-                        </Link>
-                        <Link className="link font-fira font-bold" to="/">
-                            Resources
-                        </Link>
+
                         <Link className="link font-fira font-bold" to="/terms">
                             Terms of Use
                         </Link>
                     </div>
                 </div>
-
-             
             </div>
         </>
     );
