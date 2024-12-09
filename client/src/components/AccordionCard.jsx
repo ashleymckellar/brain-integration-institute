@@ -62,7 +62,6 @@ const AccordionCard = ({ certStatus }) => {
         setCertListUploadStatus,
         updateUserDocumentStatus,
         onUploadSuccess,
-    
     } = useContext(CloudinaryContext);
 
     const { isAuthenticated, user, getAccessTokenSilently } = useAuth0();
@@ -114,9 +113,7 @@ const AccordionCard = ({ certStatus }) => {
         try {
             const accessToken = await getAccessTokenSilently();
 
-
             // const stripe = await stripePromise();
-
 
             const response = await fetch('/api/create-payment-intent', {
                 method: 'POST',
@@ -134,9 +131,8 @@ const AccordionCard = ({ certStatus }) => {
                 setShowPayment(true);
 
                 try {
-
                     if (progress < 8) {
-                        const newProgress = progress + 1
+                        const newProgress = progress + 1;
 
                         setProgress(newProgress);
                     }
@@ -1240,7 +1236,7 @@ const AccordionCard = ({ certStatus }) => {
                                         )}
                                     </div>
                                     <div className="flex flex-col items-center w-1/3 pt-20">
-                                    <div className="flex justify-center items-center">
+                                        <div className="flex justify-center items-center">
                                             <button>
                                                 <img
                                                     src={UploadBtn}
@@ -1544,16 +1540,11 @@ const AccordionCard = ({ certStatus }) => {
                                         </p>
                                         <div className="flex flex-col items-center">
                                             <img
-
                                                 src={StudyGuidePages}
                                                 className="h-[50px] w-[50px]"
-
-                                                className="pl-[100px]"
-                                                src={GetStudyGuideBtn}
                                                 onClick={() => {
                                                     getStudyGuide();
                                                 }}
-
                                             />
                                             <p className="font-fira font-bold text-blue">
                                                 Study Guide
