@@ -1,3 +1,5 @@
+
+
 import { useEffect, useState, useContext } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Link } from 'react-router-dom';
@@ -24,6 +26,8 @@ export const Navbar = () => {
     const [showDropdown, setShowDropdown] = useState(false);
     const [isNotificationDrawerOpen, setIsNotificationDrawerOpen] =
         useState(false);
+        const [resizeKey, setResizeKey] = useState(0);
+        const [isReady, setIsReady] = useState(false);
 
     const handleLogin = async () => {
         await loginWithRedirect({
@@ -33,13 +37,18 @@ export const Navbar = () => {
         });
     };
 
+
+    useEffect(() => {
+        console.log('Notification Drawer State:', isNotificationDrawerOpen);
+    }, [isNotificationDrawerOpen]);
+
     const handleLinkClick = () => {
         setBurgerMenuOpen(false);
     };
 
-    useEffect(() => {
-        fetchNotifications();
-    }, []);
+    // useEffect(() => {
+    //     fetchNotifications();
+    // }, []);
 
     const handleLogout = () => {
         logout();
@@ -51,7 +60,7 @@ export const Navbar = () => {
         }
     };
 
-    console.log(activeNotifications, 'active not');
+    console.log(activeNotifications, 'active not')
 
     const filteredNotifications = activeNotifications.reduce(
         (acc, notification) => {
@@ -76,7 +85,7 @@ export const Navbar = () => {
             setIsNotificationDrawerOpen((prev) => !prev);
             setBurgerMenuOpen(false);
             await fetchNotifications();
-            console.log('notifications click');
+            console.log('notifications click')
         } catch (error) {
             console.error('Error fetching notifications:', error);
         }
@@ -94,12 +103,15 @@ export const Navbar = () => {
 
     useEffect(() => {
         const handleResize = () => setIsLargeScreen(window.innerWidth >= 768);
+        handleResize();
+        setIsReady(true); 
         window.addEventListener('resize', handleResize);
         return () => {
             window.removeEventListener('resize', handleResize);
         };
     }, []);
 
+    if (!isReady) return null;
     const renderLinks = () => (
         <div
             className={`flex ${
@@ -130,13 +142,13 @@ export const Navbar = () => {
                 Find Practitioner
             </Link>
             {isAuthenticated && (
-                <Link
-                    to="/certification"
-                    onClick={handleLinkClick}
-                    className="py-2 px-4 hover:bg-green-500 rounded-lg hover:text-white"
-                >
-                    Certification
-                </Link>
+            <Link
+                to="/certification"
+                onClick={handleLinkClick}
+                className="py-2 px-4 hover:bg-green-500 rounded-lg hover:text-white"
+            >
+                Certification
+            </Link>
             )}
             {isAdmin && (
                 <div className="dropdown-container">
@@ -228,16 +240,12 @@ export const Navbar = () => {
                 </button>
             )}
         </div>
-    );
+    )
 
     return (
-        <header className=" flex flex-col w-full bg-white">
+         <header key={resizeKey} className=" flex flex-col w-full bg-white">
             <div className="flex items-center justify-between px-4 ">
-                <img
-                    src={BrainIntegrationSeal}
-                    alt="Logo"
-                    className="h-25 px-20 py-10"
-                />
+                <img src={BrainIntegrationSeal} alt="Logo" className="h-25 px-20 py-10" />
                 {isLargeScreen ? (
                     <nav className="flex items-center space-x-6">
                         {renderLinks()}
@@ -258,25 +266,30 @@ export const Navbar = () => {
                 )}
             </div>
 
+        
             {user && (
-                <BurgerMenu
-                    customBurgerIcon={false}
-                    right
-                    isOpen={isNotificationDrawerOpen}
-                    animation="slide"
-                    onStateChange={({ isOpen }) =>
-                        setIsNotificationDrawerOpen(isOpen)
-                    }
-                >
-                    <Notifications
-                        open={isNotificationDrawerOpen}
-                        isNotificationDrawerOpen={isNotificationDrawerOpen}
-                        fetchNotifications={fetchNotifications}
-                        markNotificationAsRead={markNotificationAsRead}
-                        filteredNotifications={filteredNotifications}
-                    />
-                </BurgerMenu>
-            )}
+            <BurgerMenu
+            customBurgerIcon={ false}
+                right
+                isOpen={isNotificationDrawerOpen}
+                animation="slide"
+                onStateChange={({ isOpen }) =>
+                    setIsNotificationDrawerOpen(isOpen)
+                }
+               
+            >
+                <Notifications
+                    open={isNotificationDrawerOpen}
+                   
+                    isNotificationDrawerOpen={isNotificationDrawerOpen}
+                  
+                  
+                    fetchNotifications={fetchNotifications}
+                    markNotificationAsRead={markNotificationAsRead}
+                    filteredNotifications={filteredNotifications}
+                />
+            </BurgerMenu>)}
         </header>
-    );
-};
+    )
+}
+
