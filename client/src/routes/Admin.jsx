@@ -342,7 +342,7 @@ export const Admin = () => {
             </div>
 
             <div className="flex h-[calc(100vh-256px)] items-between p-4">
-                <div className="min-w-[220px] bg-gray p-6 border border-gray rounded-2xl h-full shadow-lg">
+                <div className="min-w-[100px] bg-gray p-6 border border-gray rounded-2xl h-full shadow-lg">
                     <div className='bg-charcoal min-w-[220px] h-10 pt-2'>
                     <h2 className="font-bold text-xl mb-4 text-center text-black">
                         Admin Menu
@@ -363,7 +363,7 @@ export const Admin = () => {
                             { path: 'add-admins', label: 'Admin Management' },
                             {
                                 path: 'admin-uploads',
-                                label: 'Upload Certificate Template/Study Guide',
+                                label: 'Course Materials',
                             },
                         ].map((item) => (
                             <li key={item.label} className="relative">
