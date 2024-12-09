@@ -49,6 +49,8 @@ export const Navbar = () => {
         logout();
     };
 
+ 
+
     const checkForAdmin = () => {
         if (userMetaData && userMetaData.isAdmin) {
             setIsAdmin(true);
@@ -76,6 +78,7 @@ export const Navbar = () => {
     );
 
     const handleNotificationsClick = async () => {
+        console.log('notifications click')
         try {
             setIsNotificationDrawerOpen((prev) => !prev);
             setBurgerMenuOpen(false);

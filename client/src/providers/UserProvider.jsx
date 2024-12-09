@@ -187,6 +187,7 @@ export const UserProvider = ({ children }) => {
 
     const fetchNotifications = async () => {
         if (user?.email) {
+            console.log('fetching notifications!')
             try {
                 setLoading(true);
                 const response = await fetch(
