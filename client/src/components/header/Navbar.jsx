@@ -41,9 +41,9 @@ export const Navbar = () => {
         setBurgerMenuOpen(false);
     };
 
-    useEffect(() => {
-        fetchNotifications();
-    }, []);
+    // useEffect(() => {
+    //     fetchNotifications();
+    // }, []);
 
     const handleLogout = () => {
         logout();
