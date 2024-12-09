@@ -37,13 +37,18 @@ export const Navbar = () => {
         });
     };
 
+
+    useEffect(() => {
+        console.log('Notification Drawer State:', isNotificationDrawerOpen);
+    }, [isNotificationDrawerOpen]);
+
     const handleLinkClick = () => {
         setBurgerMenuOpen(false);
     };
 
-    useEffect(() => {
-        fetchNotifications();
-    }, []);
+    // useEffect(() => {
+    //     fetchNotifications();
+    // }, []);
 
     const handleLogout = () => {
         logout();
