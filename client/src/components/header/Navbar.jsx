@@ -185,7 +185,7 @@ export const Navbar = () => {
                                     to="/admin/admin-uploads"
                                     onClick={handleLinkClick}
                                 >
-                                    Upload Certificate Template
+                                   Course Materials
                                 </Link>
                             </li>
                         </ul>

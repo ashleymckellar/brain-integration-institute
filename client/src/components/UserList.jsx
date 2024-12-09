@@ -46,8 +46,6 @@ function UserList() {
         ProgressBar8,
     ];
 
-  
-
     useEffect(() => {
         const fetchUsers = async () => {
             getAllUsers();
@@ -59,9 +57,7 @@ function UserList() {
         fetchProfileData(individualUser);
     }, [individualUser]);
 
- 
     const handleChange = (e) => {
-       
         const { name, value } = e.target;
 
         setSearchInput((prevInput) => ({
@@ -105,8 +101,8 @@ function UserList() {
     };
 
     return (
-        <div className="px-4 sm:px-6 lg:px-10">
-            <div className="flex items-center border border-none rounded-xl bg-gray mb-6 w-full sm:w-3/4 lg:w-[660px]">
+        <div className="px-4 sm:px-6 lg:px-10 flex flex-col gap-6">
+            <div className="flex flex-col sm:flex-row items-center border border-none rounded-xl bg-gray mb-6 w-full sm:w-3/4 lg:w-[660px]">
                 <input
                     type="text"
                     id="search"
@@ -114,32 +110,38 @@ function UserList() {
                     value={searchInput}
                     onChange={handleChange}
                     placeholder="Search..."
-                    className="border-none flex-1 px-2 py-2 bg-transparent"
+                    className="border-none flex-1 px-2 py-2 bg-transparent w-full sm:w-auto"
                 />
-                <img src={Pracsearch} alt={'magnifying glass'} />
+                <img
+                    src={Pracsearch}
+                    alt={'magnifying glass'}
+                    className="w-5 h-5 mt-2 sm:mt-0 sm:ml-2"
+                />
             </div>
+
             <div className="flex items-center justify-between mb-6">
-            <button 
-        onClick={handleDeleteUserClick} 
-        disabled={usersToDelete.length === 0} 
-        className={`flex items-center px-4 py-2 rounded-md ${
-            usersToDelete.length === 0 
-                ? 'bg-gray-400 cursor-not-allowed' 
-                : 'bg-red-500 hover:bg-red-600 text-white' 
-        }`}
-    >
-        <img
-            src={Trashcan}
-            alt="Trash can"
-            className="w-5 h-5 mr-2" 
-        />
-        
-    </button>
+                <button
+                    onClick={handleDeleteUserClick}
+                    disabled={usersToDelete.length === 0}
+                    className={`flex items-center px-4 py-2 rounded-md ${
+                        usersToDelete.length === 0
+                            ? 'bg-gray-400 cursor-not-allowed'
+                            : 'bg-red-500 hover:bg-red-600 text-white'
+                    } text-sm sm:text-base`}
+                >
+                    <img
+                        src={Trashcan}
+                        alt="Trash can"
+                        className="w-4 h-4 mr-2 sm:w-5 sm:h-5"
+                    />
+                    <span>Delete</span>
+                </button>
+
                 {confirmationText && (
-                    <div className='text-center'>
-                    <h3 className="font-bold text-sm sm:text-base text-red-500">
-                        {confirmationText}
-                    </h3>
+                    <div className="text-center">
+                        <h3 className="font-bold text-sm sm:text-base text-red-500">
+                            {confirmationText}
+                        </h3>
                     </div>
                 )}
             </div>
@@ -150,60 +152,58 @@ function UserList() {
                     handleDeleteProfileClick={handleDeleteProfileClick}
                 ></DeleteUserModal>
             )}
-              <ul className="space-y-4">
-                {users.map((user) => (
-                    <div
-                        className="flex border border-black rounded p-10 mb-10 items-center"
-                        key={user.userEmail}
+           <ul className="space-y-4">
+    {users.map((user) => (
+        <div
+            className="flex flex-col md:flex-row border border-black rounded p-4 md:p-10 mb-6 items-start md:items-center"
+            key={user.userEmail}
+        >
+            <div className="flex-shrink-0 mb-2 md:mb-0 md:mr-4">
+                <input
+                    type="checkbox"
+                    className="custom-checkbox"
+                    checked={usersToDelete.includes(user.userEmail)}
+                    onChange={() => handleUserCheckboxClick(user.userEmail)}
+                />
+            </div>
+            <li className="flex flex-col md:flex-row items-center justify-between w-full gap-4 md:gap-[150px]">
+                <div className="flex items-center">
+                    <span className="font-bold text-sm md:text-lg px-2">
+                        {user.firstName && user.lastName
+                            ? `${user.firstName} ${user.lastName}`
+                            : user.userEmail}
+                    </span>
+                </div>
+                <div className="flex items-center">
+                    <img
+                        src={
+                            certProgressImages[
+                                Math.min(
+                                    user.userUploadProgress || 0,
+                                    certProgressImages.length - 1
+                                )
+                            ]
+                        }
+                        className="w-16 h-4 md:w-auto"
+                        alt={`Progress level ${user.userUploadProgress}`}
+                    />
+                </div>
+                <div className="flex justify-center items-center">
+                    <button
+                        className="bg-green-is-good hover:bg-green-500 text-white px-4 py-2 rounded-md text-xs md:text-sm whitespace-nowrap"
+                        type="submit"
+                        onClick={() =>
+                            handleViewProfileClick(user.userEmail)
+                        }
                     >
-                        <div>
-                            <input
-                                type="checkbox"
-                                className="custom-checkbox"
-                                checked={usersToDelete.includes(user.userEmail)}
-                                onChange={() =>
-                                    handleUserCheckboxClick(user.userEmail)
-                                }
-                            />
-                        </div>
-                        <li className="flex items-center justify-between w-full gap-[150px]">
-                            <div className="flex items-center">
-                                <span className="font-bold text-l px-2">
-                                    {user.firstName && user.lastName
-                                        ? `${user.firstName} ${user.lastName}`
-                                        : user.userEmail}
-                                </span>
-                             
-                            </div>
-                            <div className="flex items-center">
-                                <img
-                                    src={
-                                        certProgressImages[
-                                            Math.min(
-                                                user.userUploadProgress || 0,
-                                                certProgressImages.length - 1,
-                                            )
-                                        ]
-                                    }
-                                    className="w-auto md:w-auto"
-                                    alt={`Progress level ${user.userUploadProgress}`}
-                                />
-                            </div>
-                            <div className="flex justify-center items-center">
-                                <button
-                                    className=" bg-green-is-good hover:bg-green-500  text-white px-4 py-2 rounded-md whitespace-nowrap"
-                                    type="submit"
-                                    onClick={() =>
-                                        handleViewProfileClick(user.userEmail)
-                                    }
-                                >
-                                    View Profile
-                                </button>
-                            </div>
-                        </li>
-                    </div>
-                ))}
-            </ul>
+                        View Profile
+                    </button>
+                </div>
+            </li>
+        </div>
+    ))}
+</ul>
+
         </div>
     );
 }
