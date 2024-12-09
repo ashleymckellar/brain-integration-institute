@@ -342,84 +342,87 @@ export const Admin = () => {
             </div>
 
             <div className="flex h-[calc(100vh-256px)] items-between p-4">
-                <div className="min-w-[100px] bg-gray p-6 border border-gray rounded-2xl h-full shadow-lg">
-                    <div className='bg-charcoal min-w-[220px] h-10 pt-2'>
-                    <h2 className="font-bold text-xl mb-4 text-center text-black">
-                        Admin Menu
-                    </h2>
-                    </div>
-                    <ul className="space-y-4 text-center font-bold">
-                        {[
-                          
-                            {
-                                label: 'Admin Notifications',
-                                badge: unreadNotifications.length,
-                                onClick: handleNotificationsClick,
-                            },
-                            {
-                                path: 'practitioner-management',
-                                label: 'Practitioner Management',
-                            },
-                            { path: 'add-admins', label: 'Admin Management' },
-                            {
-                                path: 'admin-uploads',
-                                label: 'Course Materials',
-                            },
-                        ].map((item) => (
-                            <li key={item.label} className="relative">
-                                {/* If 'Notifications', use button instead of Link */}
-                                {item.label === 'Admin Notifications' ? (
-                                    <button
-                                        onClick={item.onClick}
-                                        className="py-3 px-4 w-full transition duration-200 border-b-2 border-transparent hover:bg-green-500 rounded-xl hover:text-white text-lg text-black flex justify-between items-center"
-                                    >
-                                        {item.label}
-                                        {item.badge > 0 && (
-                                            <span className="bg-blue text-white text-sm font-bold rounded-full h-6 w-6 flex items-center justify-center">
-                                                {item.badge}
-                                            </span>
-                                        )}
-                                    </button>
-                                ) : (
-                                    <Link
-                                        to={item.path}
-                                        className="py-3 px-4 w-full transition duration-200 border-b-2 border-transparent hover:bg-green-500 rounded-xl hover:text-white text-lg text-black flex justify-between items-center"
-                                    >
-                                        {item.label}
-                                    </Link>
-                                    
-                                )}
-                            </li>
-                        ))}
-                    </ul>
-                </div>
+    <div className="min-w-[100px] bg-gray p-6 border border-gray rounded-2xl h-full shadow-lg flex flex-col">
+        {/* Dark grey top bar */}
+        <div className="bg-charcoal text-black min-w-[220px] h-12 flex items-center justify-center">
+            <h2 className="font-bold text-xl text-center">
+                Admin Menu
+            </h2>
+        </div>
 
-                {/* Main Content Area */}
-                <div className="flex flex-col flex-1 pl-10">
-                    {isLargeScreen && (
-                    <div className="flex gap-6 flex-wrap justify-start">
-                        {/* Main dashboard items with badges */}
-                        {dashboardItems.map((item) => (
-                            <div
-                                key={item.label}
-                                className={`w-[189px] h-[102px] rounded-xl ${item.color} shadow-md font-fira font-semibold text-lg flex p-4 items-end justify-center text-center text-black hover:shadow-lg transition-shadow relative`}
-                            >
-                                {item.label}
-                                {groupedNotifications[item.category] > 0 && (
-                                    <span className="absolute top-2 right-2 bg-red text-white text-sm font-bold rounded-full h-6 w-6 flex items-center justify-center">
-                                        {groupedNotifications[item.category]}
-                                    </span>
-                                )}
-                            </div>
-                        ))}
-                    </div>)}
+        {/* Admin Menu Items */}
+        <ul className="space-y-4 text-center font-bold mt-4">
+            {[
+                {
+                    label: 'Admin Notifications',
+                    badge: unreadNotifications.length,
+                    onClick: handleNotificationsClick,
+                },
+                {
+                    path: 'practitioner-management',
+                    label: 'Practitioner Management',
+                },
+                { path: 'add-admins', label: 'Admin Management' },
+                {
+                    path: 'admin-uploads',
+                    label: 'Course Materials',
+                },
+            ].map((item) => (
+                <li key={item.label} className="relative">
+                    {/* Conditional rendering for notifications */}
+                    {item.label === 'Admin Notifications' ? (
+                        <button
+                            onClick={item.onClick}
+                            className="py-3 px-4 w-full transition duration-200 border-b-2 border-transparent hover:bg-green-500 rounded-xl hover:text-white text-lg text-black flex justify-between items-center"
+                        >
+                            {item.label}
+                            {item.badge > 0 && (
+                                <span className="bg-blue text-white text-sm font-bold rounded-full h-6 w-6 flex items-center justify-center">
+                                    {item.badge}
+                                </span>
+                            )}
+                        </button>
+                    ) : (
+                        <Link
+                            to={item.path}
+                            className="py-3 px-4 w-full transition duration-200 border-b-2 border-transparent hover:bg-green-500 rounded-xl hover:text-white text-lg text-black flex justify-between items-center"
+                        >
+                            {item.label}
+                        </Link>
+                    )}
+                </li>
+            ))}
+        </ul>
+    </div>
 
-                    <div className="flex flex-col justify-center items-center w-full pt-10 ">
-                        <Outlet />
-                        <Footer />
+    {/* Main Content Area */}
+    <div className="flex flex-col flex-1 pl-4 md:pl-10">
+        {isLargeScreen && (
+            <div className="flex gap-6 flex-wrap justify-start">
+                {/* Dashboard items with badges */}
+                {dashboardItems.map((item) => (
+                    <div
+                        key={item.label}
+                        className={`w-full sm:w-[189px] h-[102px] rounded-xl ${item.color} shadow-md font-fira font-semibold text-lg flex p-4 items-end justify-center text-center text-black hover:shadow-lg transition-shadow relative`}
+                    >
+                        {item.label}
+                        {groupedNotifications[item.category] > 0 && (
+                            <span className="absolute top-2 right-2 bg-red text-white text-sm font-bold rounded-full h-6 w-6 flex items-center justify-center">
+                                {groupedNotifications[item.category]}
+                            </span>
+                        )}
                     </div>
-                </div>
+                ))}
             </div>
+        )}
+
+        <div className="flex flex-col justify-center items-center w-full pt-10">
+            <Outlet />
+            <Footer />
+        </div>
+    </div>
+</div>
+
          
         </div>
     );
