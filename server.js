@@ -89,32 +89,7 @@ server.get('/pracs/public-profiles/:email', async (req, res) => {
 });
 
 
-    try {
-        const user = await UserModel.findOne({ userEmail: email });
-        
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
-        }
-        const profile = await ProfileModel.findOne({ userId: user._id }).populate({
-      
-            path: 'userId',
-            select: 'userProfilePicture',
-        });
-       
-        if (!profile) {
-            return res.status(404).json({ message: 'Profile not found' });
-        }
-        const profileData = {
-            ...profile.toObject(),
-            userProfilePicture: profile.userId.userProfilePicture,
-            email: profile.userId.userEmail
-        };
-        res.status(200).json(profileData);
-    } catch (error) {
-        console.error('Error fetching profile data:', error);
-        res.status(500).json({ message: 'Server error' });
-    }
-});
+    
 server.use(ex.static(path.resolve(__dirname, 'client', 'dist')));
 // server.get('*', staticSiteRouter)
 
