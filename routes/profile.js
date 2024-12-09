@@ -23,7 +23,7 @@ profileRouter.get('/', async (req, res) => {
 //get user specific profile
 profileRouter.get('/:email', async (req, res) => {
     const { email } = req.params;
-  
+
     try {
         const user = await UserModel.findOne({ userEmail: email });
         
@@ -72,7 +72,7 @@ profileRouter.post('/create-profile', async (req, res) => {
         email
     } = req.body;
 
-   
+
     try {
 
        
@@ -186,3 +186,6 @@ profileRouter.delete('/:id', async (req, res) => {
 module.exports = {
     profileRouter,
 };
+
+
+

@@ -32,12 +32,14 @@ export const UserProvider = ({ children }) => {
     const [allProfiles, setAllProfiles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
     const [activeNotifications, setActiveNotifications] = useState([]);
     const [isNotificationDrawerOpen, setisNotificationDrawerOpen] =
         useState(false);
     const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
     const handleInputChange = (e) => {
+
         const { name, value } = e.target;
         setInputs((prevInputs) => ({
             ...prevInputs,
@@ -46,11 +48,14 @@ export const UserProvider = ({ children }) => {
     };
 
     const resetInputs = () => {
+
         setInputs(initialValues);
     };
 
     const createProfileData = async () => {
+
         console.log('making post req to /api/profile/create-profile');
+
 
         try {
             const accessToken = await getAccessTokenSilently();
@@ -62,7 +67,7 @@ export const UserProvider = ({ children }) => {
             };
 
             const response = await fetch(
-                `http://${baseUrl}/api/profile/create-profile`,
+                `${baseUrl}/api/profile/create-profile`,
                 {
                     method: 'POST',
                     headers: {
@@ -80,6 +85,7 @@ export const UserProvider = ({ children }) => {
             }
             const data = await response.json();
 
+
             if (!data.success) throw new Error(data.error);
 
             // Reset inputs after successful submission
@@ -94,7 +100,7 @@ export const UserProvider = ({ children }) => {
     // console.log(inputs);
     //
     const editProfileData = async (updatedData) => {
-        console.log('Updated data being sent:', updatedData);
+       
 
         const filteredData = Object.fromEntries(
             Object.entries(updatedData).filter(
@@ -104,7 +110,7 @@ export const UserProvider = ({ children }) => {
         try {
             const accessToken = await getAccessTokenSilently();
             const response = await fetch(
-                `http://${baseUrl}/api/profile/${user.email}`,
+                `${baseUrl}/api/profile/${user.email}`,
                 {
                     method: 'PUT',
                     headers: {
@@ -151,6 +157,7 @@ export const UserProvider = ({ children }) => {
 
                 const data = await response.json();
                 setProfileData(data);
+
             } catch (error) {
                 console.error('Error fetching profile data:', error);
                 setError(error.message);
@@ -162,11 +169,10 @@ export const UserProvider = ({ children }) => {
         
             try {
                 setLoading(true);
-                const response = await fetch(`/api/profile/${email}`, {
+                const response = await fetch(`/pracs/public-profiles/${email}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
-                        Authorization: `Bearer ${await getAccessTokenSilently()}`,
                     },
                 });
 

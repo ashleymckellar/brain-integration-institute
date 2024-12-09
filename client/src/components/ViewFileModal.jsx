@@ -46,7 +46,7 @@ export default function ViewFileModal({
             const userEmail = individualUser.userEmail;
 
             const response = await fetch(
-                `http://${baseUrl}/api/user/${userEmail}/document-status`,
+                `${baseUrl}/api/user/${userEmail}/document-status`,
                 {
                     method: 'PATCH',
                     headers: {
@@ -99,6 +99,7 @@ export default function ViewFileModal({
             const documentName = docTypeMapping[selectedDocumentType];
             message = `${documentName} document has been declined. Reason for denial: ${reasonForDenial}`;
         }
+
 
         if (message) {
             console.log('Sending notification with:', {

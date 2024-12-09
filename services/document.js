@@ -10,6 +10,7 @@ const getImagesFromCloudinary = async (folder) => {
     try {
         const requestURL = `https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/resources/search`;
 
+
         const authHeader = Buffer.from(
             `${process.env.CLOUDINARY_API_KEY}:${process.env.CLOUDINARY_API_SECRET}`,
         ).toString('base64');
@@ -26,6 +27,7 @@ const getImagesFromCloudinary = async (folder) => {
         });
 
         const resources = cloudinaryResponse.data.resources;
+
 
         allAssets.push(...resources);
         return allAssets;

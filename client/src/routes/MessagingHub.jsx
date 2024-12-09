@@ -7,6 +7,7 @@ import redNotificationIcon from '../assets/icons/red-notification-icon.svg';
 const MessagingHub = () => {
 
 
+
     const {
         fetchAdminNotifications,
         unreadNotifications,
@@ -180,3 +181,4 @@ const MessagingHub = () => {
 };
 
 export default MessagingHub;
+

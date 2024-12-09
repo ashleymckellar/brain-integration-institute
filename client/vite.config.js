@@ -1,9 +1,10 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
-// import dotenv from 'dotenv';
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import dotenv from 'dotenv';
 
 // https://vitejs.dev/config/
 export default defineConfig({
+
     plugins: [react()],
     server: {
         proxy: {
@@ -11,10 +12,13 @@ export default defineConfig({
                 target: 'http://localhost:8080',
                 changeOrigin: true,
             },
-            '/pracs': { // Add the public route here
+
+            '/pracs/public-profiles': { 
+
                 target: 'http://localhost:8080',
                 changeOrigin: true,
             },
         },
     },
 });
+

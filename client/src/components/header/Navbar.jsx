@@ -37,6 +37,11 @@ export const Navbar = () => {
         });
     };
 
+
+    useEffect(() => {
+        console.log('Notification Drawer State:', isNotificationDrawerOpen);
+    }, [isNotificationDrawerOpen]);
+
     const handleLinkClick = () => {
         setBurgerMenuOpen(false);
     };
@@ -290,3 +295,4 @@ export const Navbar = () => {
         </header>
     )
 }
+
