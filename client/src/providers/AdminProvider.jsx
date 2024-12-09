@@ -51,7 +51,7 @@ export const AdminProvider = ({ children }) => {
     async function getAllUsers() {
         try {
             const accessToken = await getAccessTokenSilently();
-            const response = await axios.get(`http://${baseUrl}/api/user`, {
+            const response = await axios.get(`${baseUrl}/api/user`, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
@@ -87,7 +87,7 @@ export const AdminProvider = ({ children }) => {
         try {
             // Send the PUT request to update the admin status
             const response = await fetch(
-                `http://${baseUrl}/api/user/${email}/is-admin`,
+                `${baseUrl}/api/user/${email}/is-admin`,
                 {
                     method: 'PUT',
                     headers: {
@@ -162,7 +162,7 @@ export const AdminProvider = ({ children }) => {
             const userId = user.user_id;
 
             await axios.delete(
-                `http://${baseUrl}/api/admin/delete-user/${userId}`,
+                `${baseUrl}/api/admin/delete-user/${userId}`,
                 {
                     headers: {
                         'Content-Type': 'application/json',
@@ -174,7 +174,9 @@ export const AdminProvider = ({ children }) => {
                 },
             );
 
+
             await axios.delete(`http://${baseUrl}/api/user/${userEmail}`, {
+
                 headers: {
                     Authorization: `Bearer ${accessTokenforBackend}`,
                 },
@@ -233,7 +235,7 @@ export const AdminProvider = ({ children }) => {
                 };
 
                 const response = await fetch(
-                    `http://${baseUrl}/api/user/${individualUser.userEmail}/document-status`,
+                    `${baseUrl}/api/user/${individualUser.userEmail}/document-status`,
                     {
                         method: 'PUT',
                         headers: {

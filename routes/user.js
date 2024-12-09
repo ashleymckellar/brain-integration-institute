@@ -124,8 +124,6 @@ userRouter.put('/:email/progress', async (req, res) => {
             { new: true, runValidators: true },
         );
 
-       
-
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }

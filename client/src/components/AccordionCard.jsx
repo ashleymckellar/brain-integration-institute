@@ -114,7 +114,10 @@ const AccordionCard = ({ certStatus }) => {
         try {
             const accessToken = await getAccessTokenSilently();
 
+
             // const stripe = await stripePromise();
+
+
             const response = await fetch('/api/create-payment-intent', {
                 method: 'POST',
                 headers: {
@@ -127,16 +130,13 @@ const AccordionCard = ({ certStatus }) => {
             const session = await response.json();
 
             if (session.clientSecret) {
-                console.log(
-                    'Payment intent created successfully',
-                    session.clientSecret,
-                );
                 //this part still works
                 setShowPayment(true);
 
                 try {
+
                     if (progress < 8) {
-                        const newProgress = progress + 1;
+                        const newProgress = progress + 1
 
                         setProgress(newProgress);
                     }
@@ -165,7 +165,6 @@ const AccordionCard = ({ certStatus }) => {
                 }
                 const { publishableKey } = await response.json();
                 setStripePromise(loadStripe(publishableKey));
-                console.log('Stripe promise set successfully');
             })
             .catch((error) => {
                 console.error('Error fetching publishable key:', error);
@@ -191,10 +190,6 @@ const AccordionCard = ({ certStatus }) => {
 
             const session = await response.json();
             if (session.clientSecret) {
-                console.log(
-                    'Payment intent created successfully',
-                    session.clientSecret,
-                );
                 setShowPayment(true);
                 setShowModal(true);
             }
@@ -1549,8 +1544,16 @@ const AccordionCard = ({ certStatus }) => {
                                         </p>
                                         <div className="flex flex-col items-center">
                                             <img
+
                                                 src={StudyGuidePages}
                                                 className="h-[50px] w-[50px]"
+
+                                                className="pl-[100px]"
+                                                src={GetStudyGuideBtn}
+                                                onClick={() => {
+                                                    getStudyGuide();
+                                                }}
+
                                             />
                                             <p className="font-fira font-bold text-blue">
                                                 Study Guide

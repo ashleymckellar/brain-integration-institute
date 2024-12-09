@@ -28,7 +28,7 @@ const handlePaymentSuccess = async (req, res) => {
         if (paymentIntent.status === 'succeeded') {
             // Payment is successful, generate the signed Cloudinary URL
             const signedUrl = generateSignedUrl(publicId);
-            console.log('Signed URL:', signedUrl);
+          
 
             // Redirect the user to the signed Cloudinary URL
             return res.redirect(signedUrl);
