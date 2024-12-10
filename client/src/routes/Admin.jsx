@@ -24,16 +24,16 @@ export const Admin = () => {
         handleReviewClick,
     } = useContext(AdminContext);
 
-    console.log(unreadNotifications, 'unread notifications')
-    console.log(isNotificationDrawerOpen, 'is drawer open')
+    // console.log(unreadNotifications, 'unread notifications')
+    // console.log(isNotificationDrawerOpen, 'is drawer open')
 
-    const groupedNotifications = unreadNotifications.reduce(
-        (acc, notification) => {
-            acc[notification.category] = (acc[notification.category] || 0) + 1;
-            return acc;
-        },
-        {},
-    );
+    // const groupedNotifications = unreadNotifications.reduce(
+    //     (acc, notification) => {
+    //         acc[notification.category] = (acc[notification.category] || 0) + 1;
+    //         return acc;
+    //     },
+    //     {},
+    // );
 
     const handleNotificationsClick = () => {
         setisNotificationDrawerOpen((prev) => !prev);

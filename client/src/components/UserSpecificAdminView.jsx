@@ -22,6 +22,7 @@ import shield from '../assets/icons/shield-half.png';
 import briefcase from '../assets/icons/briefcase-medical.png';
 import clipboard from '../assets/icons/clipboard-list.png';
 import video from '../assets/icons/video.png';
+import greenThumb from '../assets/icons/greenthumb.svg';
 import brainSeal from '../assets/icons/BrainIntegrationSealCropped.png';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
@@ -42,7 +43,9 @@ const UserSpecificAdminView = () => {
         getAllUsers,
         issueCertification,
         scrollToSection,
-        sendAdminNotification 
+        sendAdminNotification,
+        fetchUserScore,
+        userScore,
     } = useContext(AdminContext);
 
     const { userEmail } = useParams();
@@ -56,7 +59,7 @@ const UserSpecificAdminView = () => {
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [publicIds, setPublicIds] = useState([]);
 
-    console.log(publicIds, 'public ids')
+    console.log(publicIds, 'public ids');
 
     const docTypeMapping = {
         'Brain Integration Training': 'brainIntegrationTraining',
@@ -93,8 +96,11 @@ const UserSpecificAdminView = () => {
     useEffect(() => {
         if (individualUser) {
             console.log(individualUser, 'Updated individual user');
+            fetchUserScore();
         }
     }, [individualUser]);
+
+    console.log(userScore && userScore.score, 'user score');
 
     useEffect(() => {
         console.log('Updated imagesByDocType:', imagesByDocType);
@@ -153,7 +159,6 @@ const UserSpecificAdminView = () => {
             }
             const image = await response.json();
             setImagesByDocType(image);
-          
         } catch (error) {
             console.error('Error fetching images:', error);
         }
@@ -165,11 +170,10 @@ const UserSpecificAdminView = () => {
     //
     // };
 
-    const certifyUser = async (email)  => {
-        await issueCertification(email)
+    const certifyUser = async (email) => {
+        await issueCertification(email);
         //if successful - sendAdminNotification(userEmail, notificationType, message)
-
-    }
+    };
 
     useEffect(() => {
         fetchProfileData(individualUser);
@@ -301,7 +305,6 @@ const UserSpecificAdminView = () => {
                                     rel="noopener noreferrer"
                                 >
                                     {profileData.website}
-
                                 </a>
                                 {/* <p>{profileData.bio}</p> */}
 
@@ -365,14 +368,28 @@ const UserSpecificAdminView = () => {
             </div>
 
             <div className="flex flex-col items-start sm:w-[1100px] mt-6 sm:mt-4 pr-4">
-                <button>
-                    <img
-                        src={Trashcan}
-                        alt="Trash can"
-                        className="pb-6 pl-[60px] sm:pb-10"
-                        onClick={handleDeleteFiles}
-                    />
-                </button>
+                <div className="flex items-center justify-between w-full">
+                    {/* <button>
+            <img
+                src={Trashcan}
+                alt="Trash can"
+                className="pb-6 pl-[60px] sm:pb-10"
+                onClick={handleDeleteFiles}
+            />
+        </button> */}
+
+                    <div className="flex items-center ml-auto">
+                        <p className="text-xl mr-2">Test Score:</p>
+                        {!userScore || Object.keys(userScore).length === 0 ? (
+                            <p>Not available</p>
+                        ) : (
+                            <>
+                                <img src={greenThumb} className="w-8 mr-2" />
+                                <p>{userScore.score}%</p>
+                            </>
+                        )}
+                    </div>
+                </div>
                 <ul className="pl-0 sm:pl-5 w-full">
                     {[
                         {
@@ -420,9 +437,9 @@ const UserSpecificAdminView = () => {
                         <div
                             key={idx}
                             id={doc.id}
-                            className="flex flex-col sm:flex-row border border-charcoal rounded-xl p-6 sm:p-10 m-4 sm:m-6 items-start justify-start w-full gap-4 sm:gap-6"
+                            className="flex flex-col sm:flex-row border border-charcoal rounded-xl p-6 sm:p-10 m-4 sm:m-6 items-start justify-around w-full gap-4 sm:gap-6"
                         >
-                            <input
+                            {/* <input
                                 type="checkbox"
                                 className="custom-checkbox"
                                 disabled={
@@ -433,7 +450,7 @@ const UserSpecificAdminView = () => {
                                     docTypeMapping[doc.name],
                                 )}
                                 onChange={() => handleCheckboxClick(doc.name)}
-                            />
+                            /> */}
                             <div className="flex flex-col sm:flex-row gap-2 sm:gap-6 text-start w-full">
                                 <span className="text-sm sm:text-base font-semibold">
                                     {doc.name}:

@@ -184,7 +184,7 @@ function UserList() {
                                 )
                             ]
                         }
-                        className="w-16 h-4 md:w-auto"
+                        className="w-50 h-10 md:w-auto"
                         alt={`Progress level ${user.userUploadProgress}`}
                     />
                 </div>
