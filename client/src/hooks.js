@@ -20,48 +20,48 @@ export const useHttpAuthClient = () => {
     const [metadataCreated, setMetadataCreated] = useState(false);
     const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
-    const createUserMetadata = async (user) => {
-        if (!user || metadataCreated) return;
+    // const createUserMetadata = async (user) => {
+    //     if (!user || metadataCreated) return;
 
-        const { email, name, picture } = user;
+    //     const { email, name, picture } = user;
 
-        try {
-            const response = await fetch(`${baseUrl}/api/user/createuser`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${await getAccessTokenSilently()}`,
-                },
-                body: JSON.stringify({
-                    userEmail: email,
-                    userName: name,
-                    userProfilePicture: picture,
-                }),
-            });
+    //     try {
+    //         const response = await fetch(`${baseUrl}/api/user/createuser`, {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 Authorization: `Bearer ${await getAccessTokenSilently()}`,
+    //             },
+    //             body: JSON.stringify({
+    //                 userEmail: email,
+    //                 userName: name,
+    //                 userProfilePicture: picture,
+    //             }),
+    //         });
 
-            const data = await response.json();
+    //         const data = await response.json();
 
-            if (!response.ok) {
-                console.error(
-                    'Error creating or checking user metadata:',
-                    data.error,
-                );
-            } else {
-                console.log('User metadata:', data);
-            }
-        } catch (error) {
-            console.error(
-                'Error during check or create user metadata request:',
-                error,
-            );
-        }
-    };
+    //         if (!response.ok) {
+    //             console.error(
+    //                 'Error creating or checking user metadata:',
+    //                 data.error,
+    //             );
+    //         } else {
+    //             console.log('User metadata:', data);
+    //         }
+    //     } catch (error) {
+    //         console.error(
+    //             'Error during check or create user metadata request:',
+    //             error,
+    //         );
+    //     }
+    // };
 
-    useEffect(() => {
-        if (user && !metadataCreated) {
-            createUserMetadata(user);
-        }
-    }, [user, metadataCreated, getAccessTokenSilently]);
+    // useEffect(() => {
+    //     if (user && !metadataCreated) {
+    //         createUserMetadata(user);
+    //     }
+    // }, [user, metadataCreated, getAccessTokenSilently]);
 
     const handler = async (url, options) => {
         const accessToken = await getAccessTokenSilently();

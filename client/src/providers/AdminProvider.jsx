@@ -272,7 +272,7 @@ export const AdminProvider = ({ children }) => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `http://${baseUrl}/api/admin-notifications`,
+                `${baseUrl}/api/admin-notifications`,
                 {
                     headers: {
                         'Content-Type': 'application/json',
