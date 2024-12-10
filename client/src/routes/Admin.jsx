@@ -24,6 +24,9 @@ export const Admin = () => {
         handleReviewClick,
     } = useContext(AdminContext);
 
+    console.log(unreadNotifications, 'unread notifications')
+    console.log(isNotificationDrawerOpen, 'is drawer open')
+
     const groupedNotifications = unreadNotifications.reduce(
         (acc, notification) => {
             acc[notification.category] = (acc[notification.category] || 0) + 1;
@@ -31,6 +34,11 @@ export const Admin = () => {
         },
         {},
     );
+
+    const handleNotificationsClick = () => {
+        setisNotificationDrawerOpen((prev) => !prev);
+        console.log(isNotificationDrawerOpen, 'is not drawer open')
+    };
 
     const formatDate = (timestamp) => {
         return format(new Date(timestamp), 'MM/dd/yy');
@@ -103,9 +111,7 @@ export const Admin = () => {
         {
             label: 'Admin Notifications',
             badge: unreadNotifications.length,
-            onClick: () => {
-                console.log('Notifications clicked');
-            },
+            onClick: handleNotificationsClick,
         },
         {
             path: 'practitioner-management',
@@ -130,9 +136,9 @@ export const Admin = () => {
         }
     };
 
-    const handleNotificationsClick = () => {
-        setisNotificationDrawerOpen((prev) => !prev);
-    };
+    // const handleNotificationsClick = () => {
+    //     setisNotificationDrawerOpen((prev) => !prev);
+    // };
 
     return (
         <div>
@@ -157,14 +163,15 @@ export const Admin = () => {
             >
                 <div className="flex flex-col gap-6">
                     {isNotificationDrawerOpen &&
-                    unreadNotifications &&
+                     Array.isArray(unreadNotifications)  &&
                     unreadNotifications.length > 0 ? (
-                        unreadNotifications.map((notification, index) => {
+                        unreadNotifications.map((notification) => {
+                              console.log('Rendering notification:', notification);
                             switch (notification.notificationType) {
                                 case 'assessmentUpdate':
                                     return (
                                         <div
-                                            key={index}
+                                            key={notification.uniqueid}
                                             className={`border border-black rounded-xl p-6 bg-white flex gap-5 items-start relative ${
                                                 notification.notificationStatus ===
                                                 'passed'
@@ -235,7 +242,7 @@ export const Admin = () => {
                                 case 'docExpirationReminder':
                                     return (
                                         <div
-                                            key={index}
+                                        key={notification.uniqueid}
                                             className="border border-black rounded-xl p-6 bg-white shadow-custom-red flex flex-col gap-5 items-start relative"
                                         >
                                             <p
@@ -274,7 +281,7 @@ export const Admin = () => {
                                 case 'docStatusUpdate':
                                     return (
                                         <div
-                                            key={index}
+                                        key={notification.uniqueid}
                                             className="border border-black rounded-xl p-6 bg-white shadow-custom-red flex flex-col relative"
                                         >
                                             <p
