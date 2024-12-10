@@ -63,10 +63,9 @@ const AddAdmins = () => {
         fetchUsers();
     }, []);
 
-    //const jsxArray = dataItems.filter(item => item.isActive).map(item => (
     return (
-        <div className="flex justify-center w-full py-10">
-            <div className="flex flex-col gap-10 items-center max-w-4xl w-50  px-6 rounded-xl shadow-lg bg-gray ">
+        <div className="flex justify-center w-full py-10 px-4 sm:px-6 lg:px-10">
+            <div className="flex flex-col gap-10 items-center max-w-4xl w-full px-6 rounded-xl shadow-lg bg-gray-50">
                 <h2 className="text-2xl font-semibold text-left mb-6 pt-5">
                     Current Admin List{' '}
                 </h2>
@@ -92,10 +91,10 @@ const AddAdmins = () => {
 
                                     {auth0User.sub !== user.sub ? (
                                         <button
-                                            className={`py-2 px-4  rounded-md text-white font-light font-fira transition-all duration-200 whitespace-nowrap ${
+                                            className={`py-2 px-4 rounded-md text-white font-light font-fira transition-all duration-200 whitespace-nowrap ${
                                                 user.isAdmin
-                                                    ? 'bg-red hover:bg-pink width-[00px]'
-                                                    : 'bg-green-600 hover:bg-green-500 w-[200px] '
+                                                    ? 'bg-red-600 hover:bg-pink-500'
+                                                    : 'bg-green-600 hover:bg-green-500 w-[200px]'
                                             }`}
                                             type="button"
                                             onClick={() => handlePromote(user)}
@@ -122,7 +121,7 @@ const AddAdmins = () => {
                 >
                     <div className="flex flex-col justify-center items-center gap-10">
                         {isCurrentAdmin ? (
-                            <h3 className="text-xl sm:text-2xl md:text-3xl text-gray-500 font-bold ">
+                            <h3 className="text-xl sm:text-2xl md:text-3xl text-gray-500 font-bold">
                                 User admin access revoked
                             </h3>
                         ) : (
