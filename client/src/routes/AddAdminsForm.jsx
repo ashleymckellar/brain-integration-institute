@@ -49,12 +49,12 @@ const AddAdmins = () => {
         setAdminManagementModalOpen(false);
     };
 
-    useEffect(() => {
-        const fetchUsers = async () => {
-            getAllUsers();
-        };
-        fetchUsers();
-    }, []);
+    // useEffect(() => {
+    //     const fetchUsers = async () => {
+    //         getAllUsers();
+    //     };
+    //     fetchUsers();
+    // }, []);
 
     return (
         <div className="flex justify-center w-full py-10">
