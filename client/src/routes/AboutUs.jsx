@@ -7,7 +7,7 @@ import julissa from '../assets/images/julissa.png';
 import tami from '../assets/images/tami.png';
 import steve from '../assets/images/steve.png';
 import terri from '../assets/images/terri.png';
-import debbie from '../assets/images/debbie.png'
+import debbie from '../assets/images/Debbie.png'
 import { useNavigate } from 'react-router-dom';
 
 export const AboutUs = () => {
