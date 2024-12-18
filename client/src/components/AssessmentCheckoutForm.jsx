@@ -1,5 +1,6 @@
 import { PaymentElement } from '@stripe/react-stripe-js';
 import { useState, useEffect, useContext } from 'react';
+import {  useNavigate,  } from 'react-router-dom';
 import { useStripe, useElements } from '@stripe/react-stripe-js';
 import PoweredbyStripe from '../assets/icons/PoweredbyStripe.png';
 import { CloudinaryContext } from '../contexts';
@@ -11,6 +12,7 @@ export default function AssessmentCheckoutForm() {
     const [isProcessing, setIsProcessing] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const { updateUserAssessmentAccess, email } = useContext(CloudinaryContext);
+    const navigate = useNavigate();
 
     
 
@@ -38,6 +40,7 @@ export default function AssessmentCheckoutForm() {
     };
     const closeModal = () => {
         setShowModal(false);
+        navigate('/assessment')
         //route to test page
 
     };
