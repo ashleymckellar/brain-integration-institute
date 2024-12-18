@@ -14,6 +14,7 @@ import { NotFound } from '../routes/NotFound';
 import { Admin } from '../routes/Admin';
 import { ContactUs } from '../routes/ContactUs';
 import { RonBio } from '../routes/RonBio';
+import { DebbieBio } from '../routes/DebbieBio';
 import { TerriBio } from '../routes/TerriBio';
 import { JulissaBio } from '../routes/JulissaBio';
 import { SteveBio } from '../routes/SteveBio';
@@ -26,6 +27,7 @@ import PractitionerManagement from '../routes/PractitionerManagement';
 import AdminUploadManagement from '../routes/AdminUploadManagement';
 // import MessagingHub from '../routes/MessagingHub';
 import UserSpecificAdminView from '../components/UserSpecificAdminView';
+import ScrollToTop from '../components/ScrollToTop';
 
 const router = createBrowserRouter([
     {
@@ -119,6 +121,10 @@ const router = createBrowserRouter([
         element: <TamiBio />,
     },
     {
+        path: '/debbie-bio',
+        element: <DebbieBio />
+    },
+    {
         path: '/terms',
         element: <Terms />,
     },
@@ -133,5 +139,9 @@ const router = createBrowserRouter([
 export const RouteProvider = () => {
     const { isLoading } = useAuth0();
     if (isLoading) return <div>Loading...</div>;
-    return <ReactRouterProvider router={router} />;
+    return   <ReactRouterProvider router={router}>
+            <ScrollToTop>
+                <ReactRouterProvider router={router} />
+            </ScrollToTop>
+        </ReactRouterProvider>;
 };

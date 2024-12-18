@@ -1,34 +1,31 @@
 const ex = require('express');
-require('dotenv').config()
+require('dotenv').config();
 const path = require('path');
 const { apiRouter } = require('./routes/api');
-const { adminRouter } = require('./routes/admin')
-const { notifyRouter } = require('./routes/notify')
+const { adminRouter } = require('./routes/admin');
+const { notifyRouter } = require('./routes/notify');
 const { enableCors, validateAuthToken } = require('./middleware/auth');
 const { staticSiteRouter } = require('./routes/static');
 const { UserModel } = require('./models/User');
 const { ProfileModel } = require('./models/profile');
+const bodyParser = require('body-parser'); 
 
 // const { errorHandler, logger } = require('./middleware/log');
 
-
 const server = ex();
 
-server.use(enableCors)
+server.use(enableCors);
+
+server.use(bodyParser.json({ limit: '20mb' })); 
 
 server.use(ex.json());
 server.use(ex.urlencoded({ extended: true }));
 
+// server.get('/notify', (req, res) => {
+//     res.json({ message: 'route enabled!' });
+// });
 
-server.use('/api', validateAuthToken, apiRouter)
-// server.use('/admin', adminRouter)
-// server.use(ex.static(path.resolve(__dirname, 'client', 'dist')))
-// server.get('*', staticSiteRouter)
-
-
-server.get('/api/files', (req, res) => {
-    res.json({ message: 'CORS enabled!' });
-});
+server.use('/api', validateAuthToken, apiRouter);
 
 server.get('/pracs/public-profiles', async (req, res) => {
     try {
@@ -90,18 +87,20 @@ server.get('/pracs/public-profiles/:email', async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 });
+server.use(ex.static(path.resolve(__dirname, 'client', 'dist')));
+// server.get('*', staticSiteRouter)
 
+server.use((req, res, next) => {
+    if (req.headers['x-forwarded-proto'] !== 'https') {
+        return res.redirect(`https://${req.headers.host}${req.url}`);
+    }
+    next();
+});
 
-
-// server.post('/webhook', (req, res) => {
-//     const payload = req.body; 
-//     // console.log('Webhook received:', payload);
-//     res.status(200).send({ message: 'Webhook received successfully' });
-// });
-
-
-
+server.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'client/dist/index.html'));
+});
 
 module.exports = {
-    server
-}
+    server,
+};

@@ -47,7 +47,7 @@ export const Profile = withAuthenticationRequired(() => {
             {/* Tabs Section */}
             <div className="flex justify-center mt-10">
                 <div className="flex flex-wrap justify-between gap-4 w-full max-w-4xl border-2 p-2 border-gray-300 rounded-lg bg-white shadow-md">
-                    {['profile', 'password', 'professional', 'post-Certification Hub'].map((section) => (
+                    {['profile', 'assessment', 'professional', 'post-Certification Hub'].map((section) => (
                         <button
                             key={section}
                             onClick={() => handleTabClick(section)}
@@ -153,15 +153,13 @@ export const Profile = withAuthenticationRequired(() => {
                 )}
                 {isEditing && <ProfileEditForm setIsEditing={setIsEditing} />}
             </div>
-            {sectionName === 'password' && (
+            {sectionName === 'assessment' && (
                 // Password Section
                 <div className="flex flex-col items-center text-center gap-6 p-6 max-w-lg mx-auto bg-white shadow-md rounded-lg">
-                    <h2 className="font-fira text-2xl">Reset your password</h2>
-                    <p className="text-gray-600">
-                        Enter your email to receive a 4-digit code for password
-                        reset.
-                    </p>
-                    <div className=" flex justify-center gap-10 mt-10">
+                    <h2 className="font-fira text-2xl">  Take the timed assessment now.</h2>
+                <button className="bg-medium-pale-green hover:bg-green-600 rounded-full w-[204px] h-[43px] text-white font-medium px-6 py-2">Take Assessment</button>
+              
+                    {/* <div className=" flex justify-center gap-10 mt-10">
                         <input
                             type="email"
                             placeholder="Email Address"
@@ -170,7 +168,7 @@ export const Profile = withAuthenticationRequired(() => {
                         <button className="bg-medium-pale-green hover:bg-green-600 rounded-full w-[204px] h-[43px] text-white font-medium px-6 py-2">
                             Get code
                         </button>
-                    </div>
+                    </div> */}
                 </div>
             )}
 

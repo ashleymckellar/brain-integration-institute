@@ -1583,9 +1583,9 @@ const AccordionCard = ({ certStatus }) => {
                         </StudyGuide>
                         <Assessment title={'Assessment'} id="assessment">
                             <div className="flex flex-col p-4 md:pl-6 md:pr-6 border rounded-lg border-t-0 border-solid border-black rounded-tr-none rounded-tl-none mb-5 text-xl">
-                                {' '}
-                                Coming soon. Please check back.
-                                {/* <h1 className="font-fira text-dark-green font-bold text-lg md:text-xl pt-6 md:pt-10">
+                                
+                                {/* Coming soon. Please check back. */}
+                                <h1 className="font-fira text-dark-green font-bold text-lg md:text-xl pt-6 md:pt-10">
                                     Complete 500 hours of relevant brain
                                     integration training.
                                 </h1>
@@ -1644,7 +1644,7 @@ const AccordionCard = ({ certStatus }) => {
                                     Competency Base
                                 </h3>
                                 <p className="font-fira text-black text-base font-normal">
-                                    {/* Effective Communication: Developing strong
+                                    Effective Communication: Developing strong
                                     communication skills to interact effectively
                                     with clients and colleagues. Client Clinic
                                     Services: Providing comprehensive clinic
@@ -1662,8 +1662,8 @@ const AccordionCard = ({ certStatus }) => {
                                     rigorous standards required to provide
                                     high-quality brain integration services. 
                                   
-                                //</div></p> */}
-                                {/* <div className="form-flex gap-10 pt-20 pb-5 mt-4">
+                                </p> 
+                                <div className="form-flex gap-10 pt-20 pb-5 mt-4">
                                     <button
                                         disabled={!isApprovedForAssessment}
                                         className={`${
@@ -1690,7 +1690,7 @@ const AccordionCard = ({ certStatus }) => {
                                         </div>
                                     )}
                                 </div>
-                               */}
+                              
                             </div>
                         </Assessment>
                     </Accordion>

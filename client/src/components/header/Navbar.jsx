@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 
 
 import { useEffect, useState, useContext } from 'react';
@@ -184,7 +185,7 @@ export const Navbar = () => {
                                     to="/admin/admin-uploads"
                                     onClick={handleLinkClick}
                                 >
-                                    Upload Certificate Template
+                                   Course Materials
                                 </Link>
                             </li>
                         </ul>

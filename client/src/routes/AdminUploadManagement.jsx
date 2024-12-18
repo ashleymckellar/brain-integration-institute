@@ -42,7 +42,7 @@ const AdminUploadManagement = () => {
 
     return (
         <div className="flex flex-col items-center px-4 sm:px-6 md:px-8 lg:px-10">
-            <h2 className="text-center font-fira text-lg md:text-xl lg:text-2xl py-6">
+            <h2 className="text-center font-fira text-lg sm:text-xl md:text-2xl py-6">
                 Manage document uploads below. To upload a new document, please delete any existing document first.
             </h2>
 
@@ -60,7 +60,7 @@ const AdminUploadManagement = () => {
                         <div className="flex flex-col items-center text-center w-full max-w-3xl p-6 border border-charcoal rounded-xl my-6">
                             <h3 className="text-2xl font-fira mb-4">Certificate</h3>
                             <div className="flex justify-center flex-wrap gap-4">
-                                <button className="bg-green-is-good hover:bg-green-500 text-white text-xl px-4 py-2 rounded-md">
+                                <button className="bg-green-is-good hover:bg-green-500 text-white text-lg sm:text-xl px-4 py-2 rounded-md">
                                     <a href={certificates[0].secure_url} target="_blank" rel="noopener noreferrer">
                                         View PDF
                                     </a>
@@ -95,7 +95,7 @@ const AdminUploadManagement = () => {
                         <div className="flex flex-col items-center text-center w-full max-w-3xl p-6 border border-charcoal rounded-xl my-6">
                             <h3 className="text-2xl font-fira mb-4">Study Guide</h3>
                             <div className="flex justify-center flex-wrap gap-4">
-                                <button className="bg-green-is-good hover:bg-green-500 text-white text-xl px-4 py-2 rounded-md">
+                                <button className="bg-green-is-good hover:bg-green-500 text-white text-lg sm:text-xl px-4 py-2 rounded-md">
                                     <a href={certificates[0].secure_url} target="_blank" rel="noopener noreferrer">
                                         View PDF
                                     </a>
@@ -144,7 +144,7 @@ const AdminUploadManagement = () => {
                         <div className="flex flex-col items-center text-center w-full max-w-3xl p-6 border border-charcoal rounded-xl my-6">
                             <h3 className="text-2xl font-fira mb-4">Assessment</h3>
                             <div className="flex justify-center flex-wrap gap-4">
-                                <button className="bg-green-is-good hover:bg-green-500 text-white text-xl px-4 py-2 rounded-md">
+                                <button className="bg-green-is-good hover:bg-green-500 text-white text-lg sm:text-xl px-4 py-2 rounded-md">
                                     <a href={certificates[0].secure_url} target="_blank" rel="noopener noreferrer">
                                         View PDF
                                     </a>

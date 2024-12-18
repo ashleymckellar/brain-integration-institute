@@ -24,13 +24,21 @@ export const Admin = () => {
         handleReviewClick,
     } = useContext(AdminContext);
 
-    const groupedNotifications = unreadNotifications.reduce(
-        (acc, notification) => {
-            acc[notification.category] = (acc[notification.category] || 0) + 1;
-            return acc;
-        },
-        {},
-    );
+    // console.log(unreadNotifications, 'unread notifications')
+    // console.log(isNotificationDrawerOpen, 'is drawer open')
+
+    // const groupedNotifications = unreadNotifications.reduce(
+    //     (acc, notification) => {
+    //         acc[notification.category] = (acc[notification.category] || 0) + 1;
+    //         return acc;
+    //     },
+    //     {},
+    // );
+
+    const handleNotificationsClick = () => {
+        setisNotificationDrawerOpen((prev) => !prev);
+        console.log(isNotificationDrawerOpen, 'is not drawer open')
+    };
 
     const formatDate = (timestamp) => {
         return format(new Date(timestamp), 'MM/dd/yy');
@@ -50,6 +58,9 @@ export const Admin = () => {
     const [isLargeScreen, setIsLargeScreen] = useState(
         window.innerWidth >= 768,
     );
+
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const toggleDropdown = () => setIsDropdownOpen((prev) => !prev);
 
     useEffect(() => {
         fetchAdminNotifications();
@@ -96,8 +107,22 @@ export const Admin = () => {
         },
     ];
 
-    
-    
+    const menuItems = [
+        {
+            label: 'Admin Notifications',
+            badge: unreadNotifications.length,
+            onClick: handleNotificationsClick,
+        },
+        {
+            path: 'practitioner-management',
+            label: 'Practitioner Management',
+        },
+        { path: 'add-admins', label: 'Admin Management' },
+        {
+            path: 'admin-uploads',
+            label: 'Course Materials',
+        },
+    ];
 
     const onClose = async (uniqueid) => {
         try {
@@ -111,11 +136,9 @@ export const Admin = () => {
         }
     };
 
-    const handleNotificationsClick = () => {
-        setisNotificationDrawerOpen((prev) => !prev);
-    };
-
-
+    // const handleNotificationsClick = () => {
+    //     setisNotificationDrawerOpen((prev) => !prev);
+    // };
 
     return (
         <div>
@@ -140,14 +163,15 @@ export const Admin = () => {
             >
                 <div className="flex flex-col gap-6">
                     {isNotificationDrawerOpen &&
-                    unreadNotifications &&
+                     Array.isArray(unreadNotifications)  &&
                     unreadNotifications.length > 0 ? (
-                        unreadNotifications.map((notification, index) => {
+                        unreadNotifications.map((notification) => {
+                              console.log('Rendering notification:', notification);
                             switch (notification.notificationType) {
                                 case 'assessmentUpdate':
                                     return (
                                         <div
-                                            key={index}
+                                            key={notification.uniqueid}
                                             className={`border border-black rounded-xl p-6 bg-white flex gap-5 items-start relative ${
                                                 notification.notificationStatus ===
                                                 'passed'
@@ -218,7 +242,7 @@ export const Admin = () => {
                                 case 'docExpirationReminder':
                                     return (
                                         <div
-                                            key={index}
+                                        key={notification.uniqueid}
                                             className="border border-black rounded-xl p-6 bg-white shadow-custom-red flex flex-col gap-5 items-start relative"
                                         >
                                             <p
@@ -257,7 +281,7 @@ export const Admin = () => {
                                 case 'docStatusUpdate':
                                     return (
                                         <div
-                                            key={index}
+                                        key={notification.uniqueid}
                                             className="border border-black rounded-xl p-6 bg-white shadow-custom-red flex flex-col relative"
                                         >
                                             <p
@@ -315,7 +339,7 @@ export const Admin = () => {
                     ) : (
                         <div className="flex flex-col gap-5 pt-20">
                             <p className="text-center text-gray-500 text-xl">
-                              You're all caught up.
+                                You're all caught up.
                             </p>
                             <p className="text-center text-gray-500 text-xl">
                                 No unread notifications.{' '}
@@ -335,88 +359,73 @@ export const Admin = () => {
                 }}
             >
                 <div className="absolute inset-0 flex items-center justify-center">
-                    <h1 className="text-white text-3xl sm:text-3xl md:text-4xl lg:text-5xl font-fenix font-normal">
-                        Admin Dashboard
-                    </h1>
+                    {isLargeScreen && (
+                        <h1 className="text-white text-3xl sm:text-3xl md:text-4xl lg:text-5xl font-fenix font-normal">
+                            Admin Dashboard
+                        </h1>
+                    )}
                 </div>
             </div>
 
-            <div className="flex h-[calc(100vh-256px)] items-between p-4">
-                <div className="min-w-[220px] bg-gray p-6 border border-gray rounded-2xl h-full shadow-lg">
-                    <h2 className="font-bold text-xl mb-4 text-center text-black">
-                        Admin Menu
-                    </h2>
-                    <ul className="space-y-4 text-center">
-                        {[
-                            {
-                                path: 'practitioner-management',
-                                label: 'Practitioner Management',
-                            },
-                            { path: 'add-admins', label: 'Admin Management' },
-                            {
-                                path: 'admin-uploads',
-                                label: 'Upload Certificate Template/Study Guide',
-                            },
-                            {
-                                label: 'Admin Notifications',
-                                badge: unreadNotifications.length,
-                                onClick: handleNotificationsClick,
-                            },
-                        ].map((item) => (
-                            <li key={item.label} className="relative">
-                                {/* If 'Notifications', use button instead of Link */}
-                                {item.label === 'Admin Notifications' ? (
-                                    <button
-                                        onClick={item.onClick}
-                                        className="py-3 px-4 w-full transition duration-200 border-b-2 border-transparent hover:bg-green-500 rounded-xl hover:text-white text-lg text-black flex justify-between items-center"
-                                    >
-                                        {item.label}
-                                        {item.badge > 0 && (
-                                            <span className="bg-red text-white text-sm font-bold rounded-full h-6 w-6 flex items-center justify-center">
-                                                {item.badge}
-                                            </span>
+            <div className="flex flex-col h-screen">
+                <div className="flex-1 flex">
+                    {/* Admin Menu */}
+                    <div
+                        className={`${
+                            isLargeScreen
+                                ? 'min-w-[200px] bg-gray p-6 h-full'
+                                : 'w-full bg-gray'
+                        } border border-gray rounded-lg shadow-lg`}
+                    >
+                        <div
+                            className={`bg-charcoal ${
+                                isLargeScreen
+                                    ? 'min-w-[200px] h-10 flex items-center justify-center'
+                                    : 'py-3 px-4'
+                            } text-white font-bold`}
+                            onClick={!isLargeScreen ? toggleDropdown : null}
+                        >
+                            Admin Menu
+                        </div>
+
+                        {isLargeScreen || isDropdownOpen ? (
+                            <ul className="space-y-4 text-center font-bold mt-4">
+                                {menuItems.map((item) => (
+                                    <li key={item.label} className="relative">
+                                        {item.label ===
+                                        'Admin Notifications' ? (
+                                            <button
+                                                onClick={item.onClick}
+                                                className="py-3 px-4 w-full transition duration-200 border-b-2 border-transparent hover:bg-green-500 rounded-xl hover:text-white text-lg text-black flex justify-between items-center"
+                                            >
+                                                {item.label}
+                                                {item.badge > 0 && (
+                                                    <span className="bg-blue text-white text-sm font-bold rounded-full h-6 w-6 flex items-center justify-center">
+                                                        {item.badge}
+                                                    </span>
+                                                )}
+                                            </button>
+                                        ) : (
+                                            <Link
+                                                to={item.path}
+                                                className="py-3 px-4 w-full transition duration-200 border-b-2 border-transparent hover:bg-green-500 rounded-xl hover:text-white text-lg text-black"
+                                            >
+                                                {item.label}
+                                            </Link>
                                         )}
-                                    </button>
-                                ) : (
-                                    <Link
-                                        to={item.path}
-                                        className="py-3 px-4 w-full transition duration-200 border-b-2 border-transparent hover:bg-green-500 rounded-xl hover:text-white text-lg text-black flex justify-between items-center"
-                                    >
-                                        {item.label}
-                                    </Link>
-                                )}
-                            </li>
-                        ))}
-                    </ul>
-                </div>
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : null}
+                    </div>
 
-                {/* Main Content Area */}
-                <div className="flex flex-col flex-1 pl-10">
-                    {isLargeScreen && (
-                    <div className="flex gap-6 flex-wrap justify-start">
-                        {/* Main dashboard items with badges */}
-                        {dashboardItems.map((item) => (
-                            <div
-                                key={item.label}
-                                className={`w-[189px] h-[102px] rounded-xl ${item.color} shadow-md font-fira font-semibold text-lg flex p-4 items-end justify-center text-center text-black hover:shadow-lg transition-shadow relative`}
-                            >
-                                {item.label}
-                                {groupedNotifications[item.category] > 0 && (
-                                    <span className="absolute top-2 right-2 bg-red text-white text-sm font-bold rounded-full h-6 w-6 flex items-center justify-center">
-                                        {groupedNotifications[item.category]}
-                                    </span>
-                                )}
-                            </div>
-                        ))}
-                    </div>)}
-
-                    <div className="flex flex-col justify-center items-center w-full pt-10 ">
+                    {/* Main Content Area */}
+                    <div className="flex-1 p-6">
                         <Outlet />
                         <Footer />
                     </div>
                 </div>
             </div>
-         
         </div>
     );
 };

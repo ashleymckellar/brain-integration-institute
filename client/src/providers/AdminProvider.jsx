@@ -28,9 +28,7 @@ export const AdminProvider = ({ children }) => {
     const [unreadNotifications, setUnreadNotifications] = useState([]);
     const [isNotificationDrawerOpen, setisNotificationDrawerOpen] =
         useState(false);
-
-    //create put request function to mark notification as read
-    //will need notification uniqueid as param
+    const [userScore, setUserScore] = useState(null);
 
     const getManagementToken = async () => {
         const response = await axios.post(
@@ -83,7 +81,7 @@ export const AdminProvider = ({ children }) => {
 
     const changeAdminStatus = async (email, adminStatus) => {
         const accessToken = await getAccessTokenSilently();
-    
+
         try {
             // Send the PUT request to update the admin status
             const response = await fetch(
@@ -99,7 +97,7 @@ export const AdminProvider = ({ children }) => {
                     }),
                 },
             );
-    
+
             // Check if the response is okay
             if (!response.ok) {
                 const errorData = await response.json();
@@ -108,10 +106,13 @@ export const AdminProvider = ({ children }) => {
                     errorData.error || 'Failed to update admin status',
                 );
             }
-    
+
             // If adminStatus is true, send the promotion notification
             if (adminStatus) {
-                await sendAdminNotification(email, "You've been promoted to admin.");
+                await sendAdminNotification(
+                    email,
+                    "You've been promoted to admin.",
+                );
             } else {
                 console.log('Admin access revoked. No notification sent.');
             }
@@ -120,9 +121,6 @@ export const AdminProvider = ({ children }) => {
             throw error;
         }
     };
-    
-
-    
 
     const deleteUser = async (userEmail) => {
         try {
@@ -174,9 +172,7 @@ export const AdminProvider = ({ children }) => {
                 },
             );
 
-
             await axios.delete(`http://${baseUrl}/api/user/${userEmail}`, {
-
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${accessTokenforBackend}`,
@@ -272,7 +268,7 @@ export const AdminProvider = ({ children }) => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `http://${baseUrl}/api/admin-notifications`,
+                `${baseUrl}/api/admin-notifications`,
                 {
                     headers: {
                         'Content-Type': 'application/json',
@@ -393,6 +389,37 @@ export const AdminProvider = ({ children }) => {
         setisNotificationDrawerOpen(false);
     };
 
+    const fetchUserScore = async () => {
+        try {
+            if (user) {
+                const accessToken = await getAccessTokenSilently();
+
+                const response = await fetch(
+                    `${baseUrl}/api/assessment/${individualUser.userEmail}`,
+                    {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${accessToken}`,
+                        },
+                    },
+                );
+
+                if (!response.ok) {
+                    setUserScore({});
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                setUserScore(data);
+            } else {
+                console.log('Admin access revoked. No notification sent.');
+            }
+        } catch (error) {
+            console.error('Error updating admin status:', error);
+            throw error;
+        }
+    };
+
     return (
         <AdminContext.Provider
             value={{
@@ -425,6 +452,9 @@ export const AdminProvider = ({ children }) => {
                 scrollToSection,
                 handleReviewClick,
                 handleUpdateClick,
+                fetchUserScore,
+                userScore,
+                setUserScore
             }}
         >
             {children}

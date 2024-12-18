@@ -7,6 +7,7 @@ import julissa from '../assets/images/julissa.png';
 import tami from '../assets/images/tami.png';
 import steve from '../assets/images/steve.png';
 import terri from '../assets/images/terri.png';
+import debbie from '../assets/images/Debbie.png'
 import { useNavigate } from 'react-router-dom';
 
 export const AboutUs = () => {
@@ -133,6 +134,15 @@ export const AboutUs = () => {
                             className="w-24 sm:w-32 md:w-40 object-cover"
                             alt="Terri"
                         />
+                    </button>
+
+                    <button onClick={() => navigate('/debbie-bio')}>
+                        <img
+                            src={debbie}
+                            className="w-40 sm:w-40 md:w-40 object-cover rounded-full"
+                            alt="Debbie Luke"
+                        />
+                        <p>Debbie Luke</p>
                     </button>
                 </div>
             </div>

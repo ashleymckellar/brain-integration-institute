@@ -1,7 +1,3 @@
-/* eslint-disable no-unused-vars */
-
-/* eslint-disable react/no-unescaped-entities */
-
 import AddAdminsForm from './AddAdminsForm';
 import { useState, useContext, useEffect } from 'react';
 import { AdminContext } from '../contexts';
