@@ -13,9 +13,10 @@ export const PaymentSuccessPage = ({ setStudyGuideAccess }) => {
     const studyGuideAccess = queryParams.get('studyGuideAccess');
     const assessmentUrl = queryParams.get('assessmentUrl');
     const { email } = useContext(CloudinaryContext);
-    const { getAccessTokenSilently } = useAuth0();
+    // const { getAccessTokenSilently } = useAuth0();
 
-
+ //add put req to set assessmentAccess to true
+ //only make take assessment button clickable once this is true
 
     useEffect(() => {
         if (showModal) {
@@ -72,6 +73,8 @@ export const PaymentSuccessPage = ({ setStudyGuideAccess }) => {
                         <h1 className="text-xl text-center font-bold mb-4">
                             Payment Successful!
                         </h1>
+                        <p className='text-center '>Are you ready to take the timed assessment?</p>
+                        <p className='text-center '>You can always find the link to the assessment on your profile page.</p>
                         <div className="flex gap-10 justify-center">
                             {studyGuideAccess ? (
                                 <button

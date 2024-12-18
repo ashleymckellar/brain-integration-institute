@@ -2,10 +2,16 @@ const mg = require('mongoose');
 const Schema = mg.Schema;
 
 const TestSchema = new mg.Schema({
-    userId: String,
-    questions: [questionSchema],
+    userId: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+    },
+    questions: [String],
     startTime: Date,
     endTime: Date,
+    score: Number,
+    testCompleted: Boolean
 });
 
 

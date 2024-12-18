@@ -8,12 +8,15 @@ const { enableCors, validateAuthToken } = require('./middleware/auth');
 const { staticSiteRouter } = require('./routes/static');
 const { UserModel } = require('./models/User');
 const { ProfileModel } = require('./models/profile');
+const bodyParser = require('body-parser'); 
 
 // const { errorHandler, logger } = require('./middleware/log');
 
 const server = ex();
 
 server.use(enableCors);
+
+server.use(bodyParser.json({ limit: '20mb' })); 
 
 server.use(ex.json());
 server.use(ex.urlencoded({ extended: true }));
