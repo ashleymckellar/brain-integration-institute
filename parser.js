@@ -6,7 +6,7 @@ const path = require('path');
 // Array of quiz files
 const arrayOfQuizzes =
     [   
-        "1through113.csv",
+        "combinedQuestions.csv",
         
         // 'Quiz 115.csv',
         // 'Quiz 116.csv',

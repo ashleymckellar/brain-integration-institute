@@ -1,7 +1,12 @@
+/* eslint-disable react/prop-types */
 import {
     createBrowserRouter,
     RouterProvider as ReactRouterProvider,
+    Navigate,
 } from 'react-router-dom';
+import { useEffect, useState, useContext } from 'react';
+import { CloudinaryContext } from '../contexts';
+
 import { Profile } from '../routes/Profile';
 import { Root } from '../routes/Root';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -22,12 +27,25 @@ import { TamiBio } from '../routes/TamiBio';
 import { Terms } from '../routes/Terms';
 import AddAdmins from '../routes/AddAdmins';
 import { Notifications } from '../routes/Notifications';
-import { PractitionerDetails } from '../components/PractitionerDetails'
+import { PractitionerDetails } from '../components/PractitionerDetails';
 import PractitionerManagement from '../routes/PractitionerManagement';
 import AdminUploadManagement from '../routes/AdminUploadManagement';
 // import MessagingHub from '../routes/MessagingHub';
 import UserSpecificAdminView from '../components/UserSpecificAdminView';
-import ScrollToTop from '../components/ScrollToTop';
+// import ScrollToTop from '../components/ScrollToTop';
+
+// import { Navigate } from 'react-router-dom';
+
+// Admin Route Guard Component
+const AdminRoute = ({ children }) => {
+    // const { user } = useAuth0();
+    const { userMetaData } = useContext(CloudinaryContext);
+
+    // Check if the user is an admin
+    const isAdmin = userMetaData?.isAdmin;
+
+    return isAdmin ? children : <NotFound />;
+};
 
 const router = createBrowserRouter([
     {
@@ -38,48 +56,63 @@ const router = createBrowserRouter([
                 index: true,
                 element: <Home />,
             },
-
             {
                 path: '/profile',
                 element: <Profile />,
             },
-
             {
                 path: '/certification',
                 element: <Certification />,
             },
-
             {
                 path: '/success',
                 element: <PaymentSuccessPage />,
             },
-            // {
-            //     path: '/contact-us',
-            //     element: <ContactUs />,
-            // },
-
             {
                 path: '/notifications',
                 element: <Notifications />,
             },
             {
                 path: '/admin',
-                element: <Admin />,
+                element: (
+                    <AdminRoute>
+                        <Admin />
+                    </AdminRoute>
+                ),
                 children: [
                     {
                         path: 'practitioner-management',
-                        element: <PractitionerManagement />,
+                        element: (
+                            <AdminRoute>
+                                <PractitionerManagement />
+                            </AdminRoute>
+                        ),
                         children: [
                             {
                                 path: ':userEmail',
-                                element: <UserSpecificAdminView />,
+                                element: (
+                                    <AdminRoute>
+                                        <UserSpecificAdminView />
+                                    </AdminRoute>
+                                ),
                             },
                         ],
                     },
-                    { path: 'add-admins', element: <AddAdmins /> },
+                    {
+                        path: 'add-admins',
+                        element: (
+                            <AdminRoute>
+                                <AddAdmins />
+                            </AdminRoute>
+                        ),
+                    },
                     {
                         path: 'admin-uploads',
-                        element: <AdminUploadManagement />,
+                        element: (
+                            <AdminRoute>
+                                <AdminUploadManagement />
+                            </AdminRoute>
+                        ),
                     },
                 ],
             },
@@ -91,10 +124,9 @@ const router = createBrowserRouter([
     },
     { path: '/about', element: <AboutUs /> },
     { path: '/', element: <Home /> },
-
     {
         path: '/practitioner/:email',
-        element: <PractitionerDetails />, 
+        element: <PractitionerDetails />,
     },
     {
         path: '/contact-us',
@@ -122,7 +154,7 @@ const router = createBrowserRouter([
     },
     {
         path: '/debbie-bio',
-        element: <DebbieBio />
+        element: <DebbieBio />,
     },
     {
         path: '/terms',
@@ -134,14 +166,17 @@ const router = createBrowserRouter([
     },
 ]);
 
-//changed back to Home component.  Auth0 should handle authentication, but we can add secondary way to authenticate/register using this Auth route.
-
 export const RouteProvider = () => {
-    const { isLoading } = useAuth0();
+    const { isLoading, user } = useAuth0();
+    const { getUserMetaData, userMetaData } = useContext(CloudinaryContext);
+
+    useEffect(() => {
+        if (user?.email) {
+            getUserMetaData(user.email);
+        }
+    }, []);
+
     if (isLoading) return <div>Loading...</div>;
-    return   <ReactRouterProvider router={router}>
-            <ScrollToTop>
-                <ReactRouterProvider router={router} />
-            </ScrollToTop>
-        </ReactRouterProvider>;
+
+    return <ReactRouterProvider router={router} />;
 };

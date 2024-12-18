@@ -139,7 +139,7 @@ export const AboutUs = () => {
                     <button onClick={() => navigate('/debbie-bio')}>
                         <img
                             src={circleDebbie}
-                            className="w-40 sm:w-40 md:w-40 object-cover"
+                            className="w-24 sm:w-32 md:w-40 object-cover"
                             alt="Debbie Luke"
                         />
                     </button>

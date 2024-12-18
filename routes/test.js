@@ -14,7 +14,7 @@ testRouter.post("/upload-questions", async (req, res) => {
         // Map raw data to Mongoose schema structure
         const formattedQuestions = rawQuestions.map((item) => {
             // Use conditional checks to handle undefined or null properties
-            const setName = item["QuizHeading"] ? item["QuizHeading"].toLowerCase() : "";
+            const setName = item["Section"] ? item["Section"].toLowerCase() : "";
             let type = item["Question Type"] ? item["Question Type"].trim().toLowerCase() : "";
 
             // If the type is not valid, set it to a default (e.g., 'Multiple Choice')
