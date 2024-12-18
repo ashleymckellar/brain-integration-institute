@@ -1,6 +1,6 @@
 import { Navbar } from '../components/header/Navbar';
 import { Footer } from '../components/Footer';
-import debbie from '../assets/images/debbie.png';
+import circleDebbie from '../assets/images/debbie-with-name.png';
 import map from '../assets/icons/map-pin.png';
 import phone from '../assets/icons/phone.png';
 import mail from '../assets/icons/mail.png';
@@ -14,7 +14,7 @@ export const DebbieBio = () => {
                     {/* Left Column */}
                     <div className="flex flex-col items-center lg:items-start gap-10 lg:basis-1/2">
                         <img
-                            src={debbie}
+                            src={circleDebbie}
                             className="w-75% h-[650px] object-cover"
                             alt="Debbie Luke"
                         />
