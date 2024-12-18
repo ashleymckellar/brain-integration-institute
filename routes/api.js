@@ -9,6 +9,7 @@ const { adminRouter } = require('./admin')
 const { notifyRouter } = require('./notify')
 const { assessmentRouter } = require('./assessment')
 const { testRouter } = require('./test')
+const { questionRouter } = require('./question')
 const { notificationsRouter } = require('./notifications');
 const { adminNotificationsRouter } = require('./adminNotifications')
 
@@ -27,6 +28,7 @@ apiRouter.use('/notifications', notificationsRouter)
 apiRouter.use('/admin-notifications', adminNotificationsRouter)
 apiRouter.use('/assessment', assessmentRouter)
 apiRouter.use('/test', testRouter)
+apiRouter.use('/question', questionRouter)
 
 module.exports = {
     apiRouter

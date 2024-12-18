@@ -8,6 +8,7 @@ import { useEffect, useState, useContext } from 'react';
 import { CloudinaryContext } from '../contexts';
 
 import { Profile } from '../routes/Profile';
+import { Assessment } from '../routes/Assessment';
 import { Root } from '../routes/Root';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Home } from '../routes/Home';
@@ -43,6 +44,16 @@ const AdminRoute = ({ children }) => {
     const isAdmin = userMetaData?.isAdmin;
 
     return isAdmin ? children : <NotFound />;
+};
+
+const AssessmentRoute = ({ children }) => {
+  
+    const { userMetaData } = useContext(CloudinaryContext);
+
+  
+    const hasAssessmentAccess = userMetaData?.assessmentAccess;
+
+    return hasAssessmentAccess ? children : <NotFound />;
 };
 
 const router = createBrowserRouter([
@@ -114,6 +125,15 @@ const router = createBrowserRouter([
                     },
                 ],
             },
+            {
+                path: 'assessment',
+                element: (
+                    <AssessmentRoute>
+                        <Assessment />
+                    </AssessmentRoute>
+                ),
+
+            }
         ],
     },
     {
