@@ -33,6 +33,7 @@ import PractitionerManagement from '../routes/PractitionerManagement';
 import AdminUploadManagement from '../routes/AdminUploadManagement';
 // import MessagingHub from '../routes/MessagingHub';
 import UserSpecificAdminView from '../components/UserSpecificAdminView';
+import { MockTestQuestionCard } from '../components/MockTestQuestionCard';
 
 
 
@@ -132,8 +133,19 @@ const router = createBrowserRouter([
                         <Assessment />
                     </AssessmentRoute>
                 ),
+            },
+               
+                    {
+                        path: '/assessment/:id',
+                        element: (
+                            <AssessmentRoute>
+                           <MockTestQuestionCard />
+                        </AssessmentRoute>
+                        ),
+                    },
+                
 
-            }
+            
         ],
     },
     {
@@ -194,7 +206,7 @@ export const RouteProvider = () => {
         }
     }, []);
 
-    if (isLoading) return <div>Loading...</div>;
+    if (isLoading) return <div>Neurons firing, please wait...</div>;
 
     return <ReactRouterProvider router={router} />;
 };
