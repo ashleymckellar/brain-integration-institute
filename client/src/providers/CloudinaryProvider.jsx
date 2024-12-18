@@ -24,6 +24,7 @@ export const CloudinaryProvider = ({ children }) => {
     const [isLoading, setIsLoading] = useState(true);
     const [progress, setProgress] = useState(0);
     const [studyGuideAccess, setStudyGuideAccess] = useState(false);
+    const [assessmentAccess, setAssessmentAccess] = useState(false);
     const [email, setEmail] = useState('');
     const [userMetaData, setUserMetaData] = useState({});
 
@@ -69,14 +70,11 @@ export const CloudinaryProvider = ({ children }) => {
 
             // Fetch files from the API
             const email = user.email;
-            const response = await axios.get(
-                `${baseUrl}/api/files/${email}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                    },
+            const response = await axios.get(`${baseUrl}/api/files/${email}`, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
                 },
-            );
+            });
 
             // Handle case where response might be null or not OK
             if (!response || !response.data || !response.data.files) {
@@ -189,7 +187,6 @@ export const CloudinaryProvider = ({ children }) => {
     //this function is being called inside getStudyGuide in accordioncard
 
     const updateUserProgress = async (newProgress) => {
-      
         //this works
         if (user) {
             try {
@@ -198,7 +195,6 @@ export const CloudinaryProvider = ({ children }) => {
                 console.log('Updating user progress:', {
                     userUploadProgress: newProgress,
                 });
-
 
                 const response = await fetch(
                     `${baseUrl}/api/user/${user.email}/progress`,
@@ -214,8 +210,6 @@ export const CloudinaryProvider = ({ children }) => {
                     },
                 );
 
-              
-
                 if (!response.ok) {
                     const errorData = await response.json();
                     console.error('Failed to update user progress:', errorData);
@@ -223,7 +217,6 @@ export const CloudinaryProvider = ({ children }) => {
                 }
 
                 const data = await response.json();
-              
             } catch (error) {
                 console.error('Error updating user progress:', error);
             }
@@ -232,10 +225,7 @@ export const CloudinaryProvider = ({ children }) => {
         }
     };
 
-
-
     const updateUserStudyGuide = async (email) => {
-
         if (!email) {
             console.error('Email is required to update the study guide.');
             return;
@@ -243,8 +233,6 @@ export const CloudinaryProvider = ({ children }) => {
 
         try {
             const accessToken = await getAccessTokenSilently();
-           
-          
 
             const response = await fetch(
                 `${baseUrl}/api/user/${email}/study-guide`,
@@ -258,8 +246,6 @@ export const CloudinaryProvider = ({ children }) => {
                 },
             );
 
-       
-
             if (!response.ok) {
                 const errorData = await response.json();
                 console.error('Failed to update user study guide:', errorData);
@@ -267,7 +253,7 @@ export const CloudinaryProvider = ({ children }) => {
             }
 
             const data = await response.json();
-          
+
             setStudyGuideAccess(true);
             // const newProgress = Math.min(progress + 1, 8);
             try {
@@ -424,7 +410,6 @@ export const CloudinaryProvider = ({ children }) => {
                             );
 
                             if (response.ok) {
-
                                 console.log(
                                     'File metadata successfully sent to the server.',
                                 );
@@ -433,7 +418,6 @@ export const CloudinaryProvider = ({ children }) => {
                                     ...prevFiles,
                                     fileMetadata,
                                 ]);
-
                             } else {
                                 console.error(
                                     'Failed to send file metadata to the server.',
@@ -499,8 +483,6 @@ export const CloudinaryProvider = ({ children }) => {
                         return;
                     }
                     if (result.event === 'success') {
-                     
-                        
                         const userMetaData = {
                             userProfilePicture: result.info.secure_url,
                         };
@@ -551,15 +533,12 @@ export const CloudinaryProvider = ({ children }) => {
         console.log(publicId, 'publicId');
         try {
             const accessToken = await getAccessTokenSilently();
-            const response = await fetch(
-                `${baseUrl}/api/files/${publicId}`,
-                {
-                    method: 'DELETE',
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                    },
+            const response = await fetch(`${baseUrl}/api/files/${publicId}`, {
+                method: 'DELETE',
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
                 },
-            );
+            });
 
             // const newStatus = 'pending approval';
             // const updatedStatus = {
@@ -753,7 +732,52 @@ export const CloudinaryProvider = ({ children }) => {
         }
     };
 
-    const isApprovedForAssessment = () => {};
+    const updateUserAssessmentAccess = async (email) => {
+        if (!email) {
+            console.error('Email is required to update the assessment status.');
+            return;
+        }
+
+        try {
+            const accessToken = await getAccessTokenSilently();
+
+            const response = await fetch(
+                `${baseUrl}/api/user/${email}/assessment-access`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                    body: JSON.stringify({ assessmentAccess: true }),
+                },
+            );
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('Failed to update user assessment access:', errorData);
+                throw new Error('Failed to update user assessment access');
+            }
+
+            const data = await response.json();
+
+            setAssessmentAccess(true);
+            // const newProgress = Math.min(progress + 1, 8);
+            try {
+                if (progress < 8) {
+                    const newProgress = progress + 1;
+
+                    setProgress(newProgress);
+                } // Update state only after success
+            } catch (error) {
+                console.error('Error updating user progress:', error);
+            }
+
+            //call setProgress here, not in accordion
+        } catch (error) {
+            console.error('Error updating user study guide:', error);
+        }
+    };
 
     return (
         <CloudinaryContext.Provider
@@ -806,6 +830,7 @@ export const CloudinaryProvider = ({ children }) => {
                 setPublicId,
                 imagesByDocType,
                 setImagesByDocType,
+                updateUserAssessmentAccess
             }}
         >
             {loaded && children}

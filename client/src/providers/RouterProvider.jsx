@@ -32,16 +32,14 @@ import PractitionerManagement from '../routes/PractitionerManagement';
 import AdminUploadManagement from '../routes/AdminUploadManagement';
 // import MessagingHub from '../routes/MessagingHub';
 import UserSpecificAdminView from '../components/UserSpecificAdminView';
-// import ScrollToTop from '../components/ScrollToTop';
 
-// import { Navigate } from 'react-router-dom';
 
-// Admin Route Guard Component
+
 const AdminRoute = ({ children }) => {
-    // const { user } = useAuth0();
+  
     const { userMetaData } = useContext(CloudinaryContext);
 
-    // Check if the user is an admin
+  
     const isAdmin = userMetaData?.isAdmin;
 
     return isAdmin ? children : <NotFound />;

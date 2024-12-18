@@ -1,7 +1,8 @@
 import { PaymentElement } from '@stripe/react-stripe-js';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useStripe, useElements } from '@stripe/react-stripe-js';
 import PoweredbyStripe from '../assets/icons/PoweredbyStripe.png';
+import { CloudinaryContext } from '../contexts';
 
 export default function AssessmentCheckoutForm() {
     const stripe = useStripe();
@@ -9,6 +10,7 @@ export default function AssessmentCheckoutForm() {
     const [message, setMessage] = useState(null);
     const [isProcessing, setIsProcessing] = useState(false);
     const [showModal, setShowModal] = useState(false);
+    const { updateUserAssessmentAccess, email } = useContext(CloudinaryContext);
 
     
 
@@ -21,6 +23,7 @@ export default function AssessmentCheckoutForm() {
             return;
         }
         setIsProcessing(true);
+        updateUserAssessmentAccess(email);
         const { error } = await stripe.confirmPayment({
             elements,
             redirect: 'if_required',
