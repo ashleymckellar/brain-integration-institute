@@ -322,8 +322,8 @@ const UserSpecificAdminView = () => {
                             </div>
                         </>
                     ) : (
-                        <div className="flex flex-col justify-center items-center">
-                            <p className="font-bold text-xl sm:text-2xl">
+                        <div className="flex flex-col justify-center items-center h-[100px] sm:h-[200px]   ">
+                            <p className="font-bold text-xl sm:text-2xl text-center ">
                                 No profile data found
                             </p>
                         </div>

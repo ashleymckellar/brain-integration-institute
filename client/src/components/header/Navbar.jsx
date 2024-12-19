@@ -63,7 +63,7 @@ export const Navbar = () => {
         }
     };
 
-    console.log(activeNotifications, 'active not')
+    // console.log(activeNotifications, 'active not')
 
     const filteredNotifications = activeNotifications.reduce(
         (acc, notification) => {

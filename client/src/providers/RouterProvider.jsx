@@ -35,27 +35,27 @@ import AdminUploadManagement from '../routes/AdminUploadManagement';
 import UserSpecificAdminView from '../components/UserSpecificAdminView';
 import { MockTestQuestionCard } from '../components/MockTestQuestionCard';
 
-
-
 const AdminRoute = ({ children }) => {
-  
     const { userMetaData } = useContext(CloudinaryContext);
-
-  
     const isAdmin = userMetaData?.isAdmin;
-
-    return isAdmin ? children : <NotFound />;
+    return isAdmin && children 
 };
 
 const AssessmentRoute = ({ children }) => {
-  
     const { userMetaData } = useContext(CloudinaryContext);
-
   
+
+    if (Object.keys(userMetaData).length === 0) {
+        return <div>Loading user data, please wait...</div>;
+    }
+
     const hasAssessmentAccess = userMetaData?.assessmentAccess;
 
-    return hasAssessmentAccess ? children : <NotFound />;
+
+    return userMetaData && hasAssessmentAccess ? children : <NotFound />
 };
+
+
 
 const router = createBrowserRouter([
     {
@@ -127,25 +127,22 @@ const router = createBrowserRouter([
                 ],
             },
             {
-                path: 'assessment',
+                path: '/assessment',
                 element: (
                     <AssessmentRoute>
                         <Assessment />
                     </AssessmentRoute>
                 ),
             },
-               
-                    {
-                        path: '/assessment/:id',
-                        element: (
-                            <AssessmentRoute>
-                           <MockTestQuestionCard />
-                        </AssessmentRoute>
-                        ),
-                    },
-                
 
-            
+            {
+                path: '/assessment/:id',
+                element: (
+                    <AssessmentRoute>
+                        <MockTestQuestionCard />
+                    </AssessmentRoute>
+                ),
+            },
         ],
     },
     {
@@ -197,16 +194,27 @@ const router = createBrowserRouter([
 ]);
 
 export const RouteProvider = () => {
-    const { isLoading, user } = useAuth0();
+    const { isLoading: isAuthLoading, user } = useAuth0();
+    const [isLoadingNeurons, setIsLoadingNeurons] = useState(true); // Controls metadata loading
     const { getUserMetaData, userMetaData } = useContext(CloudinaryContext);
 
     useEffect(() => {
         if (user?.email) {
-            getUserMetaData(user.email);
+            getUserMetaData(user.email).finally(() => setIsLoadingNeurons(false));
+        } else {
+            setIsLoadingNeurons(false); // Skip if no user is logged in
         }
-    }, []);
+    }, [user?.email]);
 
-    if (isLoading) return <div>Neurons firing, please wait...</div>;
+    // Unified loading indicator while awaiting Auth0 or user metadata
+    if (isAuthLoading || isLoadingNeurons) {
+        return <div>Neurons firing, please wait...</div>;
+    }
+
+    // Handle case where metadata couldn't be fetched (optional)
+    if (!userMetaData) {
+        return <div>Error loading user data. Please try again later.</div>;
+    }
 
     return <ReactRouterProvider router={router} />;
 };

@@ -317,9 +317,9 @@ export const Notifications = ({ isNotificationDrawerOpen }) => {
     } = useContext(UserContext);
     const { user } = useAuth0();
 
-    useEffect(() => {
-        console.log(filteredNotifications, 'filtered not');
-    }, [filteredNotifications]);
+    // useEffect(() => {
+    //     console.log(filteredNotifications, 'filtered not');
+    // }, [filteredNotifications]);
 
     const docTypeMapping = {
         brainIntegrationTraining: 'Brain Integration Training',
