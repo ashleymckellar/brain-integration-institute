@@ -9,13 +9,13 @@ export const TerriBio = () => {
     return (
         <div>
             <Navbar />
-            <div className="p-20">
+            <div className="p-4 md:p-10 lg:p-20 pb-20">
                 <div className="flex flex-col lg:flex-row gap-10">
                     {/* Left Column */}
                     <div className="flex flex-col items-center lg:items-start gap-10 lg:basis-1/2">
                         <img
                             src={rectangleTerri}
-                           className="w-full sm:w-[800px] md:w-[600px] lg:w-[800px] h-auto object-cover"
+                            className="w-full sm:w-[800px] md:w-[600px] lg:w-[800px] h-auto object-cover"
                             alt="Terri Harris"
                         />
                         <div className="flex flex-col gap-5">
@@ -25,7 +25,9 @@ export const TerriBio = () => {
                                     alt="map pin"
                                     className="w-8 h-8"
                                 />
-                                <span className='font-bold'>West Jordan & Midvale, UT</span>
+                                <span className="font-bold">
+                                    West Jordan & Midvale, UT
+                                </span>
                             </div>
                             <div className="flex items-center gap-3">
                                 <img
@@ -57,12 +59,12 @@ export const TerriBio = () => {
                     </div>
 
                     {/* Right Column */}
-                    <div className=" sm:w-[800px] md:w-[600px] lg:w-[1800px]  h-auto object-cover">
+                    <div className="flex flex-col gap-10 sm:w-[800px] md:w-[600px] lg:w-[1800px] h-auto object-cover">
                         <h1 className="text-6xl font-bold">Terri Harris</h1>
                         <h2 className="text-xl font-semibold">
                             MA, BS, CRC (ret), SSW, BI Practitioner
                         </h2>
-                        <p>
+                        <p className="px-2 md:px-6 lg:px-10">
                             Terri brings a wealth of Brain Integration and
                             related experience to the Board of the Brain
                             Integration Institute. Terri graduated from Sam
@@ -70,7 +72,7 @@ export const TerriBio = () => {
                             She then graduated from the University of Utah, with
                             an MA in Rehabilitation Counseling.
                         </p>
-                        <p>
+                        <p className="px-2 md:px-6 lg:px-10">
                             Terri is well versed in caring for youth and adults
                             alike, with 20 years’ experience at the State of
                             Utah in the areas of Child Protective Services,
@@ -79,7 +81,7 @@ export const TerriBio = () => {
                             and Regional Coordinator of Independent Living
                             Services for emancipating foster care youth.
                         </p>
-                        <p>
+                        <p className="px-2 md:px-6 lg:px-10">
                             Terri also has 5 years’ experience at the State of
                             Utah Vocational Rehabilitation Agency as a
                             Rehabilitation Counselor. Terri obtained her first
@@ -97,7 +99,7 @@ export const TerriBio = () => {
                             Emotion Code Training, and Kinergetics Reset
                             Seminar.
                         </p>
-                        <p>
+                        <p className="px-2 md:px-6 lg:px-10">
                             Terri is the owner of Integral Brain Health and
                             currently works there as a practitioner.
                         </p>
