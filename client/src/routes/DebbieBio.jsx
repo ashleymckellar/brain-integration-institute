@@ -1,6 +1,6 @@
 import { Navbar } from '../components/header/Navbar';
 import { Footer } from '../components/Footer';
-import circleDebbie from '../assets/images/debbie-with-name.png';
+import debbie from '../assets/images/rectangle-debbie.png';
 import map from '../assets/icons/map-pin.png';
 import phone from '../assets/icons/phone.png';
 import mail from '../assets/icons/mail.png';
@@ -14,8 +14,8 @@ export const DebbieBio = () => {
                     {/* Left Column */}
                     <div className="flex flex-col items-center lg:items-start gap-10 lg:basis-1/2">
                         <img
-                            src={circleDebbie}
-                            className="w-75% h-[650px] object-cover"
+                            src={debbie}
+                            className="w-full sm:w-[800px] md:w-[600px] lg:w-[800px] h-auto object-cover"
                             alt="Debbie Luke"
                         />
                         <div className="flex flex-col gap-5">
@@ -37,7 +37,7 @@ export const DebbieBio = () => {
                                     href="tel:1-801-577-4182"
                                     className="text-blue-600 hover:underline font-bold"
                                 >
-                                    1-801-577-4182
+                                    1-801-555-5555
                                 </a>
                             </div>
                             <div className="flex items-center gap-3">
@@ -50,18 +50,32 @@ export const DebbieBio = () => {
                                     href="mailto:julissa@optimizebrain.com"
                                     className="text-blue-600 hover:underline font-bold"
                                 >
-                                    julissa@optimizebrain.com
+                                    waitingonemail@test.com
                                 </a>
                             </div>
                         </div>
                     </div>
 
                     {/* Right Column */}
-                    <div className="flex flex-col gap-6  px-[200px]">
+                    <div className=" sm:w-[800px] md:w-[600px] lg:w-[1800px]  h-auto object-cover">
                         <h1 className="text-6xl font-bold">Debbie Luke</h1>
                         <h2 className="text-xl font-semibold">CEnK2, LMT</h2>
-           <p>Debbie is dedicated to guiding students in building a foundational understanding of energy kinesiology, preparing them for advanced training in brain integration. She collaborates with Tami Davis and Ronald Wayman to create and deliver accessible, engaging course materials that introduce the principles of Chinese Medicine to beginners. Her focus is primarily on introductory and prerequisite courses, where she provides a strong knowledge base for students.
-           Debbie’s approach combines scientific insight with intuitive practices, equipping students and clients alike with tools that foster personal growth and a deeper understanding of energy as a transformative force.</p>
+                        <p>
+                            Debbie is dedicated to guiding students in building
+                            a foundational understanding of energy kinesiology,
+                            preparing them for advanced training in brain
+                            integration. She collaborates with Tami Davis and
+                            Ronald Wayman to create and deliver accessible,
+                            engaging course materials that introduce the
+                            principles of Chinese Medicine to beginners. Her
+                            focus is primarily on introductory and prerequisite
+                            courses, where she provides a strong knowledge base
+                            for students. Debbie’s approach combines scientific
+                            insight with intuitive practices, equipping students
+                            and clients alike with tools that foster personal
+                            growth and a deeper understanding of energy as a
+                            transformative force.
+                        </p>
                     </div>
                 </div>
             </div>

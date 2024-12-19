@@ -13,9 +13,8 @@ export const Footer = () => {
                     <img
                         src={brainSeal}
                         alt="Brain Integration Institute"
-                        width="134"
-                        height="134"
-                        className="w-32 sm:w-40 md:w-48 lg:w-56 xl:w-64"
+                      
+                        className=" sm:w-40 md:w-48 lg:w-40 xl:w-64 !w-40"
                     />
                 </div>
 

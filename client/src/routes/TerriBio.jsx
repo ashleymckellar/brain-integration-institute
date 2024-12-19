@@ -15,7 +15,7 @@ export const TerriBio = () => {
                     <div className="flex flex-col items-center lg:items-start gap-10 lg:basis-1/2">
                         <img
                             src={rectangleTerri}
-                            className="w-75% h-[650px] object-cover"
+                           className="w-full sm:w-[800px] md:w-[600px] lg:w-[800px] h-auto object-cover"
                             alt="Terri Harris"
                         />
                         <div className="flex flex-col gap-5">
@@ -57,7 +57,7 @@ export const TerriBio = () => {
                     </div>
 
                     {/* Right Column */}
-                    <div className="flex flex-col gap-6  px-[200px]">
+                    <div className=" sm:w-[800px] md:w-[600px] lg:w-[1800px]  h-auto object-cover">
                         <h1 className="text-6xl font-bold">Terri Harris</h1>
                         <h2 className="text-xl font-semibold">
                             MA, BS, CRC (ret), SSW, BI Practitioner
