@@ -85,21 +85,21 @@ export const Home = () => {
                         <div className="flex flex-col lg:flex-row gap-10 mt-10 px-4 sm:px-10 lg:px-20">
                             {[
                                 {
-                                    text: "I went from reading on a first grade level to on grade level after one session.",
+                                    text: 'I went from reading on a first grade level to on grade level after one session.',
                                     img: girlBackpack,
                                 },
                                 {
-                                    text: "My parents don’t worry about me getting left behind anymore.",
+                                    text: 'My parents don’t worry about me getting left behind anymore.',
                                     img: graduateBoy,
                                 },
                                 {
-                                    text: "My anxiety doesn’t control me anymore.",
+                                    text: 'My anxiety doesn’t control me anymore.',
                                     img: standingWoman,
                                 },
                             ].map((testimonial, index) => (
                                 <div
                                     key={index}
-                                    className="flex flex-col justify-center items-center border border-white rounded-md w-full sm:w-3/4 lg:w-[423px] h-auto lg:h-[644px] bg-gradient-custom-blue gap-6 p-4"
+                                    className="flex flex-col justify-center items-center border border-white rounded-md w-full sm:w-3/4 lg:w-[423px] h-auto lg:h-[644px] bg-gradient-custom-blue gap-6 px-4"
                                 >
                                     <img
                                         src={quotationMarks}
@@ -110,9 +110,14 @@ export const Home = () => {
                                         {testimonial.text}
                                     </p>
                                     <img
+                                        src={quotationMarks}
+                                        alt="quotation marks"
+                                        className="w-8 sm:w-12"
+                                    />
+                                    <img
                                         src={testimonial.img}
                                         alt="Testimonial image"
-                                        className="w-40 sm:w-48 lg:w-[200px] h-auto rounded-full"
+                                        className="w-40 sm:w-48 lg:w-[200px] h-auto"
                                     />
                                 </div>
                             ))}
@@ -122,17 +127,20 @@ export const Home = () => {
                     {/* Certification Sections */}
                     {[
                         {
-                            title: "Why Get Certified?",
+                            title: 'Why Get Certified?',
                             content:
-                                "At the Brain Integration Institute, we strive to strengthen individuals, families, and communities through establishing a reliable system of support for brain integration practitioners and clients alike. Since we believe that all individuals deserve the highest quality of service possible, we also maintain a certification program to help individuals and families know which practitioners meet our standards of practice and knowledge.",
+                                'At the Brain Integration Institute, we strive to strengthen individuals, families, and communities through establishing a reliable system of support for brain integration practitioners and clients alike. Since we believe that all individuals deserve the highest quality of service possible, we also maintain a certification program to help individuals and families know which practitioners meet our standards of practice and knowledge.',
                         },
                         {
-                            title: "How Do You Get Certified?",
+                            title: 'How Do You Get Certified?',
                             content:
-                                "The certification process is designed to ensure safety, professionalism, and expertise. After 500 hours of educational training, practitioners will be asked to demonstrate competency in a brain integration assessment and complete 200 clinical hours in a brain integration or kinesiology setting. Additionally, practitioners are required to take safety courses in CPR and first aid, maintain a background check, keep updated insurance, pay a small fee, and provide current contact information. Give yourself a boost in this growing field and meet the highest national standards by getting brain integration certified.",
+                                'The certification process is designed to ensure safety, professionalism, and expertise. After 500 hours of educational training, practitioners will be asked to demonstrate competency in a brain integration assessment and complete 200 clinical hours in a brain integration or kinesiology setting. Additionally, practitioners are required to take safety courses in CPR and first aid, maintain a background check, keep updated insurance, pay a small fee, and provide current contact information. Give yourself a boost in this growing field and meet the highest national standards by getting brain integration certified.',
                         },
                     ].map((section, index) => (
-                        <section key={index} className="flex flex-col gap-6 pt-10">
+                        <section
+                            key={index}
+                            className="flex flex-col gap-6 pt-10"
+                        >
                             <h1 className="font-fira text-xl sm:text-2xl lg:text-3xl text-center">
                                 {section.title}
                             </h1>
