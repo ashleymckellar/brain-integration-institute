@@ -90,8 +90,8 @@ export const MockTestQuestionCard = () => {
     }
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-gray-100">
-            <div className="flex flex-col items-center justify-center gap-4 p-4 border border-white w-[500px] rounded shadow bg-[#F5F5F5]">
+        <div className="flex min-h-screen items-center justify-center min-w-75">
+            <div className="flex flex-col items-center justify-center gap-4 border border-white w-[700px] rounded shadow bg-[#F5F5F5] p-10">
                 <h2 className='font-poppins'>Question {question.id}</h2>
                 <p className='font-poppins'>{question.question}</p>
                 <ul>
