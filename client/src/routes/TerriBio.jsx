@@ -60,8 +60,8 @@ export const TerriBio = () => {
 
                     {/* Right Column */}
                     <div className="flex flex-col gap-10 sm:w-[800px] md:w-[600px] lg:w-[1800px] h-auto object-cover">
-                        <h1 className="text-6xl font-bold">Terri Harris</h1>
-                        <h2 className="text-xl font-semibold">
+                        <h1 className="text-6xl font-bold text-center lg:text-start lg:px-10">Terri Harris</h1>
+                        <h2 className="text-xl font-semibold text-center lg:text-start lg:px-10">
                             MA, BS, CRC (ret), SSW, BI Practitioner
                         </h2>
                         <p className="px-2 md:px-6 lg:px-10">

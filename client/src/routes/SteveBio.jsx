@@ -9,13 +9,13 @@ export const SteveBio = () => {
     return (
         <div>
             <Navbar />
-            <div className="p-20">
+            <div className="p-4 md:p-10 lg:p-20 pb-20">
                 <div className="flex flex-col lg:flex-row gap-10">
                     {/* Left Column */}
                     <div className="flex flex-col items-center lg:items-start gap-10 lg:basis-1/2">
                         <img
                             src={rectangleSteve}
-                                className="w-full sm:w-[800px] md:w-[600px] lg:w-[800px] h-auto object-cover"
+                            className="w-full sm:w-[800px] md:w-[600px] lg:w-[800px] h-auto object-cover"
                             alt="Steve Hansen"
                         />
                         <div className="flex flex-col gap-5">
@@ -25,7 +25,7 @@ export const SteveBio = () => {
                                     alt="map pin"
                                     className="w-8 h-8"
                                 />
-                                <span className='font-bold'>San Diego, CA</span>
+                                <span className="font-bold">San Diego, CA</span>
                             </div>
                             <div className="flex items-center gap-3">
                                 <img
@@ -57,13 +57,15 @@ export const SteveBio = () => {
                     </div>
 
                     {/* Right Column */}
-                    <div className=" sm:w-[800px] md:w-[600px] lg:w-[1800px]  h-auto object-cover">
-                        <h1 className="text-6xl font-bold">Steve Hansen</h1>
-                        <h2 className="text-xl font-semibold">
+                    <div className="flex flex-col gap-10 sm:w-[800px] md:w-[600px] lg:w-[1800px] h-auto object-cover">
+                        <h1 className="text-6xl font-bold text-center lg:text-start lg:px-10">
+                            Steve Hansen
+                        </h1>
+                        <h2 className="text-xl font-semibold text-center lg:text-start lg:px-10">
                             Kinesiology Innovator, Practitioner, Researcher, and
                             Teacher
                         </h2>
-                        <p>
+                        <p className="px-2 md:px-6 lg:px-10">
                             W. Steve Hansen is a pioneering figure in Energy
                             Kinesiology with nearly three decades of experience
                             advancing the field as a practitioner, researcher,
@@ -76,7 +78,7 @@ export const SteveBio = () => {
                             body’s immune functions, offering a deep dive into
                             targeted immune health.
                         </p>
-                        <p>
+                        <p className="px-2 md:px-6 lg:px-10">
                             With 28 years in Energy Kinesiology and 20 years
                             dedicated specifically to Neuroenergetic
                             Kinesiology, Steve has established himself as a

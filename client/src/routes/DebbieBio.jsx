@@ -9,7 +9,7 @@ export const DebbieBio = () => {
     return (
         <div>
             <Navbar />
-            <div className="p-20">
+            <div className="p-4 md:p-10 lg:p-20 pb-20">
                 <div className="flex flex-col lg:flex-row gap-10">
                     {/* Left Column */}
                     <div className="flex flex-col items-center lg:items-start gap-10 lg:basis-1/2">
@@ -57,10 +57,14 @@ export const DebbieBio = () => {
                     </div>
 
                     {/* Right Column */}
-                    <div className=" sm:w-[800px] md:w-[600px] lg:w-[1800px]  h-auto object-cover">
-                        <h1 className="text-6xl font-bold">Debbie Luke</h1>
-                        <h2 className="text-xl font-semibold">CEnK2, LMT</h2>
-                        <p>
+                    <div className="flex flex-col gap-10 sm:w-[800px] md:w-[600px] lg:w-[1800px] h-auto object-cover">
+                        <h1 className="text-6xl font-bold text-center lg:text-start lg:px-10">
+                            Debbie Luke
+                        </h1>
+                        <h2 className="text-xl font-semibold text-center lg:text-start lg:px-10">
+                            CEnK2, LMT
+                        </h2>
+                        <p className="px-2 md:px-6 lg:px-10">
                             Debbie is dedicated to guiding students in building
                             a foundational understanding of energy kinesiology,
                             preparing them for advanced training in brain

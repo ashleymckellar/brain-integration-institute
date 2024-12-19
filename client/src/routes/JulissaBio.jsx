@@ -9,7 +9,7 @@ export const JulissaBio = () => {
     return (
         <div>
             <Navbar />
-            <div className="p-20">
+            <div className="p-4 md:p-10 lg:p-20 pb-20">
                 <div className="flex flex-col lg:flex-row gap-10">
                     {/* Left Column */}
                     <div className="flex flex-col items-center lg:items-start gap-10">
@@ -58,40 +58,40 @@ export const JulissaBio = () => {
 
                     {/* Right Column */}
                     <div className="flex flex-col gap-6  lg:px-[200px] sm:px-[50px] md:px-[50px]">
-                        <h1 className="text-6xl font-bold">Julissa Byington</h1>
-                        <h2 className="text-xl font-semibold">
+                    <h1 className="text-6xl font-bold text-center lg:text-start lg:px-10">Julissa Byington</h1>
+                    <h2 className="text-xl font-semibold text-center lg:text-start lg:px-10">
                             MA, BS, CRC (ret), SSW, BI Practitioner
                         </h2>
-                        <p>
+                        <p className="px-2 md:px-6 lg:px-10">
                             Julissa is a Brain Integration practitioner, with an
                             emphasis in improving cognitive delays. Working with
                             all ability levels, she assists children and adults
                             with Learning and Development issues.
                         </p>
-                        <p>
+                        <p className="px-2 md:px-6 lg:px-10">
                             She has a knack with children, particularly ones
                             with special needs. Her specialties include ADHD,
                             ASD, and learning delays. She also works with adults
                             to improve mental states and well-being, as well as
                             cognitive functioning.
                         </p>
-                        <p>
+                        <p className="px-2 md:px-6 lg:px-10">
                             Julissa has studied LEAP, Crossinology, Kinergetics,
                             NeuroEnergetic Kinesiology, and Empowerlife
                             Kinesiology, Neuro-Sensory-Motor and Reflex
                             Integration, Primitive Reflexes, and more.
                         </p>
-                        <p>
+                        <p className="px-2 md:px-6 lg:px-10">
                             Julissa is on the Brain Integration Certification
                             Board, as well as working with the Empowerlife
                             Kinesiology team to create a training program for
                             practitioners interested in working in the field of
                             Brain Integration.
                         </p>
-                        <h1 className="font-bold text-xl">
+                        <h1 className="font-bold text-xl text-center lg:text-start">
                             Certifications and Specialized Training:
                         </h1>
-                        <ul className="flex flex-col gap-5 list-disc list-inside">
+                        <ul className="flex flex-col gap-5 list-disc list-inside px-2 md:px-6 lg:px-10">
                             <li>
                                 <span className="font-bold">
                                     Melbourne Applied Physiology (Leap):
@@ -163,7 +163,7 @@ export const JulissaBio = () => {
                                  Pathways, Powers of stress.
                             </li>
                         </ul>
-                        <p>
+                        <p className="px-2 md:px-6 lg:px-10">
                             Julissa has been dedicated to practicing and
                             studying Brain Integration since 2015. As a business
                             owner and mother, she brings both expertise and

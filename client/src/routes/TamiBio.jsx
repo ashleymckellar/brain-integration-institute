@@ -9,7 +9,7 @@ export const TamiBio = () => {
     return (
         <div>
             <Navbar />
-            <div className="p-20">
+            <div className="p-4 md:p-10 lg:p-20 pb-20">
                 <div className="flex flex-col lg:flex-row gap-10">
                     <div className="flex flex-col items-center lg:items-start gap-10 lg:basis-1/2">
                         <img
@@ -56,12 +56,12 @@ export const TamiBio = () => {
                     </div>
 
                     {/* Right Column */}
-                    <div className=" sm:w-[800px] md:w-[600px] lg:w-[1800px]  h-auto object-cover">
-                        <h1 className="text-6xl font-bold">Tami Davis</h1>
-                        <h2 className="text-xl font-semibold">
+                    <div className="flex flex-col gap-10 sm:w-[800px] md:w-[600px] lg:w-[1800px] h-auto object-cover">
+                    <h1 className="text-6xl font-bold text-center lg:text-start lg:px-10">Tami Davis</h1>
+                    <h2 className="text-xl font-semibold text-center lg:text-start lg:px-10">
                             MA, BS, CRC (ret), SSW, BI Practitioner
                         </h2>
-                        <p>
+                        <p className="px-2 md:px-6 lg:px-10">
                             Tami Davis, a Level 3 Certified Energy
                             Kinesiologist, brings over 20 years of expertise in
                             teaching, course development, and client
@@ -75,7 +75,7 @@ export const TamiBio = () => {
                             nervous system balance to help clients reconnect and
                             center through somatic tools.
                         </p>
-                        <p>
+                        <p className="px-2 md:px-6 lg:px-10">
                             In collaboration with Ron Wayman, Tami has used her
                             graphic design skills to shape and enhance
                             Empowerlife’s Brain Integration curriculum, creating
@@ -86,7 +86,7 @@ export const TamiBio = () => {
                             support comprehensive learning for both students and
                             practitioners.
                         </p>
-                        <p>
+                        <p className="px-2 md:px-6 lg:px-10">
                             As an experienced Empowerlife Kinesiology
                             Facilitator, Tami has spent two decades working with
                             children and adults using Empowerlife protocols, as
@@ -96,10 +96,10 @@ export const TamiBio = () => {
                             and emotional dimensions, guiding clients toward
                             integrated well-being.
                         </p>
-                        <h1 className="font-bold text-xl">
+                        <h1 className="font-bold text-xl text-center lg:text-start ">
                             Specialized Training:
                         </h1>
-                        <ul className="flex flex-col gap-5 list-disc list-inside">
+                        <ul className="flex flex-col gap-5 list-disc list-inside px-2 md:px-6 lg:px-10">
                         <li className="font-bold">Body Management</li>
                         <li className="font-bold">Brain Gym Level 1</li>
                         <li className="font-bold">
@@ -143,7 +143,7 @@ export const TamiBio = () => {
                                 w Dr Aimie)
                             </li>
                         </ul>
-                        <p>
+                        <p className="px-2 md:px-6 lg:px-10">
                             Tami’s extensive experience, dedication to
                             empowerment, and commitment to holistic health make
                             her a highly respected leader in energy kinesiology

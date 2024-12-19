@@ -10,7 +10,7 @@ export const RonBio = () => {
     return (
         <div>
             <Navbar />
-            <div className="p-20">
+            <div className="p-4 md:p-10 lg:p-20 pb-20">
                 <div className="flex flex-col lg:flex-row gap-10">
                     {/* Left Column */}
                     <div className="flex flex-col items-center lg:items-start gap-10 lg:basis-1/2">
@@ -58,13 +58,13 @@ export const RonBio = () => {
                     </div>
 
                     {/* Right Column */}
-                    <div className=" sm:w-[800px] md:w-[600px] lg:w-[1800px]  h-auto object-cover">
-                        <h1 className="text-6xl font-bold">Ron Wayman</h1>
-                        <h2 className="text-xl font-semibold">
+                    <div className="flex flex-col gap-10 sm:w-[800px] md:w-[600px] lg:w-[1800px] h-auto object-cover">
+                    <h1 className="text-6xl font-bold text-center lg:text-start lg:px-10">Ron Wayman</h1>
+                    <h2 className="text-xl font-semibold text-center lg:text-start lg:px-10">
                             Neuro-Energy Kinesiologist, Empowerlife Co-Founder,
                             Certified Instructor, and Director
                         </h2>
-                        <p>
+                        <p className="px-2 md:px-6 lg:px-10">
                             With over 30 years of experience in energy
                             kinesiology, emotional coaching, and integrative
                             wellness, Ronald Wayman is a leader in the field of
@@ -76,7 +76,7 @@ export const RonBio = () => {
                             for his work in learning, behavior, and brain
                             integration techniques.
                         </p>
-                        <p>
+                        <p className="px-2 md:px-6 lg:px-10">
                             Ron is certified as a Level 3 Energy Kinesiologist
                             and has held prominent roles in the field, including
                             former President of the Energy Kinesiology
@@ -88,7 +88,7 @@ export const RonBio = () => {
                             serves as the Director of Empowerlife Brain
                             Integration and Empowerlife Kinesiology.
                         </p>
-                        <p>
+                        <p className="px-2 md:px-6 lg:px-10">
                             Over his career, Ron has created and taught numerous
                             courses addressing learning and behavioral
                             challenges, recognizing the transformative potential
@@ -103,10 +103,10 @@ export const RonBio = () => {
                             support physical, emotional, and energetic
                             transformation.
                         </p>
-                        <h1 className="font-bold text-xl">
+                        <h1 className="font-bold text-xl text-center lg:text-start">
                             Certifications and Specialized Training:
                         </h1>
-                        <ul className="flex flex-col gap-5 list-disc list-inside">
+                        <ul className="flex flex-col gap-5 list-disc list-inside px-2 md:px-6 lg:px-10">
                             <li>
                                 <span className="font-bold">
                                     Certified Instructor:{' '}
@@ -164,7 +164,7 @@ export const RonBio = () => {
                                 many more.
                             </li>
                         </ul>
-                        <p>
+                        <p className="px-2 md:px-6 lg:px-10">
                             Ron’s groundbreaking contributions incorporate
                             advancements in brain neuroscience, immunology,
                             nutrition, body energy systems, sensory integration,
