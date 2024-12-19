@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { MockTestQuestions } from '../contexts';
-import { useAuth0 } from '@auth0/auth0-react';
+
 
 export const MockTestDataProvider = ({ children }) => {
     const [testQuestions, setTestQuestions] = useState([]);

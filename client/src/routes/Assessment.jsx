@@ -1,5 +1,5 @@
-import { MockTestQuestionCard } from '../components/MockTestQuestionCard';
-import { useParams, useNavigate, useLocation, Link } from 'react-router-dom';
+
+import { useNavigate } from 'react-router-dom';
 // import { MockTestData } from '../components/MockTestData';
 
 export const Assessment = () => {

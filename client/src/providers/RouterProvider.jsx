@@ -2,7 +2,7 @@
 import {
     createBrowserRouter,
     RouterProvider as ReactRouterProvider,
-    Navigate,
+
 } from 'react-router-dom';
 import { useEffect, useState, useContext } from 'react';
 import { CloudinaryContext } from '../contexts';

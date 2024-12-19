@@ -45,7 +45,7 @@ export const PractitionerCard = (props) => {
                             </button>
 
                             {website && (
-                                <button className="text-white border px-4 py-2 bg-green-is-good hover:bg-green-500  border-gray mx-3 rounded-md">
+                                <button className="text-white border px-4 py-2 bg-green-is-good hover:bg-green-500  border-gray mx-3 whitespace-nowrap rounded-md">
                                     <a
                                         href={website}
                                         target="_blank"

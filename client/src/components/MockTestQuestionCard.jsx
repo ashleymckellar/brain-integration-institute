@@ -5,7 +5,7 @@ export const MockTestQuestionCard = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [question, setQuestion] = useState(null);
-    const [selectedAnswer, setSelectedAnswer] = useState('')
+    // const [selectedAnswer, setSelectedAnswer] = useState('')
 
     const testQuestions = [
         {
