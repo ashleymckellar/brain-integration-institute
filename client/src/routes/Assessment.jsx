@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import important  from '../assets/icons/important.png'
-// import { MockTestData } from '../components/MockTestData';
+
 
 export const Assessment = () => {
     const navigate = useNavigate();

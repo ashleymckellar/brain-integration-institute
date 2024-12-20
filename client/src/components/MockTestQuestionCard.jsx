@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { Timer } from './Timer';
 
 export const MockTestQuestionCard = () => {
     const { id } = useParams();
@@ -124,8 +125,16 @@ export const MockTestQuestionCard = () => {
         return <div>Neurons firing, please wait...</div>;
     }
 
+    // const handleTimeout = () => {
+    //     alert('Time is up!  Submitting test');
+     
+    // };
+ 
+
     return (
         <div className="flex min-h-screen items-center justify-center min-w-75">
+            <Timer seconds={15}  />
+     
             <div className="flex flex-col items-center justify-center gap-4 border border-white w-[700px] rounded shadow bg-[#F5F5F5] p-10">
                 <h2 className="font-poppins">Question {question.id}</h2>
                 <p className="font-poppins">{question.question}</p>
