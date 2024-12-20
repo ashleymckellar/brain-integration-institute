@@ -8,57 +8,52 @@ export const MockTestQuestionCard = () => {
     const testQuestions = [
         {
             id: 1,
-            type: 'true/false',
+            type: 'multiple choice',
             question:
-                'The left hemisphere of the brain is responsible for controlling the left side of the body.',
-            options: ['A. True', 'B. False'],
-            answer: false,
+                'Which part of the brain is primarily responsible for higher cognitive functions like thinking and memory?',
+            options: ['A. Cerebellum', 'B. Brainstem', 'C. Cerebrum', 'D. Spinal Cord'],
+            answer: 'c) Cerebrum',
         },
         {
             id: 2,
             type: 'multiple choice',
             question:
-                'Which of the following parts of the brain is primarily responsible for regulating vital functions such as breathing and heart rate?',
+                'Which brain structure is associated with higher cognitive functions like reasoning and decision-making?',
             options: [
-                'A. Cerebellum',
-                'B. Medulla oblongata',
-                'C. Hippocampus',
-                'D. Frontal lobe',
+                'A. Reptilian Brain',
+                'B. Neocortex',
+                'C. Paleomammalian Brain',
+                'D. Amygdala',
             ],
-            answer: 'B. Medulla oblongata',
+            answer: 'B. Neocortex',
         },
         {
             id: 3,
             type: 'true/false',
             question:
-                'The prefrontal cortex is responsible for higher-order functions such as decision-making and problem-solving.',
+                'Empathy from a practitioner helps build trust and emotional support during a session.',
             options: ['A. True', 'B. False'],
-            answer: true,
+            answer: 'A. True',
         },
         {
             id: 4,
-            type: 'multiple choice',
-            question: 'What is the primary function of the corpus callosum?',
-            options: [
-                'A. Regulating hormones in the body',
-                'B. Facilitating communication between the left and right hemispheres of the brain',
-                'C. Storing long-term memories',
-                'D. Controlling balance and coordination',
-            ],
-            answer: 'B. Facilitating communication between the left and right hemispheres of the brain',
+            type: 'true/false',
+            question: 'Reflective listening requires only paraphrasing the speaker’s words and not acknowledging their emotions.',
+            options: ['A. True', 'B. False'],
+            answer: 'B. False',
         },
         {
             id: 5,
             type: 'multiple choice',
             question:
-                'Which of the following neurotransmitters is most closely associated with mood regulation?',
+                'What structure do the lacrimal bones help form?',
             options: [
-                'A. Dopamine',
-                'B. Acetylcholine',
-                'C. Serotonin',
-                'D. GABA',
+                'A. The optic canal',
+                'B. The nasal cavity',
+                'C. The nasolacrimal canal',
+                'D. The auditory canal',
             ],
-            answer: 'C. Serotonin',
+            answer: 'C) The nasolacrimal canal',
         },
     ];
 
