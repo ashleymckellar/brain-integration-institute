@@ -10,7 +10,7 @@ const TestSchema = new mg.Schema({
     userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     questions: [
         {
-            questionId: { type: Schema.Types.ObjectId, ref: 'Question', required: true },
+            questionId: { type: Schema.Types.ObjectId, ref: 'Question'},
             submittedAnswer: { type: String, default: null }, 
         },
     ],
@@ -25,3 +25,6 @@ const TestModel = mg.model('Test', TestSchema);
 module.exports = {
     TestModel
 };
+
+
+
