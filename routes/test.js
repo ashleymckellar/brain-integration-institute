@@ -5,64 +5,72 @@ const ex = require('express');
 
 const testRouter = ex.Router();
 
-//route for posting unique test for each user using random algorithm
+//api/test is the endpoint
 
-// testRouter.post('/upload-questions', async (req, res) => {
-//     try {
-//         const rawQuestions = req.body; // Assuming raw data is sent in the request body
 
-//         // Map raw data to Mongoose schema structure
-//         const formattedQuestions = rawQuestions.map((item) => {
-//             const setName = item['Section']
-//                 ? item['Section'].toLowerCase()
-//                 : '';
-//             let type = item['Question Type']
-//                 ? item['Question Type'].trim().toLowerCase()
-//                 : '';
+//i think this needs to be a post request because user will submit patch request with the submitted answers at the end of the 
+//test
+//it also needs to have the randomization logic
 
-//             if (type === 'multiple choice') {
-//                 type = 'Multiple Choice';
-//             } else if (type === 'true/false' || type === 'true false') {
-//                 type = 'True/False';
-//             } else {
-//                 type = 'Multiple Choice';
-//             }
-//             const optionA = item['Option A'] || '';
-//             const optionB = item['Option B'] || '';
-//             const optionC = item['Option C'] || '';
-//             const optionD = item['Option D'] || '';
-//             const questionText = item['Question Text'] || '';
-//             const correctAnswer = item['Correct Answer'] || '';
-//             const explanation = item['Explanation/Feedback'] || '';
 
-//             return {
-//                 setName,
-//                 type,
-//                 optionA,
-//                 optionB,
-//                 optionC,
-//                 optionD,
-//                 questionText,
-//                 correctAnswer,
-//                 explanation,
-//             };
-//         });
+// //testRouter.post('/generate', async (req, res) => {
+//     const userId = req.user.id; // Assuming user authentication
+//     const selectedQuestions = [];
 
-//         const insertedQuestions = await QuestionModel.insertMany(
-//             formattedQuestions,
-//         );
+//     const categories = [
+//         { category: 'Category1', count: 8 },
+//         { category: 'Category2', count: 2 },
+//         // Add other categories here
+//     ];
 
-//         res.status(201).json({
-//             message: 'Questions successfully added!',
-//             data: insertedQuestions,
-//         });
-//     } catch (error) {
-//         console.error('Error inserting questions:', error);
-//         res.status(500).json({
-//             message: 'Server error while inserting questions.',
-//         });
+//     for (const { category, count } of categories) {
+//         const questions = await QuestionModel.aggregate([
+//             { $match: { setName: category } },
+//             { $sample: { size: count } },
+//         ]);
+//         selectedQuestions.push(...questions.map(q => q._id));
 //     }
+
+//     const test = new TestModel({
+//         userId,
+//         questions: selectedQuestions.map(id => ({ questionId: id })),
+//     });
+
+//     await test.save();
+//     res.status(201).json(test);
 // });
+
+//route for posting unique test for each user using random algorithm
+//will also contain the patch request with the user submitted answer
+
+// testRouter.patch('/:testId/submit', async (req, res) => {
+//     const { testId } = req.params;
+//     const { answers } = req.body; // { questionId: 'submittedAnswer' }
+
+//     const test = await TestModel.findById(testId).populate('questions.questionId');
+
+//     if (!test) return res.status(404).json({ message: 'Test not found' });
+
+//     test.questions.forEach(q => {
+//         if (answers[q.questionId._id]) {
+//             q.submittedAnswer = answers[q.questionId._id];
+//         }
+//     });
+
+//     // Calculate the score
+//     const score = test.questions.reduce((sum, q) => {
+//         return sum + (q.submittedAnswer === q.questionId.correctAnswer ? 1 : 0);
+//     }, 0);
+
+//     test.score = score;
+//     test.testCompleted = true;
+//     test.endTime = new Date();
+
+//     await test.save();
+
+//     res.status(200).json({ score, test });
+// });
+
 
 module.exports = {
     testRouter,

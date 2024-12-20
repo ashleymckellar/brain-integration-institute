@@ -37,10 +37,6 @@ const QuestionSchema = new mg.Schema({
         type: String,
         required: true,
     },
-    submittedAnswer: {
-        type: String,
-       
-    },
 
     explanation: {
         type: String

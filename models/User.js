@@ -167,5 +167,5 @@ const UserSchema = new mg.Schema({
 const UserModel = mg.model('User', UserSchema);
 
 module.exports = {
-    UserModel,
+    UserModel
 };
