@@ -11,7 +11,15 @@ const TestSchema = new mg.Schema({
     questions: [
         {
             questionId: { type: Schema.Types.ObjectId, ref: 'Question'},
+            questionText: { type: String, required: true }, 
+            optionA: { type: String, required: true },
+            optionB: { type: String, required: true },
+            optionC: { type: String },
+            optionD: { type: String },
+            correctAnswer: { type: String, required: true },
             submittedAnswer: { type: String, default: null }, 
+            setName:{ type: String }
+    
         },
     ],
     startTime: { type: Date, default: Date.now },

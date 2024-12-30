@@ -1,6 +1,6 @@
 import { PaymentElement } from '@stripe/react-stripe-js';
 import { useState, useContext } from 'react';
-import {  useNavigate,  } from 'react-router-dom';
+import {  useNavigate } from 'react-router-dom';
 import { useStripe, useElements } from '@stripe/react-stripe-js';
 import PoweredbyStripe from '../assets/icons/PoweredbyStripe.png';
 import { CloudinaryContext } from '../contexts';

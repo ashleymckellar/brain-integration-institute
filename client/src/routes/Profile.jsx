@@ -1,5 +1,6 @@
 import { useAuth0, withAuthenticationRequired } from '@auth0/auth0-react';
 import { useState, useContext, useEffect } from 'react';
+import {  useNavigate } from 'react-router-dom';
 import banner from '../assets/icons/PractitionerBackground.png';
 import paleBanner from '../assets/icons/PaleGreenPractitionerBackground.png';
 import ProfilePhotoUpload from '../components/ProfilePhotoUpload';
@@ -8,11 +9,14 @@ import { UserContext } from '../contexts';
 import ProfileEditForm from '../components/ProfileEditForm';
 import ProfileCard from '../components/ProfileCard';
 
+//make take assessment button conditionally render only if they've purchased the assessment
+
 export const Profile = withAuthenticationRequired(() => {
     const { user } = useAuth0();
     const { fetchProfileData, profileData } = useContext(UserContext);
     const [isEditing, setIsEditing] = useState(false);
     const [sectionName, setSectionName] = useState('profile');
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchProfileData(user);
@@ -25,6 +29,10 @@ export const Profile = withAuthenticationRequired(() => {
     const handleEditClick = () => {
         setIsEditing(true);
     };
+
+    const handleAssessmentClick = () => {
+        navigate('/assessment')
+    }
 
     return (
         <div className="flex flex-col">
@@ -47,7 +55,12 @@ export const Profile = withAuthenticationRequired(() => {
             {/* Tabs Section */}
             <div className="flex justify-center mt-10">
                 <div className="flex flex-wrap justify-between gap-4 w-full max-w-4xl border-2 p-2 border-gray-300 rounded-lg bg-white shadow-md">
-                    {['profile', 'assessment', 'professional', 'post-Certification Hub'].map((section) => (
+                    {[
+                        'profile',
+                        'assessment',
+                        'professional',
+                        'post-Certification Hub',
+                    ].map((section) => (
                         <button
                             key={section}
                             onClick={() => handleTabClick(section)}
@@ -156,9 +169,14 @@ export const Profile = withAuthenticationRequired(() => {
             {sectionName === 'assessment' && (
                 // Password Section
                 <div className="flex flex-col items-center text-center gap-6 p-6 max-w-lg mx-auto bg-white shadow-md rounded-lg">
-                    <h2 className="font-fira text-2xl">  Take the timed assessment now.</h2>
-                <button className="bg-medium-pale-green hover:bg-green-600 rounded-full w-[204px] h-[43px] text-white font-medium px-6 py-2">Take Assessment</button>
-              
+                    <h2 className="font-fira text-2xl">
+                        {' '}
+                        Take the timed assessment now.
+                    </h2>
+                    <button className="bg-medium-pale-green hover:bg-green-600 rounded-full w-[204px] h-[43px] text-white font-medium px-6 py-2" onClick={handleAssessmentClick}>
+                        Take Assessment
+                    </button>
+
                     {/* <div className=" flex justify-center gap-10 mt-10">
                         <input
                             type="email"
@@ -190,14 +208,15 @@ export const Profile = withAuthenticationRequired(() => {
                     )}
                 </div>
             )}
-                     {sectionName === 'post-Certification Hub' && (
+            {sectionName === 'post-Certification Hub' && (
                 // Password Section
                 <div className="flex flex-col items-center text-center gap-6 p-6 max-w-lg mx-auto bg-white shadow-md rounded-lg">
-                    <h2 className="font-fira text-2xl">Post Certification Hub</h2>
+                    <h2 className="font-fira text-2xl">
+                        Post Certification Hub
+                    </h2>
                     <p className="text-gray-600">
-                      All the post-cert goodies here
+                        All the post-cert goodies here
                     </p>
-                 
                 </div>
             )}
         </div>

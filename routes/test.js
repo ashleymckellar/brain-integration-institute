@@ -14,7 +14,7 @@ const testRouter = ex.Router();
 //if end time is greater than 90 mins from start time, declined the patch request
 //so that user can't tamper with timer to try to get more time
 
-testRouter.post('/:email/generate', async (req, res) => {
+testRouter.post('/:email/user-test', async (req, res) => {
     const { email } = req.params;
     console.log('email passed to route', req.user?.email);
     const { startTime } = req.body;
@@ -55,29 +55,28 @@ testRouter.patch('/:email/end-time', async (req, res) => {
     );
 
     try {
-       
         const user = await UserModel.findOne({ userEmail: email });
-       
+
         if (!user) {
             return res.status(404).send({ message: 'User not found' });
         }
 
-      
         const testData = await TestModel.findOneAndUpdate(
-            { userId: user._id  }, 
-            { 
-                endTime: endTime || Date.now(),  
-                testCompleted: testCompleted || true  
+            { userId: user._id },
+            {
+                endTime: endTime || Date.now(),
+                testCompleted: testCompleted || true,
             },
         );
 
-        console.log(testData, 'test data')
+        console.log(testData, 'test data');
 
         if (!testData) {
-            return res.status(404).send({ message: 'Active test not found or already completed' });
+            return res.status(404).send({
+                message: 'Active test not found or already completed',
+            });
         }
 
-      
         res.status(200).send(testData);
     } catch (error) {
         console.error(error);
@@ -91,32 +90,89 @@ testRouter.patch('/:email/end-time', async (req, res) => {
 //test
 //it also needs to have the randomization logic
 
-// //testRouter.post('/generate', async (req, res) => {
-//     const userId = req.user.id; // Assuming user authentication
-//     const selectedQuestions = [];
+testRouter.get('/:email/generate', async (req, res) => {
+    const { email } = req.params;
+    const user = await UserModel.findOne({ userEmail: email });
+    if (!user) {
+        return res
+            .status(404)
+            .json({ success: false, message: 'User not found' });
+    }
 
-//     const categories = [
-//         { category: 'Category1', count: 8 },
-//         { category: 'Category2', count: 2 },
-//         // Add other categories here
-//     ];
+    const userId = user._id;
+    const selectedQuestions = [];
 
-//     for (const { category, count } of categories) {
-//         const questions = await QuestionModel.aggregate([
-//             { $match: { setName: category } },
-//             { $sample: { size: count } },
-//         ]);
-//         selectedQuestions.push(...questions.map(q => q._id));
-//     }
+    const sections = [
+        { category: 'section1', count: 8 },
+        { category: 'section2', count: 8 },
+        { category: 'section3', count: 4 },
+        { category: 'section4', count: 5 },
+        { category: 'section5', count: 1 },
+        { category: 'section6', count: 3 },
+        { category: 'section7', count: 3 },
+        { category: 'section8', count: 2 },
+        { category: 'section9', count: 5 },
+        { category: 'section10', count: 5 },
+        { category: 'section11', count: 2 },
+        { category: 'section12', count: 4 },
+        { category: 'section13', count: 1 },
+        { category: 'section14', count: 1 },
+        { category: 'section15', count: 2 },
+        { category: 'section16', count: 2 },
+        { category: 'section17', count: 2 },
+        { category: 'section18', count: 2 },
+        { category: 'section19', count: 3 },
+        { category: 'section20', count: 1 },
+        { category: 'section21', count: 6 },
+        { category: 'section22', count: 6 },
+        { category: 'section23', count: 3 },
+        { category: 'section24', count: 3 },
+        { category: 'section25', count: 1 },
+        { category: 'section26', count: 2 },
+        { category: 'section27', count: 1 },
+        { category: 'section28', count: 1 },
+        { category: 'section29', count: 1 },
+        { category: 'section30', count: 1 },
+        { category: 'section31', count: 2 },
+        { category: 'section32', count: 2 },
+        { category: 'section33', count: 1 },
+        { category: 'section34', count: 2 },
+        { category: 'section35', count: 1 },
+        { category: 'section36', count: 1 },
+        { category: 'section37', count: 1 },
+        { category: 'section38', count: 1 },
+    ];
 
-//     const test = new TestModel({
-//         userId,
-//         questions: selectedQuestions.map(id => ({ questionId: id })),
-//     });
+    for (const { category, count } of sections) {
+        const questions = await QuestionModel.aggregate([
+            { $match: { setName: category } },
+            { $sample: { size: count } },
+        ]);
 
-//     await test.save();
-//     res.status(201).json(test);
-// });
+        selectedQuestions.push(
+            ...questions.map((q) => ({
+                questionId: q._id,
+                questionText: q.questionText,
+                optionA: q.optionA,
+                optionB: q.optionB,
+                optionC: q.optionC,
+                optionD: q.optionD,
+                correctAnswer: q.correctAnswer,
+                setName: q.setName,
+            })),
+        );
+    }
+
+    const test = new TestModel({
+        userId,
+        questions: selectedQuestions,
+    });
+
+    console.log(selectedQuestions.length, 'selected questions');
+
+    await test.save();
+    res.status(201).json(test);
+});
 
 //route for posting unique test for each user using random algorithm
 //will also contain the patch request with the user submitted answer
