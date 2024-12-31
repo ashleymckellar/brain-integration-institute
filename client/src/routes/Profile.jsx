@@ -5,7 +5,7 @@ import banner from '../assets/icons/PractitionerBackground.png';
 import paleBanner from '../assets/icons/PaleGreenPractitionerBackground.png';
 import ProfilePhotoUpload from '../components/ProfilePhotoUpload';
 import unlock from '../assets/icons/unlock.png';
-import { UserContext } from '../contexts';
+import { UserContext, AssessmentContext } from '../contexts';
 import ProfileEditForm from '../components/ProfileEditForm';
 import ProfileCard from '../components/ProfileCard';
 
@@ -14,6 +14,7 @@ import ProfileCard from '../components/ProfileCard';
 export const Profile = withAuthenticationRequired(() => {
     const { user } = useAuth0();
     const { fetchProfileData, profileData } = useContext(UserContext);
+    const { fetchTestQuestions, testQuestions } = useContext(AssessmentContext)
     const [isEditing, setIsEditing] = useState(false);
     const [sectionName, setSectionName] = useState('profile');
     const navigate = useNavigate();
@@ -31,6 +32,8 @@ export const Profile = withAuthenticationRequired(() => {
     };
 
     const handleAssessmentClick = () => {
+        // fetchTestQuestions()
+        // console.log(typeof testQuestions)
         navigate('/assessment')
     }
 

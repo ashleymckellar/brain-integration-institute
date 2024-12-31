@@ -3,7 +3,7 @@ import { useState, useContext } from 'react';
 import {  useNavigate } from 'react-router-dom';
 import { useStripe, useElements } from '@stripe/react-stripe-js';
 import PoweredbyStripe from '../assets/icons/PoweredbyStripe.png';
-import { CloudinaryContext } from '../contexts';
+import { CloudinaryContext, AssessmentContext } from '../contexts';
 
 export default function AssessmentCheckoutForm() {
     const stripe = useStripe();
@@ -12,6 +12,7 @@ export default function AssessmentCheckoutForm() {
     const [isProcessing, setIsProcessing] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const { updateUserAssessmentAccess, email } = useContext(CloudinaryContext);
+    const { fetchTestQuestions, testQuestions } = useContext(AssessmentContext)
     const navigate = useNavigate();
 
     
@@ -35,8 +36,11 @@ export default function AssessmentCheckoutForm() {
             setIsProcessing(false);
             return;
         }
+        await fetchTestQuestions(); 
+   
         setShowModal(true);
         setIsProcessing(false);
+        // console.log(testQuestions, 'test questions')
     };
     const closeModal = () => {
         setShowModal(false);

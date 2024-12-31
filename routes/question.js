@@ -34,6 +34,7 @@ questionRouter.post('/upload-questions', async (req, res) => {
             const questionText = item['Question Text'] || '';
             const correctAnswer = item['Correct Answer'] || '';
             const explanation = item['Explanation/Feedback'] || '';
+            
 
             return {
                 setName,
@@ -45,6 +46,7 @@ questionRouter.post('/upload-questions', async (req, res) => {
                 questionText,
                 correctAnswer,
                 explanation,
+                questionType
             };
         });
 

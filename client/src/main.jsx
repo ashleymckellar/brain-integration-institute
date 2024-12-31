@@ -4,6 +4,7 @@ import { RouteProvider } from './providers/RouterProvider';
 import { AuthProvider } from './providers/AuthProvider';
 import { FileProvider } from './providers/FileProvider';
 import { PractitionerProvider } from './providers/PractitionerContext';
+import { AssessmentProvider } from './providers/AssessmentProvider';
 import { CloudinaryProvider } from './providers/CloudinaryProvider';
 import { UserProvider } from './providers/UserProvider';
 import { AdminProvider } from './providers/AdminProvider';
@@ -21,6 +22,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 "
             >
                 <UserProvider>
+                    <AssessmentProvider>
                     <AdminProvider>
                         <CloudinaryProvider>
                             <PractitionerProvider>
@@ -30,6 +32,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                             </PractitionerProvider>
                         </CloudinaryProvider>
                     </AdminProvider>
+                    </AssessmentProvider>
                 </UserProvider>
             </SkeletonTheme>
         </AuthProvider>

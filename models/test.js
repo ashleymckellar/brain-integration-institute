@@ -18,7 +18,8 @@ const TestSchema = new mg.Schema({
             optionD: { type: String },
             correctAnswer: { type: String, required: true },
             submittedAnswer: { type: String, default: null }, 
-            setName:{ type: String }
+            setName:{ type: String },
+            questionType: { type: String },
     
         },
     ],
