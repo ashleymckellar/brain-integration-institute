@@ -179,6 +179,21 @@ testRouter.get('/:email/generate', async (req, res) => {
 
 // });
 
+// When user submits the test, all of the below should happen:
+
+//testCompleted: true
+//endTime: timestamp of when test was completed
+//patch request with submitted answers
+//as well as isFlagged boolean status of every question
+//function which checks the submitted answers with the correct answers
+// score ++ for every correct answer
+//final score is tabulated and put/patched to the test object route
+//resulting score is passed to the FE
+//notification is sent to admin & updated on user profile
+//if user fails, 90 days out date is set to retest
+//this needs to be persisted somewhere in the db
+//probably on the user object.  This will lock them out from retaking the test until that date has passed
+
 module.exports = {
     testRouter,
 };

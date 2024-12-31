@@ -6,7 +6,7 @@ import { AssessmentContext } from '../contexts';
 
 export const Assessment = () => {
     const navigate = useNavigate();
-    const { fetchTestQuestions, testQuestions } = useContext(AssessmentContext)
+    const { testQuestions } = useContext(AssessmentContext)
 
     // useEffect(() => {
     //     fetchTestQuestions();

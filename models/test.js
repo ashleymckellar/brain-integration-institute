@@ -20,6 +20,7 @@ const TestSchema = new mg.Schema({
             submittedAnswer: { type: String, default: null }, 
             setName:{ type: String },
             questionType: { type: String },
+            isFlagged: { type: Boolean, default: false}
     
         },
     ],
