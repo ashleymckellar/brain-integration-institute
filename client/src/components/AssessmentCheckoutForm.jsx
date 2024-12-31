@@ -12,7 +12,7 @@ export default function AssessmentCheckoutForm() {
     const [isProcessing, setIsProcessing] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const { updateUserAssessmentAccess, email } = useContext(CloudinaryContext);
-    const { fetchTestQuestions, testQuestions } = useContext(AssessmentContext)
+    const { fetchTestQuestions } = useContext(AssessmentContext)
     const navigate = useNavigate();
 
     
