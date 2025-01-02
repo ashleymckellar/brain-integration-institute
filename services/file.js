@@ -5,26 +5,21 @@ const { UserModel } = require('../models/User.js');
 // Update the getAllFilesByOwner function
 const getAllFilesByOwner = async (userSub) => {
     try {
-       
         const user = await UserModel.findOne({ sub: userSub });
-     
 
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
 
-      
         const files = await File.find({ user: user._id });
         console.log(files, 'Files found for user');
 
-        return files; 
+        return files;
     } catch (error) {
         console.error('Error fetching files:', error);
         throw new Error('Failed to fetch files');
     }
 };
-
-
 
 /**
  * Create a new file entry in the database
@@ -32,10 +27,8 @@ const getAllFilesByOwner = async (userSub) => {
  */
 const createFile = async (req, res) => {
     try {
-  
         const userSub = req.auth.payload.sub;
 
-  
         const user = await UserModel.findOne({ sub: userSub });
 
         if (!user) {
@@ -49,11 +42,9 @@ const createFile = async (req, res) => {
             isApproved: req.body.isApproved,
             user: user._id,
             sectionName: req.body.sectionName,
-            uniqueid: req.body.uniqueid, 
-            
+            uniqueid: req.body.uniqueid,
         });
 
-   
         await newFile.save();
         res.status(201).json(newFile);
     } catch (error) {

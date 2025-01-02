@@ -28,6 +28,7 @@ const TestSchema = new mg.Schema({
     endTime: { type: Date },
     score: { type: Number, default: 0 },
     testCompleted: { type: Boolean, default: false },
+    retestDate: { type: Date }
 });
 
 const TestModel = mg.model('Test', TestSchema);

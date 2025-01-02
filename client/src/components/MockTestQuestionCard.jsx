@@ -7,7 +7,7 @@ import questionFlag from '../assets/icons/questionFlag.svg';
 export const MockTestQuestionCard = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { testQuestions } = useContext(AssessmentContext);
+    const { testQuestions, submitTest, testId } = useContext(AssessmentContext);
     const [answers, setAnswers] = useState([]);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(null);
     const [isFlagged, setIsFlagged] = useState(false);
@@ -38,11 +38,18 @@ export const MockTestQuestionCard = () => {
     }, [testQuestions, id, answers.length, navigate]);
 
     const handleChange = (e, index) => {
+        const selectedLetter = e.target.value;
+        const selectedOption = options.find(
+            (option) => option.label === selectedLetter,
+        );
+        const formattedAnswer = selectedOption.text;
+
         const updatedAnswers = [...answers];
         updatedAnswers[index] = {
             ...updatedAnswers[index],
-            submittedAnswer: e.target.value,
+            submittedAnswer: formattedAnswer,
         };
+
         setAnswers(updatedAnswers);
         sessionStorage.setItem('testAnswers', JSON.stringify(updatedAnswers));
     };
@@ -54,7 +61,7 @@ export const MockTestQuestionCard = () => {
 
         if (currentIndex < testQuestions.length - 1) {
             const nextQuestionId = testQuestions[currentIndex + 1]._id;
-            setIsFlagged(false)
+            setIsFlagged(false);
 
             navigate(`/assessment/${nextQuestionId}`);
         } else {
@@ -75,15 +82,15 @@ export const MockTestQuestionCard = () => {
 
     const currentQuestion = testQuestions[currentQuestionIndex];
     const options = [
-        { label: 'A', text: currentQuestion.optionA },
-        { label: 'B', text: currentQuestion.optionB },
+        { label: 'A', text: `A) ${currentQuestion.optionA}` },
+        { label: 'B', text: `B) ${currentQuestion.optionB}` },
         currentQuestion.optionC !== 'N/A' && {
             label: 'C',
-            text: currentQuestion.optionC,
+            text: `C) ${currentQuestion.optionC}`,
         },
         currentQuestion.optionD !== 'N/A' && {
             label: 'D',
-            text: currentQuestion.optionD,
+            text: `D) ${currentQuestion.optionD}`,
         },
     ].filter(Boolean);
 
@@ -91,13 +98,12 @@ export const MockTestQuestionCard = () => {
         const updatedAnswers = [...answers];
         updatedAnswers[currentQuestionIndex] = {
             ...updatedAnswers[currentQuestionIndex],
-            isFlagged: !isFlagged, // Toggle the isFlagged value
+            isFlagged: !isFlagged,
         };
         setAnswers(updatedAnswers);
-        setIsFlagged(!isFlagged); // Update the local state
-        sessionStorage.setItem('testAnswers', JSON.stringify(updatedAnswers)); // Save to sessionStorage
+        setIsFlagged(!isFlagged);
+        sessionStorage.setItem('testAnswers', JSON.stringify(updatedAnswers));
     };
-    
 
     return (
         <div className="flex flex-col min-h-screen items-center justify-center min-w-75">
@@ -120,33 +126,46 @@ export const MockTestQuestionCard = () => {
                 <p>Type: {currentQuestion.questionType}</p>
                 <p className="font-poppins">{currentQuestion.questionText}</p>
                 <ul>
-                    {options.map((option, i) => (
-                        <label key={i} className="flex items-center gap-2">
+                    {options.map((option) => (
+                        <label
+                            key={option.label}
+                            className="flex items-center gap-2"
+                        >
                             <input
                                 type="radio"
-                                name={`question-${currentQuestion._id}`}
-                                value={option.text}
+                                value={option.label}
                                 checked={
                                     answers[currentQuestionIndex]
-                                        ?.submittedAnswer === option.text
+                                        ?.submittedAnswer ===
+                                    `${option.label}) ${
+                                        option.text.split(') ')[1]
+                                    }`
                                 }
+                                name={`question-${currentQuestionIndex}`}
                                 onChange={(e) =>
                                     handleChange(e, currentQuestionIndex)
                                 }
                             />
-                            <span>{`${option.label}. ${option.text}`}</span>
+                            <span>{option.text}</span>
                         </label>
                     ))}
                 </ul>
+
                 <div className="flex gap-5">
-                    <button
-                        onClick={handleNextQuestion}
-                        className="mt-4 bg-medium-pale-green hover:bg-green-600 rounded-full px-6 py-2 text-white font-medium"
-                    >
-                        {currentQuestionIndex < testQuestions.length - 1
-                            ? 'Next Question'
-                            : 'Finish Test'}
-                    </button>
+                <button
+    onClick={() => {
+        if (currentQuestionIndex < testQuestions.length - 1) {
+            handleNextQuestion();
+        } else {
+            submitTest(testId); // Pass required arguments here
+        }
+    }}
+    className="mt-4 bg-medium-pale-green hover:bg-green-600 rounded-full px-6 py-2 text-white font-medium"
+>
+    {currentQuestionIndex < testQuestions.length - 1
+        ? 'Next Question'
+        : 'Finish Test'}
+</button>
                 </div>
             </div>
         </div>

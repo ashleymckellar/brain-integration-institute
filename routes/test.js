@@ -5,6 +5,8 @@ const { ProfileModel } = require('../models/profile');
 const { UserModel } = require('../models/User');
 const ex = require('express');
 
+const { tabulateScore, updateSubmittedAnswers } = require('../services/test');
+
 const testRouter = ex.Router();
 
 //api/test is the endpoint
@@ -14,77 +16,7 @@ const testRouter = ex.Router();
 //if end time is greater than 90 mins from start time, declined the patch request
 //so that user can't tamper with timer to try to get more time
 
-testRouter.post('/:email/user-test', async (req, res) => {
-    const { email } = req.params;
-    console.log('email passed to route', req.user?.email);
-    const { startTime } = req.body;
 
-    try {
-        const user = await UserModel.findOne({ userEmail: email });
-        if (!user) {
-            return res
-                .status(404)
-                .json({ success: false, message: 'User not found' });
-        }
-
-        let testData = await TestModel.findOne({ userId: user._id });
-        if (!testData) {
-            testData = new TestModel({
-                userId: user._id,
-                startTime,
-            });
-            await testData.save();
-            return res.status(201).json({
-                success: true,
-                message: 'User test created',
-                testData,
-            });
-        }
-        return res.status(200).json({ success: true, testData });
-    } catch (error) {
-        console.error('Error creating test data:', error);
-        return res.status(500).json({ success: false, error: 'Server error' });
-    }
-});
-
-testRouter.patch('/:email/end-time', async (req, res) => {
-    const email = req.params.email;
-    const { endTime, testCompleted } = req.body;
-    console.log(
-        `Received request to update test end time for user: ${email}, End Time: ${endTime}, Test Completed: ${testCompleted}`,
-    );
-
-    try {
-        const user = await UserModel.findOne({ userEmail: email });
-
-        if (!user) {
-            return res.status(404).send({ message: 'User not found' });
-        }
-
-        const testData = await TestModel.findOneAndUpdate(
-            { userId: user._id },
-            {
-                endTime: endTime || Date.now(),
-                testCompleted: testCompleted || true,
-            },
-        );
-
-        console.log(testData, 'test data');
-
-        if (!testData) {
-            return res.status(404).send({
-                message: 'Active test not found or already completed',
-            });
-        }
-
-        res.status(200).send(testData);
-    } catch (error) {
-        console.error(error);
-        res.status(500).send({
-            message: 'An error occurred while updating test data.',
-        });
-    }
-});
 
 //creates test for user with random questions based on how many questions per section
 
@@ -157,7 +89,7 @@ testRouter.get('/:email/generate', async (req, res) => {
                 optionD: q.optionD,
                 correctAnswer: q.correctAnswer,
                 setName: q.setName,
-                questionType: q.questionType
+                questionType: q.questionType,
             })),
         );
     }
@@ -175,16 +107,48 @@ testRouter.get('/:email/generate', async (req, res) => {
 
 //user submitted responses
 
-// testRouter.patch('/:testId/submit', async (req, res) => {
+testRouter.patch('/:testId/submit', async (req, res) => {
+    const { testId } = req.params;
+    const { submittedAnswers } = req.body;
 
-// });
+    try {
+        // Step 1: Update Submitted Answers
+        const result = await updateSubmittedAnswers(testId, submittedAnswers);
+        if (result.error) {
+            return res.status(result.status).json({ error: result.error });
+        }
+
+        // Step 2: Tabulate Score based on updated answers
+        const { score, percentageScore } = await tabulateScore(testId);
+
+        // Step 3: Update the test document with the calculated score and mark it as completed
+        const updatedTest = await TestModel.findById(testId);
+        updatedTest.score = score;
+        updatedTest.testCompleted = true;  
+        updatedTest.endTime = new Date();  // Mark test as completed if not done already
+        await updatedTest.save();
+
+        // Step 4: Return the updated test and score
+        return res.status(200).json({
+            updatedTest,
+            score,
+            percentageScore
+        });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'An error occurred while submitting the test' });
+    }
+});
+
+
+
 
 // When user submits the test, all of the below should happen:
 
 //testCompleted: true
 //endTime: timestamp of when test was completed
-//patch request with submitted answers
-//as well as isFlagged boolean status of every question
+//patch request with submitted answers - see above
 //function which checks the submitted answers with the correct answers
 // score ++ for every correct answer
 //final score is tabulated and put/patched to the test object route
@@ -193,6 +157,30 @@ testRouter.get('/:email/generate', async (req, res) => {
 //if user fails, 90 days out date is set to retest
 //this needs to be persisted somewhere in the db
 //probably on the user object.  This will lock them out from retaking the test until that date has passed
+
+// testRouter.patch('/:testId/submit-score', async (req, res) => {
+////function which checks the submitted answers with the correct answers
+// score ++ for every correct answer
+//final score is tabulated and put/patched to the test object route
+//testCompleted is also updated to true on this route
+//and retakeTestDate is set (if they fail) for 90 days out
+//}
+
+// testRouter.patch('/:testId/submit-score', async (req, res) => {
+// 1. Retrieve the test by `_id` and user data (via the testId in params).
+// 2. Loop through the submitted answers and check them against the correct answers.
+//    - Increment the score for each correct answer.
+// 3. Update the following fields:
+//    - `score`: Calculated based on the correct answers.
+//    - `testCompleted`: Set to `true`.
+//    - `endTime`: Set to the current timestamp when the test is completed.
+//    - `retestDate`: If score < 70, set the `retestDate` to 90 days in the future.
+// 4. Update the user document (for the test retake date) if needed.
+// 5. Send notifications to the admin (if the score is below 70 or for any other condition as required).
+// 6. Send the final score back to the frontend (either as part of the test result or user profile).
+
+// The flow for this route ensures the test is finalized, the results are processed, and the user is notified.
+//};
 
 module.exports = {
     testRouter,
