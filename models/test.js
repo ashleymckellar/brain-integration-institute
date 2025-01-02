@@ -11,6 +11,7 @@ const TestSchema = new mg.Schema({
     questions: [
         {
             questionId: { type: Schema.Types.ObjectId, ref: 'Question'},
+            questionNumber: { type: Number},
             questionText: { type: String, required: true }, 
             optionA: { type: String, required: true },
             optionB: { type: String, required: true },

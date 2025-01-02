@@ -20,6 +20,10 @@ const testRouter = ex.Router();
 
 //creates test for user with random questions based on how many questions per section
 
+//i need to create a route which fetches the user specific test after it is already created, not create a new one.
+//I'll use the generate route when they first pay for the test,
+//and the new route I'll create if they want to access the test later, like from their profile
+
 testRouter.get('/:email/generate', async (req, res) => {
     const { email } = req.params;
     const user = await UserModel.findOne({ userEmail: email });
@@ -31,6 +35,7 @@ testRouter.get('/:email/generate', async (req, res) => {
 
     const userId = user._id;
     const selectedQuestions = [];
+    let questionNumber = 1; 
 
     const sections = [
         { category: 'section1', count: 8 },
@@ -81,6 +86,7 @@ testRouter.get('/:email/generate', async (req, res) => {
 
         selectedQuestions.push(
             ...questions.map((q) => ({
+                questionNumber: questionNumber++,
                 questionId: q._id,
                 questionText: q.questionText,
                 optionA: q.optionA,
