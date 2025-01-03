@@ -17,7 +17,6 @@ export const CloudinaryProvider = ({ children }) => {
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [showPayment, setShowPayment] = useState(false);
     const [showModal, setShowModal] = useState(false);
-
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [sectionName, setSectionName] = useState('');
     const [fileMetaData, setFileMetaData] = useState([]);
@@ -762,7 +761,7 @@ export const CloudinaryProvider = ({ children }) => {
             const data = await response.json();
 
             setAssessmentAccess(true);
-            // const newProgress = Math.min(progress + 1, 8);
+         
             try {
                 if (progress < 8) {
                     const newProgress = progress + 1;

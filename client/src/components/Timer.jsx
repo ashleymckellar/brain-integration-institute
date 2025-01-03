@@ -1,10 +1,12 @@
 /* eslint-disable react/prop-types */
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useContext } from 'react'
+import { AssessmentContext } from '../contexts';
 
-export const Timer = ({seconds}) => {
-    const [time, setTime] = useState(seconds)
-    const [isTimeUp, setIsTimeUp] = useState(false)
+export const Timer = ({seconds, setTime}) => {
+    const [time, setLocalTime] = useState(seconds)
+    // const [isTimeUp, setIsTimeUp] = useState(false)
     const timerId = useRef()
+    const { isTimeUp, setIsTimeUp } = useContext(AssessmentContext);
 
     const convertToHHMMSS = (seconds) => {
         const hours = Math.floor(seconds / 3600);
@@ -25,12 +27,21 @@ export const Timer = ({seconds}) => {
         }, 1000);
 
         return () => clearInterval(timerId.current);
-    }, [isTimeUp]);
+    }, []);
+
+    useEffect(() => {
+        setLocalTime(seconds);
+    }, [seconds]);
+
+    useEffect(() => {
+        setTime(time);  
+    }, [time, setTime]);
 
 
     return (
-        <div className='flex flex-col pb-10'>
-            <h1 className='text-xl'>Time Left: {convertToHHMMSS(time)}</h1>
+        <div className='flex flex-col text-center pb-10'>
+              <h1 className='text-xl'> {convertToHHMMSS(time)} </h1>
+            <h1 className='text-xl'> Time Remaining</h1>
         </div>
     );
 };

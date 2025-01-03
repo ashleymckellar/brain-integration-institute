@@ -25,7 +25,7 @@ const TestSchema = new mg.Schema({
     
         },
     ],
-    startTime: { type: Date, default: Date.now },
+    startTime: { type: Date },
     endTime: { type: Date },
     score: { type: Number, default: 0 },
     testCompleted: { type: Boolean, default: false },

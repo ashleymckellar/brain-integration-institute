@@ -6,7 +6,7 @@ const {
     getAllUserMetaData,
     deleteUserMetaData,
 } = require('../services/user');
-const { deleteProfileData } = require('../services/profile')
+const { deleteProfileData } = require('../services/profile');
 const { UserModel } = require('../models/User');
 const { ProfileModel } = require('../models/profile');
 
@@ -46,7 +46,7 @@ userRouter.post('/createuser', async (req, res) => {
 //get user specific user metadata
 userRouter.get('/:email', async (req, res) => {
     const { email } = req.params;
-   
+
     try {
         const profile = await ProfileModel.findOne({ email });
 
@@ -106,7 +106,6 @@ userRouter.get('/', async (req, res) => {
 userRouter.put('/:email/progress', async (req, res) => {
     const { userUploadProgress } = req.body;
     const { email } = req.params;
-
 
     if (
         userUploadProgress === undefined ||
@@ -253,11 +252,13 @@ userRouter.put('/:email/is-certified', async (req, res) => {
     }
 
     try {
-        console.log(`Updating certification status for user ${email} to ${isCertified}`);
+        console.log(
+            `Updating certification status for user ${email} to ${isCertified}`,
+        );
 
         const updateFields = isCertified
-        ? { isCertified, certifiedDate: Date.now() }
-        : { isCertified };
+            ? { isCertified, certifiedDate: Date.now() }
+            : { isCertified };
 
         const user = await UserModel.findOneAndUpdate(
             { userEmail: email },
@@ -278,7 +279,48 @@ userRouter.put('/:email/is-certified', async (req, res) => {
     }
 });
 
+//delete assessment - internal use only - i shouldn't actually use this in production
+userRouter.patch('/:email/assessment', async (req, res) => {
+    const { email } = req.params;
+    const { assessment } = req.body;
 
+    try {
+        const user = await UserModel.findOne({ userEmail: email });
+        if (!user) {
+            console.log(`User with email ${email} not found`);
+            return res
+                .status(404)
+                .json({ success: false, message: 'User not found' });
+        }
+
+        const originalCount = user.assessments.length;
+        user.assessments = user.assessments.filter(
+            (id) => id.toString() !== assessment,
+        );
+
+        if (user.assessments.length === originalCount) {
+            console.log(
+                `Assessment ${assessment} not found in user assessments`,
+            );
+            return res.status(404).json({
+                success: false,
+                message: 'Assessment not found in user assessments',
+            });
+        }
+
+        await user.save();
+
+        console.log(`Assessment ${assessment} removed for user ${email}`);
+        res.status(200).json({
+            success: true,
+            message: 'Assessment removed successfully',
+            updatedAssessments: user.assessments,
+        });
+    } catch (error) {
+        console.error('Error removing assessment:', error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
 
 //create put route for assessment access
 
@@ -340,8 +382,6 @@ userRouter.patch('/:email/document-status', async (req, res) => {
         // Save the updated user document
         const updatedUser = await user.save();
 
-        
-
         res.status(200).send(updatedUser);
     } catch (error) {
         console.error(error);
@@ -354,7 +394,7 @@ userRouter.patch('/:email/document-status', async (req, res) => {
 //delete user route - can only be accessed by admins
 userRouter.delete('/:email', async (req, res) => {
     const email = req.params.email;
-    
+
     try {
         const deletedUser = await UserModel.findOneAndDelete({
             userEmail: email,
@@ -371,10 +411,14 @@ userRouter.delete('/:email', async (req, res) => {
             await deleteProfileData(userId);
             console.log('[Delete Route] Profile data deleted successfully');
         } catch (profileError) {
-            console.error('[Delete Route] Error deleting profile data:', profileError);
-            return res
-                .status(500)
-                .json({ message: 'User deleted, but an error occurred while deleting profile data' });
+            console.error(
+                '[Delete Route] Error deleting profile data:',
+                profileError,
+            );
+            return res.status(500).json({
+                message:
+                    'User deleted, but an error occurred while deleting profile data',
+            });
         }
         return res
             .status(200)

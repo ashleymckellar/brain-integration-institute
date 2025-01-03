@@ -108,8 +108,58 @@ testRouter.get('/:email/generate', async (req, res) => {
     console.log(selectedQuestions.length, 'selected questions');
 
     await test.save();
+    user.assessments.push(test._id)
+    await user.save();
     res.status(201).json(test);
 });
+
+//create get route to get test by email
+//this route is triggered whenever they click to start the test.
+//it should also add the startTime to the test object
+
+testRouter.patch('/:email/start-test/:testId', async (req, res) => {
+    const { email, testId } = req.params;
+
+    try {
+       
+        const user = await UserModel.findOne({ userEmail: email });
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+    
+        const test = await TestModel.findOne({ _id: testId, userId: user._id });
+        if (!test) {
+            return res.status(404).json({ success: false, message: 'Test not found' });
+        }
+
+      
+ 
+
+        if (test.completed) {
+            return res.status(400).json({
+                success: false,
+                message: 'Test has already been completed',
+            });
+        }
+
+    
+        test.startTime = new Date();
+
+  
+        await test.save();
+
+        console.log(`Test ${testId} started for user ${email}`);
+        res.status(200).json({
+         
+            test
+        });
+    } catch (error) {
+        console.error('Error starting test:', error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
 
 //user submitted responses
 
@@ -118,23 +168,23 @@ testRouter.patch('/:testId/submit', async (req, res) => {
     const { submittedAnswers } = req.body;
 
     try {
-        // Step 1: Update Submitted Answers
+   
         const result = await updateSubmittedAnswers(testId, submittedAnswers);
         if (result.error) {
             return res.status(result.status).json({ error: result.error });
         }
 
-        // Step 2: Tabulate Score based on updated answers
+      
         const { score, percentageScore } = await tabulateScore(testId);
 
-        // Step 3: Update the test document with the calculated score and mark it as completed
+     
         const updatedTest = await TestModel.findById(testId);
         updatedTest.score = score;
         updatedTest.testCompleted = true;  
-        updatedTest.endTime = new Date();  // Mark test as completed if not done already
+        updatedTest.endTime = new Date();  
         await updatedTest.save();
 
-        // Step 4: Return the updated test and score
+      
         return res.status(200).json({
             updatedTest,
             score,
@@ -189,5 +239,5 @@ testRouter.patch('/:testId/submit', async (req, res) => {
 //};
 
 module.exports = {
-    testRouter,
+    testRouter
 };
