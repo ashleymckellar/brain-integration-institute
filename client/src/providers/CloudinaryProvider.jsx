@@ -90,6 +90,7 @@ export const CloudinaryProvider = ({ children }) => {
 
     //gets files from Cloudinary via callback/cors proxy
     const getFilesInFolder = async () => {
+        console.log('files retrieved')
         try {
             if (!user || !user.email) {
                 throw new Error('User email is missing');

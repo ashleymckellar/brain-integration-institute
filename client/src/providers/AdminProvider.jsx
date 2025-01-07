@@ -389,6 +389,7 @@ export const AdminProvider = ({ children }) => {
         setisNotificationDrawerOpen(false);
     };
 
+    //update this to the api/test route to get the score
     const fetchUserScore = async () => {
         try {
             if (user) {

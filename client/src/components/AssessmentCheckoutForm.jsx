@@ -50,6 +50,10 @@ export default function AssessmentCheckoutForm() {
 
     };
 
+    const goBack = () => {
+        setShowModal(false)
+    }
+
     // const handleSubmit = async (e) => {
     //     e.preventDefault();
     //     if (!stripe || !elements) {
@@ -99,11 +103,11 @@ export default function AssessmentCheckoutForm() {
                     <div className="bg-white p-8 rounded shadow-lg max-w-sm w-full">
                         <h1 className="text-3xl font-bold mb-4">Success!</h1>
                         <p>Your assessment has been purchased.</p>
-                        <div className="flex justify-around mt-4 gap-2">
-                            <button className='block w-1/2 border border-black rounded-3xl px-4'>Main Page</button>
+                        <div className="flex justify-around mt-4 gap-6">
+                            <button className='block w-1/2 border border-black rounded-3xl px-4' onClick={goBack}>Go Back</button>
                             <button
                                 onClick={closeModal}
-                                className="block w-1/2 px-4 py-2 text-white bg-green-600 rounded-3xl whitespace-nowrap hover:bg-green-700"
+                                className="block w-1/2 p-3 text-white bg-green-600 rounded-3xl whitespace-nowrap hover:bg-green-700"
                             >
                                 Proceed to Test
                             </button>

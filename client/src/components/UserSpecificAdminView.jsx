@@ -143,9 +143,11 @@ const UserSpecificAdminView = () => {
     };
 
     const getFilesByDocType = async (userEmail, documentType) => {
+        console.log('getting user docs')
         try {
             const accessToken = await getAccessTokenSilently();
             const nickname = individualUser.userEmail.split('@')[0];
+            console.log(nickname)
             const response = await fetch(
                 `/api/images/${nickname}/${documentType}`,
                 {
@@ -177,6 +179,7 @@ const UserSpecificAdminView = () => {
 
     useEffect(() => {
         fetchProfileData(individualUser);
+        console.log(individualUser, 'individual user')
     }, [individualUser]);
 
     if (!individualUser)
