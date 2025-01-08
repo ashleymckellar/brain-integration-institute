@@ -54,8 +54,8 @@ export const Timer = ({ seconds, setTime }) => {
         setTime(time);
     }, [time, setTime]);
 
-    console.log(isTimeUp);
-    console.log(time);
+    // console.log(isTimeUp);
+    // console.log(time);
 
     return (
         <div className="flex flex-col text-center pb-10 gap-2">

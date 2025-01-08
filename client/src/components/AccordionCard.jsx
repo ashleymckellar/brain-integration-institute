@@ -16,6 +16,8 @@ import ProgressBar7 from '../assets/icons/ProgressBar7.png';
 import ProgressBar8 from '../assets/icons/ProgressBar8.png';
 import StudyGuidePages from '../assets/icons/StudyGuidePages.png';
 import PayforandStart from '../assets/icons/PayforandStart.png';
+import PayForAssessment from '../assets/icons/PayForAssessment.png'
+import StartAssessment from '../assets/icons/StartAssessment.png'
 import Assessment from './Assessment';
 import Insurance from './Insurance';
 import Brain from './Brain';
@@ -76,6 +78,7 @@ const AccordionCard = ({ certStatus }) => {
 
     //checks to see if every section has an uploaded file, if so returns true
     const [isUploaded, setIsUploaded] = useState(false);
+    const [hasAssessment, setHasAssessment] = useState(false)
 
     //to switch to true, all docs must be uploaded and admin approved and study guide purchased
     const [isApprovedForAssessment, setIsApprovedForAssessment] =
@@ -169,6 +172,7 @@ const AccordionCard = ({ certStatus }) => {
 
     //move this to the cloudinarycontext and update progress there as well since it updates the progress
     const getAssessment = async () => {
+        console.log('getting assessment')
         try {
             const accessToken = await getAccessTokenSilently();
             // const stripe = await stripePromise;
@@ -229,6 +233,9 @@ const AccordionCard = ({ certStatus }) => {
                     setProgress(userMetaData.userUploadProgress);
                     setCertListUploadStatus(userMetaData.certListUploadStatus);
                     setCloudinaryFiles(folderFiles);
+                    if (userMetaData?.assessments?.length > 0) {
+                        setHasAssessment(true);
+                    }
                 } catch (error) {
                     console.error(
                         'Error fetching files:',
@@ -240,6 +247,10 @@ const AccordionCard = ({ certStatus }) => {
 
         fetchData();
     }, []);
+
+    console.log(hasAssessment, 'has assessment')
+
+
 
     useEffect(() => {
         if (!userMetaData || !userMetaData.certListUploadStatus) return;
@@ -259,6 +270,15 @@ const AccordionCard = ({ certStatus }) => {
 
         checkIsApprovedForAssessment();
     }, [userMetaData]);
+
+    useEffect(() => {
+        if (hasAssessment) {
+            // Trigger a page reload or perform additional actions
+            window.location.reload(); // Reload the entire page
+            // Alternatively, trigger specific logic for rendering new UI elements here
+            console.log('Page re-rendered due to hasAssessment being true');
+        }
+    }, [hasAssessment]);
 
     // useEffect(() => {
     //     const handleHashChange = () => {
@@ -1665,15 +1685,32 @@ const AccordionCard = ({ certStatus }) => {
                                 </p> 
                                 <div className="form-flex gap-10 pt-20 pb-5 mt-4">
                                     <button
-                                        disabled={!isApprovedForAssessment}
+                                        disabled={!isApprovedForAssessment || hasAssessment}
                                         className={`${
-                                            !isApprovedForAssessment
+                                            !isApprovedForAssessment || hasAssessment
                                                 ? 'opacity-50 cursor-not-allowed'
                                                 : ''
                                         }`}
                                     >
                                         <img
-                                            src={PayforandStart}
+                                            src={PayForAssessment}
+                                            onClick={
+                                                isApprovedForAssessment
+                                                    ? getAssessment
+                                                    : null
+                                            }
+                                        />
+                                    </button>
+                                    <button
+                                        disabled={!hasAssessment}
+                                        className={`${
+                                            !hasAssessment
+                                                ? 'opacity-50 cursor-not-allowed'
+                                                : ''
+                                        }`}
+                                    >
+                                        <img
+                                            src={StartAssessment}
                                             onClick={
                                                 isApprovedForAssessment
                                                     ? getAssessment

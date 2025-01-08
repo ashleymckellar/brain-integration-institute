@@ -40,9 +40,37 @@ export const MockTestQuestionCard = () => {
 
     // const [loading, setLoading] = useState(false);
 
-    console.log(time, 'time');
-    console.log(score, 'score');
-    console.log(testId, 'testid');
+    // console.log(time, 'time');
+    // console.log(score, 'score');
+    // console.log(testId, 'testid');
+    useEffect(() => {
+        const isPageReload = () => {
+            const entries = performance.getEntriesByType('navigation');
+            if (entries.length > 0) {
+                return entries[0].type === 'reload';
+            }
+            return false;
+        };
+    
+        const handleBeforeUnload = (e) => {
+            if (!isPageReload()) {
+                // Call submitTest for tab close or navigation away
+                submitTest(testId);
+                console.log('Test submitted on navigation or tab close');
+    
+                // Prevent the default browser behavior for navigating away
+                e.preventDefault();
+                e.returnValue = ''; // Required for some browsers to show a confirmation dialog
+            }
+        };
+    
+        window.addEventListener('beforeunload', handleBeforeUnload);
+    
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
+    }, [submitTest, testId]);
+    
 
     // Load initial data
     useEffect(() => {
@@ -67,6 +95,12 @@ export const MockTestQuestionCard = () => {
             console.log('Saved questions to sessionStorage:', testQuestions);
         }
     }, [testQuestions, setTestQuestions]);
+
+    useEffect(() => {
+        if (time === 0) {
+            submitTest(testId);
+        }
+    }, [time])
 
     // Set initial answers and determine current question index
     useEffect(() => {
@@ -204,6 +238,8 @@ export const MockTestQuestionCard = () => {
         setTestCompletedModalOpen(true);
     };
 
+    // console.log(currentQuestionIndex)
+
     //write function that submits the test if time is === 0
 
     return (
@@ -258,6 +294,8 @@ export const MockTestQuestionCard = () => {
                 </button>
 
                 <div className="flex flex-col items-center justify-center gap-4 border border-white w-[895px] h-[695px] rounded shadow bg-[#F5F5F5] p-10">
+                   
+                   
                     <p className="font-poppins text-xl">
                         {currentQuestion.questionText}
                     </p>
@@ -287,36 +325,16 @@ export const MockTestQuestionCard = () => {
                             </label>
                         ))}
                     </ul>
+                    {(currentQuestionIndex > 0 && (
                     <button
                         onClick={handlePreviousQuestion}
-                        className="absolute left-[330px] bottom-[220px]"
+                        className="absolute left-[330px] bottom-[450px]"
                     >
                         <img src={greenArrowLeft} alt="green arrow left" />
                     </button>
+                    ))}
 
-                    <button
-                        onClick={() => {
-                            if (
-                                currentQuestionIndex <
-                                testQuestions.length - 1
-                            ) {
-                                handleNextQuestion();
-                            } else {
-                                setAreYouSureModalOpen(true);
-                            }
-                        }}
-                        className={`absolute right-[330px] bottom-[220px] ${
-                            currentQuestionIndex < testQuestions.length - 1
-                                ? ''
-                                : 'bg-medium-pale-green hover:bg-green-600 rounded-full w-[204px] h-[43px] text-white font-medium px-6 py-2'
-                        }`}
-                    >
-                        {currentQuestionIndex < testQuestions.length - 1 ? (
-                            <img src={greenArrow} alt="green arrow" />
-                        ) : (
-                            'Finish Test'
-                        )}
-                    </button>
+          
 
                     <div className="flex gap-10">
                         {areYouSureModalOpen && (
@@ -421,6 +439,29 @@ export const MockTestQuestionCard = () => {
                             </TestCompletedModal>
                         )}
                     </div>
+                    <button
+                        onClick={() => {
+                            if (
+                                currentQuestionIndex <
+                                testQuestions.length - 1
+                            ) {
+                                handleNextQuestion();
+                            } else {
+                                setAreYouSureModalOpen(true);
+                            }
+                        }}
+                        className={`absolute right-[330px] bottom-[450px] ${
+                            currentQuestionIndex < testQuestions.length - 1
+                                ? ''
+                                : 'bg-medium-pale-green hover:bg-green-600 rounded-full w-[204px] h-[43px] text-white font-medium px-6 py-2'
+                        }`}
+                    >
+                        {currentQuestionIndex < testQuestions.length - 1 ? (
+                            <img src={greenArrow} alt="green arrow" />
+                        ) : (
+                            'Finish Test'
+                        )}
+                    </button>
                 </div>
             </div>
         </div>

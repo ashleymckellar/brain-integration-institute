@@ -138,6 +138,7 @@ export const CloudinaryProvider = ({ children }) => {
             );
             const metaData = response.data;
             setUserMetaData(metaData);
+            console.log(userMetaData, 'user metadata')
             setImageUrl(metaData.userProfilePicture);
 
             return metaData;
