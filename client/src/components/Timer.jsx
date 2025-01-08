@@ -1,19 +1,26 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import { useState, useEffect, useRef, useContext } from 'react'
+import { useState, useEffect, useRef, useContext } from 'react';
 import { AssessmentContext } from '../contexts';
 
-export const Timer = ({seconds, setTime}) => {
-    const [time, setLocalTime] = useState(seconds)
+export const Timer = ({ seconds, setTime }) => {
+    const [time, setLocalTime] = useState(seconds);
     // const [isTimeUp, setIsTimeUp] = useState(false)
-    const timerId = useRef()
+    const timerId = useRef();
     const { isTimeUp, setIsTimeUp } = useContext(AssessmentContext);
+    const [showTime, setShowTime] = useState(true);
 
     const convertToHHMMSS = (seconds) => {
         const hours = Math.floor(seconds / 3600);
         const mins = Math.floor((seconds % 3600) / 60);
         const secs = seconds % 60;
-        return `${hours}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        return `${hours}:${mins.toString().padStart(2, '0')}:${secs
+            .toString()
+            .padStart(2, '0')}`;
+    };
+
+    const toggleShowTime = () => {
+        setShowTime(!showTime);
     };
     useEffect(() => {
         // Initialize time from sessionStorage if available
@@ -40,20 +47,39 @@ export const Timer = ({seconds, setTime}) => {
             });
         }, 1000);
 
-        return () => clearInterval(timerId.current); 
+        return () => clearInterval(timerId.current);
     }, [setTime, setIsTimeUp]);
 
     useEffect(() => {
-        setTime(time); 
+        setTime(time);
     }, [time, setTime]);
 
-    console.log(isTimeUp)
-    console.log(time)
+    console.log(isTimeUp);
+    console.log(time);
 
     return (
-        <div className='flex flex-col text-center pb-10'>
-            <h1 className='text-xl'>{convertToHHMMSS(time)}</h1>
-            <h1 className='text-xl'>Time Remaining</h1>
+        <div className="flex flex-col text-center pb-10 gap-2">
+            {showTime && (
+                <>
+                    <h1 className="text-xl">{convertToHHMMSS(time)}</h1>
+                    <h1 className="text-xl">Time Remaining</h1>
+                </>
+            )}
+            {showTime ? (
+                <button
+                      className="bg-medium-pale-green hover:bg-green-600 rounded-full w-[204px] h-[43px] text-white font-medium px-6 py-2"
+                    onClick={toggleShowTime}
+                >
+                    Hide Timer
+                </button>
+            ) : (
+                <button
+                    className="bg-medium-pale-green hover:bg-green-600 rounded-full w-[204px] h-[43px] text-white font-medium px-6 py-2"
+                    onClick={toggleShowTime}
+                >
+                    Show Timer
+                </button>
+            )}
         </div>
     );
 };
