@@ -32,7 +32,7 @@ server.get('/pracs/public-profiles', async (req, res) => {
         const profiles = await ProfileModel.find();
         const users = await UserModel.find(
             {},
-            '_id isCertified userProfilePicture',
+            '_id isCertified userProfilePicture isisSubscribedEducator isSubscribedPrac',
         );
 
         const mergedProfiles = profiles.map((profile) => {
@@ -43,6 +43,8 @@ server.get('/pracs/public-profiles', async (req, res) => {
                 ...profile.toObject(),
                 practitionerImage: associatedUser?.userProfilePicture || '',
                 isCertified: associatedUser?.isCertified || false,
+                isSubscribedEducator: associatedUser?.isSubscribedPrac || false,
+                isSubscribedPrac: associatedUser?.isSubscribedPrac || false
             };
         });
 
@@ -79,7 +81,9 @@ server.get('/pracs/public-profiles/:email', async (req, res) => {
         const profileData = {
             ...profile.toObject(),
             userProfilePicture: profile.userId.userProfilePicture,
-            email: profile.userId.userEmail
+            email: profile.userId.userEmail,
+            isSubscribedEducator: profile.userId.isSubscribedEducator,
+            isSubscribedPrac: profile.userId.isSubscribedPrac
         };
         res.status(200).json(profileData);
     } catch (error) {

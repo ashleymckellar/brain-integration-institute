@@ -144,15 +144,21 @@ const UserSchema = new mg.Schema({
     },
 
     assessments: [{ type: Schema.Types.ObjectId, ref: 'AssessmentModel' }],
-    // Stripe will switch the boolean on the User's subscription to generate their link with a button on the Administrator's
-    // dashboard that can switch the link's 'Active' status from 'false' to "true" with an automatic switch if they do not make their payment within
-    // a pre-determined timeframe.
-    subscriptionActiveStatus: {
+
+    //have they paid for the details button/profile pic for their practitioner listing on the find prac page?
+    isSubscribedPrac: {
         type: Boolean,
         default: false,
     },
 
-    //will toggle to true once all docs approved and assessment receives passing score
+
+    //have they paid to be added to BI educator directory?
+    isSubscribedEducator: {
+        type: Boolean,
+        default: false
+    },
+
+    //will toggle to true once all docs approved and assessment receives passing score once admin approves their profile
     isCertified: {
         type: Boolean,
         default: false,

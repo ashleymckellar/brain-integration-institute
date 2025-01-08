@@ -3,17 +3,16 @@
 import { useNavigate } from 'react-router-dom';
 
 export const PractitionerCard = (props) => {
-
     const navigate = useNavigate();
     const {
         firstName,
         lastName,
-
         location,
         image,
         phone,
         email,
         website,
+        isSubscribedPrac,
     } = props;
 
     return (
@@ -40,11 +39,18 @@ export const PractitionerCard = (props) => {
                             {email}
                         </div>
                         <div className="flex flex-col gap-2 pt-5 justify-start items-center">
-                            <button className="text-white border px-4 py-2 bg-green-is-good hover:bg-green-500  border-gray mx-3 rounded-md" onClick={() => navigate(`/practitioner/${email}`)}>
-                                View Details
-                            </button>
+                            {isSubscribedPrac && (
+                                <button
+                                    className="text-white border px-4 py-2 bg-green-is-good hover:bg-green-500  border-gray mx-3 rounded-md"
+                                    onClick={() =>
+                                        navigate(`/practitioner/${email}`)
+                                    }
+                                >
+                                    View Details
+                                </button>
+                            )}
 
-                            {website && (
+                            {website && isSubscribedPrac && (
                                 <button className="text-white border px-4 py-2 bg-green-is-good hover:bg-green-500  border-gray mx-3 whitespace-nowrap rounded-md">
                                     <a
                                         href={website}

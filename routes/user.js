@@ -241,6 +241,72 @@ userRouter.put('/:email/is-admin', async (req, res) => {
     }
 });
 
+//route for when they pay to have photo in prac directory, as well as details,
+//default is false, will toggle to true once payment is confirmed
+userRouter.put('/:email/is-sub-prac', async (req, res) => {
+    const { isSubscribedPrac } = req.body;
+    const { email } = req.params;
+
+    if (typeof isSubscribedPrac !== 'boolean') {
+        return res.status(400).json({
+            error: 'isSubscribedPrac is required and must be a boolean',
+        });
+    }
+
+    try {
+        console.log(`Updating user status for user ${email} to ${isSubscribedPrac}`);
+
+        const user = await UserModel.findOneAndUpdate(
+            { userEmail: email },
+            { isSubscribedPrac },
+            { new: true, runValidators: true },
+        );
+
+        if (!user) {
+            console.log(`User with email ${email} not found`);
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        console.log(`User ${email} admin status updated to:`, user.isSubscribedPrac);
+        res.json(user);
+    } catch (error) {
+        console.error('Error updating subscription status:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+userRouter.put('/:email/is-sub-educator', async (req, res) => {
+    const { isSubscribedEducator } = req.body;
+    const { email } = req.params;
+
+    if (typeof isSubscribedEducator !== 'boolean') {
+        return res.status(400).json({
+            error: 'isSubscribedEducator is required and must be a boolean',
+        });
+    }
+
+    try {
+        console.log(`Updating user status for user ${email} to ${isSubscribedEducator}`);
+
+        const user = await UserModel.findOneAndUpdate(
+            { userEmail: email },
+            { isSubscribedEducator },
+            { new: true, runValidators: true },
+        );
+
+        if (!user) {
+            console.log(`User with email ${email} not found`);
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        console.log(`User ${email} admin status updated to:`, user.isSubscribedEducator);
+        res.json(user);
+    } catch (error) {
+        console.error('Error updating subscription status:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
 userRouter.put('/:email/is-certified', async (req, res) => {
     const { isCertified } = req.body;
     const { email } = req.params;

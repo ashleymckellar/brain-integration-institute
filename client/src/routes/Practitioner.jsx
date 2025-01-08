@@ -1,9 +1,8 @@
-
-
 import { useState, useEffect } from 'react';
 import { PractitionerCard } from '../components/PractitionerCard';
 import banner from '../assets/icons/PractitionerBackground.png';
 import paleBanner from '../assets/icons/PaleGreenPractitionerBackground.png';
+import placeholderProfilePic from '../assets/icons/placeholderProfilePic.jpg';
 import { Navbar } from '../components/header/Navbar';
 import { Footer } from '../components/Footer';
 
@@ -25,8 +24,7 @@ export const Practitioner = () => {
         }));
     };
 
-    const fetchPublicProfiles = async ()=> {
- 
+    const fetchPublicProfiles = async () => {
         try {
             setLoading(true);
             const response = await fetch('/pracs/public-profiles', {
@@ -50,6 +48,8 @@ export const Practitioner = () => {
         }
     };
 
+    console.log(allPractitioners, 'all pracs');
+
     useEffect(() => {
         fetchPublicProfiles();
     }, []);
@@ -61,8 +61,12 @@ export const Practitioner = () => {
             const firstName = profile.firstName.toLowerCase();
             const lastName = profile.lastName.toLowerCase();
             const practitionerLocation = profile.city?.toLowerCase() || '';
+            const isSubscribedPrac = profile.isSubscribedPrac;
+
             return (
-                (name === '' || firstName.includes(name) || lastName.includes(name)) &&
+                (name === '' ||
+                    firstName.includes(name) ||
+                    lastName.includes(name)) &&
                 (location === '' || practitionerLocation.includes(location))
             );
         });
@@ -70,7 +74,14 @@ export const Practitioner = () => {
         setRenderedPractitioners(filtered);
     }, [searchQuery, allPractitioners]);
 
-    const practitionerList = renderedPractitioners.map((person) => (
+    const practitionerList = renderedPractitioners.sort((a, b) => {
+        // Sort by isSubscribedPrac (true first)
+        if (a.isSubscribedPrac !== b.isSubscribedPrac) {
+            return b.isSubscribedPrac - a.isSubscribedPrac;
+        }
+        // If isSubscribedPrac is the same, sort alphabetically by lastName
+        return a.lastName.localeCompare(b.lastName);
+    }).map((person) => (
         <PractitionerCard
             key={person.id || `${person.firstName}-${person.lastName}`}
             firstName={person.firstName}
@@ -78,8 +89,13 @@ export const Practitioner = () => {
             location={`${person.city} ${person.state}`}
             phone={person.phoneNumber}
             email={person.email}
-            image={person.practitionerImage}
+            image={
+                person.isSubscribedPrac
+                    ? person.practitionerImage
+                    : placeholderProfilePic
+            } 
             website={person.website}
+            isSubscribedPrac={person.isSubscribedPrac}
         />
     ));
 
@@ -102,7 +118,9 @@ export const Practitioner = () => {
                 </div>
             </div>
             <div className="w-11/12 sm:w-10/12 md:w-3/4 lg:w-2/3 xl:w-1/2 mx-auto mt-6">
-                <h2 className="text-2xl font-semibold mb-4 text-center">Refine Results</h2>
+                <h2 className="text-2xl font-semibold mb-4 text-center">
+                    Refine Results
+                </h2>
                 <div className="flex flex-col sm:flex-row sm:justify-between gap-4 mb-4">
                     <input
                         className="w-full sm:w-1/2 px-4 py-2 rounded-full border border-gray-400 text-gray-600 text-lg placeholder-gray-500"
@@ -145,4 +163,3 @@ export const Practitioner = () => {
         </>
     );
 };
-
