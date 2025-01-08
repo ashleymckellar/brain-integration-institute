@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState, useEffect } from 'react';
 import { PractitionerCard } from '../components/PractitionerCard';
 import banner from '../assets/icons/PractitionerBackground.png';
