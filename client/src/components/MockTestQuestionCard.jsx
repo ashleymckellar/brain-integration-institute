@@ -43,33 +43,33 @@ export const MockTestQuestionCard = () => {
     // console.log(time, 'time');
     // console.log(score, 'score');
     // console.log(testId, 'testid');
-    useEffect(() => {
-        const isPageReload = () => {
-            const entries = performance.getEntriesByType('navigation');
-            if (entries.length > 0) {
-                return entries[0].type === 'reload';
-            }
-            return false;
-        };
-    
-        const handleBeforeUnload = (e) => {
-            if (!isPageReload()) {
-                // Call submitTest for tab close or navigation away
-                submitTest(testId);
-                console.log('Test submitted on navigation or tab close');
-    
-                // Prevent the default browser behavior for navigating away
-                e.preventDefault();
-                e.returnValue = ''; // Required for some browsers to show a confirmation dialog
-            }
-        };
-    
-        window.addEventListener('beforeunload', handleBeforeUnload);
-    
-        return () => {
-            window.removeEventListener('beforeunload', handleBeforeUnload);
-        };
-    }, [submitTest, testId]);
+useEffect(() => {
+    const isPageReload = () => {
+        const entries = performance.getEntriesByType('navigation');
+        if (entries.length > 0) {
+            return entries[0].type === 'reload';
+        }
+        return false;
+    };
+
+    const handleBeforeUnload = (e) => {
+        if (!isPageReload()) {
+            // Call submitTest for tab close or navigation away
+            submitTest(testId);
+            console.log('Test submitted on navigation or tab close');
+
+            // Prevent the default browser behavior for navigating away
+            e.preventDefault();
+            e.returnValue = ''; // Required for some browsers to show a confirmation dialog
+        }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+        window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+}, [submitTest, testId]);
     
 
     // Load initial data
