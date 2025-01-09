@@ -7,7 +7,7 @@ import circleFlag from '../assets/icons/circleFlag.png';
 import TestCompletedModal from './TestCompletedModal';
 import AreYouSureTestModal from './AreYouSureTestModal';
 import checkFlagged from '../assets/icons/checkFlagged.png';
-import bookStack from '../assets/images/bookStack.jpg';
+import bookStack from '../assets/images/bookstack.jpg';
 import celebrateStudent from '../assets/images/celebrateStudent.png';
 import greenArrow from '../assets/icons/GreenArrow.png';
 import greenArrowLeft from '../assets/icons/GreenArrowLeft.png';
