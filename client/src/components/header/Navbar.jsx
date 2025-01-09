@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import { slide as BurgerMenu } from 'react-burger-menu';
 import bell from '../../assets/icons/bell.png';
 import placeholderProfilePic from '../../assets/icons/placeholderProfilePic.png';
-import BrainIntegrationSeal from '../../assets/icons/BrainIntegrationSealCropped.png';
+import BrainIntegrationSeal from '../../assets/icons/updatedBrainSeal.png';
 import { CloudinaryContext } from '../../contexts';
 import { UserContext } from '../../contexts';
 import { Notifications } from '../../routes/Notifications.jsx';
@@ -249,7 +249,7 @@ export const Navbar = () => {
     return (
          <header key={resizeKey} className=" flex flex-col w-full bg-white">
             <div className="flex items-center justify-between px-4 ">
-                <img src={BrainIntegrationSeal} alt="Logo" className="h-25 px-20 py-10" />
+                <img src={BrainIntegrationSeal} alt="Logo" className="h-[200px] px-20 py-10" />
                 {isLargeScreen ? (
                     <nav className="flex items-center space-x-6">
                         {renderLinks()}

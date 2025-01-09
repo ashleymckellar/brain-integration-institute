@@ -23,7 +23,7 @@ import briefcase from '../assets/icons/briefcase-medical.png';
 import clipboard from '../assets/icons/clipboard-list.png';
 import video from '../assets/icons/video.png';
 import greenThumb from '../assets/icons/greenthumb.svg';
-import brainSeal from '../assets/icons/BrainIntegrationSealCropped.png';
+import brainSeal from '../assets/icons/updatedBrainSeal.png';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 

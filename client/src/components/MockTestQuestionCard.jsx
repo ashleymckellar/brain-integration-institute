@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Timer } from './Timer';
+import { TestResults } from './TestResults';
 import { AssessmentContext } from '../contexts';
 import questionFlag from '../assets/icons/questionFlag.svg';
 import circleFlag from '../assets/icons/circleFlag.png';
@@ -38,12 +39,13 @@ export const MockTestQuestionCard = () => {
     const [flaggedQuestions, setFlaggedQuestions] = useState([]);
     const [time, setTime] = useState(5400);
     const [showFlagged, setShowFlagged] = useState(false);
+    const [viewTestResults, setViewTestResults] = useState(false);
 
     // const [loading, setLoading] = useState(false);
 
     // console.log(time, 'time');
     // console.log(score, 'score');
-    // console.log(testId, 'testid');
+    console.log(testId, 'testid');
     useEffect(() => {
         const isPageReload = () => {
             const entries = performance.getEntriesByType('navigation');
@@ -198,6 +200,10 @@ export const MockTestQuestionCard = () => {
         sessionStorage.setItem('testAnswers', JSON.stringify(updatedAnswers));
     };
 
+    if (viewTestResults) {
+        return <TestResults />;
+    }
+
     const handleNextQuestion = () => {
         const currentIndex = testQuestions.findIndex(
             (question) => question._id === id,
@@ -292,7 +298,7 @@ export const MockTestQuestionCard = () => {
                         <>
                             <button
                                 onClick={toggleFlag}
-                                 className="flex flex-col items-center text-lg md:text-2xl gap-2"
+                                className="flex flex-col items-center text-lg md:text-2xl gap-2"
                             >
                                 Show
                                 <img
@@ -337,10 +343,6 @@ export const MockTestQuestionCard = () => {
                         </p>
                         <p>{currentQuestion.isFlagged}</p>
 
-                        {/* Options */}
-                        {/* Options */}
-                        {/* Options */}
-                        {/* Options */}
                         <div
                             className={`w-full flex justify-center ${
                                 options.length === 2 &&
@@ -367,7 +369,7 @@ export const MockTestQuestionCard = () => {
                                                 options.length === 2 &&
                                                 options[0].text.toLowerCase() ===
                                                     'a) true'
-                                                    ? 'justify-center' // True/False options centered
+                                                    ? 'justify-center' 
                                                     : ''
                                             }`}
                                         >
@@ -535,10 +537,7 @@ export const MockTestQuestionCard = () => {
                                     Unfortunately, you did not earn a passing
                                     score of 70%.
                                 </p>
-                                <p className="text-lg md:text-xl">
-                                    Please try the assessment again in three
-                                    months.
-                                </p>
+
                                 <p className="text-base md:text-lg">
                                     Score: {score}%
                                 </p>
@@ -546,11 +545,12 @@ export const MockTestQuestionCard = () => {
                             <div className="flex justify-center gap-10">
                                 <button
                                     className="mt-4 bg-medium-pale-green hover:bg-green-600 rounded-full px-4 md:px-6 py-2 text-white font-medium text-sm md:text-base"
-                                    onClick={() =>
-                                        setTestCompletedModalOpen(false)
-                                    }
+                                    onClick={() => {
+                                        setTestCompletedModalOpen(false);
+                                        setViewTestResults(true);
+                                    }}
                                 >
-                                    OK
+                                    View results
                                 </button>
                             </div>
                         </TestCompletedModal>

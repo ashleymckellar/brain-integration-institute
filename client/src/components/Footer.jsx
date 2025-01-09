@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import brainSeal from '../assets/icons/BrainIntegrationSealCropped.png';
+import brainSeal from '../assets/icons/updatedBrainSeal.png';
 // import map from '../assets/icons/map-pin.png';
 // import phone from '../assets/icons/phone.png';
 // import mail from '../assets/icons/mail.png';

@@ -167,6 +167,9 @@ const UserSchema = new mg.Schema({
             type: Date,
             default: Date.now
         },
+        retestDate: { type: Date },
+        freeRetestUsed: { type: Boolean, default: false }, 
+        retestAttempts: { type: Number, default: 0 },
     },
 );
 

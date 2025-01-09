@@ -58,27 +58,29 @@ export const Timer = ({ seconds, setTime }) => {
     // console.log(time);
 
     return (
-        <div className="flex flex-col text-center pb-10 gap-2">
+        <div>
             {showTime && (
-                <>
+                 <div className="flex flex-col text-center py-10 gap-2">
                     <h1 className="text-xl">{convertToHHMMSS(time)}</h1>
                     <h1 className="text-xl">Time Remaining</h1>
-                </>
+                </div>
             )}
             {showTime ? (
                 <button
-                      className="bg-medium-pale-green hover:bg-green-600 rounded-full w-[204px] h-[43px] text-white font-medium px-6 py-2"
+                      className="bg-medium-pale-green hover:bg-green-600 mb-10 rounded-full w-[204px] h-[43px] text-white font-medium px-6 py-2"
                     onClick={toggleShowTime}
                 >
                     Hide Timer
                 </button>
             ) : (
+                <div className="flex flex-col text-center py-10 gap-2">
                 <button
                     className="bg-medium-pale-green hover:bg-green-600 rounded-full w-[204px] h-[43px] text-white font-medium px-6 py-2"
                     onClick={toggleShowTime}
                 >
                     Show Timer
                 </button>
+                </div>
             )}
         </div>
     );
