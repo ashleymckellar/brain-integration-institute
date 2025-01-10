@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react';
+import { useContext } from 'react';
 import { AssessmentContext } from '../contexts';
 
 export const TestResults = () => {

@@ -64,6 +64,13 @@ const AccordionCard = ({ certStatus }) => {
         setCertListUploadStatus,
         updateUserDocumentStatus,
         onUploadSuccess,
+        checkRetestEligibility,
+        retestEligibility,
+        setRetestEligibility,
+        loading,
+        setLoading,
+        daysRemaining,
+        setDaysRemaining
     } = useContext(CloudinaryContext);
 
     const { isAuthenticated, user, getAccessTokenSilently } = useAuth0();
@@ -74,6 +81,7 @@ const AccordionCard = ({ certStatus }) => {
     const [cloudinaryFiles, setCloudinaryFiles] = useState([]);
     const [expandedSection, setExpandedSection] = useState(null);
     const [sectionFiles, setSectionFiles] = useState({});
+    // const [retestMessage, setRetestMessage] = useState('');
     const navigate = useNavigate();
 
     //checks to see if every section has an uploaded file, if so returns true
@@ -227,6 +235,7 @@ const AccordionCard = ({ certStatus }) => {
                     const metadataFiles = await getFiles(token);
 
                     const userMetaData = await getUserMetaData(token);
+                    setLoading(false)
                     setFileMetaData(metadataFiles);
                     setUserMetaData(userMetaData);
                     console.log(userMetaData);
@@ -236,6 +245,7 @@ const AccordionCard = ({ certStatus }) => {
                     if (userMetaData?.assessments?.length > 0) {
                         setHasAssessment(true);
                     }
+                   
                 } catch (error) {
                     console.error(
                         'Error fetching files:',
@@ -248,7 +258,23 @@ const AccordionCard = ({ certStatus }) => {
         fetchData();
     }, []);
 
+    console.log(retestEligibility)
+
+
+    
+
+    useEffect(() => {
+        if (!loading && userMetaData) {
+            checkRetestEligibility();
+        }
+    }, [loading, userMetaData, checkRetestEligibility]);
+
+    // useEffect(() => {
+    //     checkRetestEligibility();
+    // }, []);
+
     console.log(hasAssessment, 'has assessment')
+    console.log(retestEligibility, 'retest message')
 
 
 
@@ -271,14 +297,14 @@ const AccordionCard = ({ certStatus }) => {
         checkIsApprovedForAssessment();
     }, [userMetaData]);
 
-    useEffect(() => {
-        if (hasAssessment) {
-            // Trigger a page reload or perform additional actions
-            window.location.reload(); // Reload the entire page
-            // Alternatively, trigger specific logic for rendering new UI elements here
-            console.log('Page re-rendered due to hasAssessment being true');
-        }
-    }, [hasAssessment]);
+    // useEffect(() => {
+    //     if (hasAssessment) {
+    //         // Trigger a page reload or perform additional actions
+    //         window.location.reload(); // Reload the entire page
+    //         // Alternatively, trigger specific logic for rendering new UI elements here
+    //         console.log('Page re-rendered due to hasAssessment being true');
+    //     }
+    // }, [hasAssessment]);
 
     // useEffect(() => {
     //     const handleHashChange = () => {
@@ -1702,9 +1728,9 @@ const AccordionCard = ({ certStatus }) => {
                                         />
                                     </button>
                                     <button
-                                        disabled={!hasAssessment}
+                                        disabled={!hasAssessment || !retestEligibility}
                                         className={`${
-                                            !hasAssessment
+                                            !hasAssessment || !retestEligibility
                                                 ? 'opacity-50 cursor-not-allowed'
                                                 : ''
                                         }`}

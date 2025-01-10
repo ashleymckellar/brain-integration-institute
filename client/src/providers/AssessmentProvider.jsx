@@ -16,7 +16,7 @@ export const AssessmentProvider = ({ children }) => {
     const [testCompletedModalOpen, setTestCompletedModalOpen] = useState(false);
     const [areYouSureModalOpen, setAreYouSureModalOpen] = useState(false);
     const [score, setScore] = useState(null);
-    const [isTimeUp, setIsTimeUp] = useState(false)
+    const [isTimeUp, setIsTimeUp] = useState(false);
 
     //below function is called when user purchases test.  It generates the 100 test questions and unique test ID
     const fetchTestQuestions = async () => {
@@ -132,12 +132,58 @@ export const AssessmentProvider = ({ children }) => {
                 },
             );
             console.log('Test Submitted:', response.data);
-         
-            setScore(response.data.updatedTest.score);
-            setTestCompletedModalOpen(true)
+            const testScore = response.data.updatedTest.score;
+            const endDate = response.data.updatedTest.endDate;
+
+            setScore(testScore);
+            setTestCompletedModalOpen(true);
+            if (testScore < 70) {
+                await setRetestDate(endDate);
+            }
         } catch (error) {
             console.error(
                 'Error submitting test:',
+                error.response?.data || error.message,
+            );
+        }
+    };
+
+
+    //user.updatedTest.endTime is the end date
+    const setRetestDate = async (endDate) => {
+        try {
+            // Get the current timestamp (same as endDate in this case)
+            const now = Date.now();
+            // const newNow = now.toString()
+            // console.log(now, "date.now")
+            // console.log(newNow, 'new now')
+        
+            // Add 21 days in milliseconds
+            const retestDate = new Date(now + 21 * 24 * 60 * 60 * 1000);
+        
+            console.log(retestDate);
+        
+            const payload = {
+                retestDate: retestDate.toISOString(),
+                freeRetestUsed: true
+            };
+
+        
+            const response = await axios.patch(
+                `${baseUrl}/api/user/${user.email}/retest`,
+                payload,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${await getAccessTokenSilently()}`,
+                    },
+                },
+            );
+
+            console.log('Retest date set:', response.data);
+        } catch (error) {
+            console.error(
+                'Error setting retest date:',
                 error.response?.data || error.message,
             );
         }
@@ -164,7 +210,7 @@ export const AssessmentProvider = ({ children }) => {
                     isTimeUp,
                     setIsTimeUp,
                     areYouSureModalOpen,
-                    setAreYouSureModalOpen
+                    setAreYouSureModalOpen,
                 }}
             >
                 {children}

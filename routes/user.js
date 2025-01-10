@@ -185,6 +185,7 @@ userRouter.put('/:email/study-guide', async (req, res) => {
     }
 });
 
+//updates user object to specify whether the user is approved to purchase the assessment or not ie, all docs have been admin approved
 userRouter.put('/:email/assessment-access', async (req, res) => {
     const { assessmentAccess } = req.body;
     const { email } = req.params;
@@ -206,6 +207,52 @@ userRouter.put('/:email/assessment-access', async (req, res) => {
     } catch (error) {
         console.error('Error updating assessment access:', error);
         res.status(500).json({ error: error.message });
+    }
+});
+
+//patch request to update retestDate if the user fails the assessment and has to retake it.
+//this is +21 days from the date the test is taken (end date)
+
+userRouter.patch('/:email/retest', async (req, res) => {
+    const { retestDate, freeRetestUsed } = req.body;
+    const { email } = req.params;
+    if (!retestDate) {
+        return res.status(400).json({ error: 'Retest date is required' });
+    }
+
+    if (isNaN(Date.parse(retestDate))) {
+        return res.status(400).json({ error: 'Invalid date format' });
+    }
+
+    try {
+        const user = await UserModel.findOneAndUpdate(
+            { userEmail: email },
+            {
+                $set: { retestDate, freeRetestUsed },
+                $inc: { retestAttempts: 1 },
+            },
+            { new: true, runValidators: true },
+        );
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        //if (!user.freeRetestUsed) {
+        //user.freeRetestUsed = true}
+        //retestAttempts ++
+        //
+
+        res.json({
+            message: 'Retest date and attempts updated successfully',
+            userEmail: user.userEmail,
+            retestDate: user.retestDate,
+            retestAttempts: user.retestAttempts,
+            freeRetestUsed: user.freeRetestUsed,
+        });
+    } catch (error) {
+        console.error('Error updating assessment retest date:', error);
+        res.status(500).json({ error: 'Internal server error' });
     }
 });
 
@@ -254,7 +301,9 @@ userRouter.put('/:email/is-sub-prac', async (req, res) => {
     }
 
     try {
-        console.log(`Updating user status for user ${email} to ${isSubscribedPrac}`);
+        console.log(
+            `Updating user status for user ${email} to ${isSubscribedPrac}`,
+        );
 
         const user = await UserModel.findOneAndUpdate(
             { userEmail: email },
@@ -267,7 +316,10 @@ userRouter.put('/:email/is-sub-prac', async (req, res) => {
             return res.status(404).json({ error: 'User not found' });
         }
 
-        console.log(`User ${email} admin status updated to:`, user.isSubscribedPrac);
+        console.log(
+            `User ${email} admin status updated to:`,
+            user.isSubscribedPrac,
+        );
         res.json(user);
     } catch (error) {
         console.error('Error updating subscription status:', error);
@@ -286,7 +338,9 @@ userRouter.put('/:email/is-sub-educator', async (req, res) => {
     }
 
     try {
-        console.log(`Updating user status for user ${email} to ${isSubscribedEducator}`);
+        console.log(
+            `Updating user status for user ${email} to ${isSubscribedEducator}`,
+        );
 
         const user = await UserModel.findOneAndUpdate(
             { userEmail: email },
@@ -299,7 +353,10 @@ userRouter.put('/:email/is-sub-educator', async (req, res) => {
             return res.status(404).json({ error: 'User not found' });
         }
 
-        console.log(`User ${email} admin status updated to:`, user.isSubscribedEducator);
+        console.log(
+            `User ${email} admin status updated to:`,
+            user.isSubscribedEducator,
+        );
         res.json(user);
     } catch (error) {
         console.error('Error updating subscription status:', error);

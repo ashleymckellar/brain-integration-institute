@@ -45,7 +45,7 @@ export const MockTestQuestionCard = () => {
 
     // console.log(time, 'time');
     // console.log(score, 'score');
-    console.log(testId, 'testid');
+    // console.log(testId, 'testid');
     useEffect(() => {
         const isPageReload = () => {
             const entries = performance.getEntriesByType('navigation');

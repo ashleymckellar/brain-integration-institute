@@ -26,6 +26,9 @@ export const CloudinaryProvider = ({ children }) => {
     const [assessmentAccess, setAssessmentAccess] = useState(false);
     const [email, setEmail] = useState('');
     const [userMetaData, setUserMetaData] = useState({});
+    const [retestEligibility, setRetestEligibility] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [daysRemaining, setDaysRemaining] = useState(null)
 
     // const [uploading, setUploading] = useState(false);
     // const [uploadError, setUploadError] = useState(null);
@@ -90,7 +93,7 @@ export const CloudinaryProvider = ({ children }) => {
 
     //gets files from Cloudinary via callback/cors proxy
     const getFilesInFolder = async () => {
-        console.log('files retrieved')
+        console.log('files retrieved');
         try {
             if (!user || !user.email) {
                 throw new Error('User email is missing');
@@ -124,7 +127,7 @@ export const CloudinaryProvider = ({ children }) => {
     //     return [];
     // }
 
-    const getUserMetaData = async (email) => {
+    const getUserMetaData = async () => {
         try {
             const accessToken = await getAccessTokenSilently();
 
@@ -138,12 +141,43 @@ export const CloudinaryProvider = ({ children }) => {
             );
             const metaData = response.data;
             setUserMetaData(metaData);
-            console.log(userMetaData, 'user metadata')
+            console.log(userMetaData, 'user metadata');
             setImageUrl(metaData.userProfilePicture);
 
             return metaData;
         } catch (error) {
             console.error('Error fetching user metadata:', error);
+        }
+    };
+
+    const checkRetestEligibility = () => {
+        if (!userMetaData) {
+            console.error('User metadata not available');
+            return;
+        }
+
+        console.log('creating date');
+
+        const currentDate = new Date();
+        const retestDate = new Date(userMetaData.retestDate);
+
+        if (isNaN(retestDate)) {
+            console.error('Invalid retest date');
+           
+            return;
+        }
+
+        if (currentDate >= retestDate) {
+            console.log('eligible');
+            setRetestEligibility(true);
+        } else {
+            console.log('ineligible');
+            const daysRemaining = Math.ceil(
+                (retestDate - currentDate) / (1000 * 60 * 60 * 24),
+            );
+            setDaysRemaining(daysRemaining)
+            console.log(daysRemaining, 'days remaining');
+          setRetestEligibility(false)
         }
     };
 
@@ -756,14 +790,17 @@ export const CloudinaryProvider = ({ children }) => {
 
             if (!response.ok) {
                 const errorData = await response.json();
-                console.error('Failed to update user assessment access:', errorData);
+                console.error(
+                    'Failed to update user assessment access:',
+                    errorData,
+                );
                 throw new Error('Failed to update user assessment access');
             }
 
             const data = await response.json();
 
             setAssessmentAccess(true);
-         
+
             try {
                 if (progress < 8) {
                     const newProgress = progress + 1;
@@ -831,7 +868,14 @@ export const CloudinaryProvider = ({ children }) => {
                 setPublicId,
                 imagesByDocType,
                 setImagesByDocType,
-                updateUserAssessmentAccess
+                updateUserAssessmentAccess,
+                checkRetestEligibility,
+                retestEligibility,
+                setRetestEligibility,
+                loading,
+                setLoading,
+                setDaysRemaining,
+                daysRemaining
             }}
         >
             {loaded && children}
