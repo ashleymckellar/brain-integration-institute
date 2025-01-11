@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import AddAdminsForm from './AddAdminsForm';
 import { useState, useContext, useEffect } from 'react';
 import { AdminContext } from '../contexts';
@@ -13,7 +14,7 @@ const AddAdmins = () => {
     const auth0User = user;
 
     const [isCurrentAdmin, setIsCurrentAdmin] = useState(false);
-    const [isNewAdmin, setIsNewAdmin] = useState(true);
+    // const [isNewAdmin, setIsNewAdmin] = useState(true);
     const [adminManagementModalOpen, setAdminManagementModalOpen] =
         useState(false);
 
